@@ -45,7 +45,12 @@ try_download<-function (filename, dest_path, ftype) {
         print("success!")
         success = 1
         break
-      } else {print("failure!")}
+      } else {
+        print("failure!")
+        if(file.exists(paste0(dest_path,".html"))){
+          file.remove(paste0(dest_path,".html"))
+        }
+          }
     }
     
     if (Setting$verbose==0) {

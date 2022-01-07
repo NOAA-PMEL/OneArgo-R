@@ -1,7 +1,9 @@
 if (!require("ggplot2")) { install.packages("ggplot2"); library(ggplot2) }
 if (!require("maps")) { install.packages("maps"); library(maps) }
 
-plot_trajectories <- function(Data, color) {
+plot_trajectories <- function(Data, 
+                              color,
+                              title=NULL) {
   # plot_trajectories  
   # 
   #This function is part of the
@@ -9,14 +11,14 @@ plot_trajectories <- function(Data, color) {
   #
   # This function plots the trajectories of one or more specified float(s).
   #
-  # Prerequisite: Sprof file for the specified float(s) must exist locally.
+  # PREREQUISITE: Sprof file for the specified float(s) must exist locally.
   #
-  # Inputs:
+  # INPUTS:
   #   Data  : struct that must contain LONGITUDE and LATITUDE fields
   #   color : either 'multiple' (different colors for different floats),
   #           or any standard R color descriptor ('red', 'blue', 'green',
   #           'black' etc.) (all trajectories will be plotted in the same color)
-  
+  #   title : title of the plot
   #
   # CITATION:
   # BGC-Argo-R: A R toolbox for accessing and visualizing
@@ -87,6 +89,7 @@ plot_trajectories <- function(Data, color) {
   
   g1 = ggplot(df, mapping=aes(x=LONGITUDE, y=LATITUDE, group=WMO)) +
     theme_bw() +
+    gg_title(title)+
     geom_polygon(data=world, aes(x=long, y=lat, group=group), 
                  fill="#dddddd")
 

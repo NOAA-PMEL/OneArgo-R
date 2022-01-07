@@ -1,8 +1,16 @@
 if (!require("ggplot2")) { install.packages("ggplot2"); library(ggplot2) }
 if (!require("metR")) { install.packages("metR"); library(metR) }
 
-plot_sections <- function(Data, Mdata, variables, nvars, plot_isopyc, plot_mld, 
-                          max_depth=NULL, raw="no", obs="off", qc_flags=0:9) {
+plot_sections <- function(Data, 
+                          Mdata, 
+                          variables, 
+                          nvars, 
+                          plot_isopyc, 
+                          plot_mld, 
+                          max_depth=NULL, 
+                          raw="no", 
+                          obs="off",
+                          qc_flags=0:9) {
 
   # plot_sections  
   #
@@ -30,6 +38,10 @@ plot_sections <- function(Data, Mdata, variables, nvars, plot_isopyc, plot_mld,
   #                 the x-axis
   #   max_depth   : maximum depth to plot (an empty array signals the
   #                 plotting of all available depths)
+  #   obs         : if 'on', add dots at the depths of observations
+  #                 each measurement was made (default = 'no')
+  #   raw         : if 'no', use adjusted variables if available,
+  #                 if 'yes', always use raw values
   #
   # Optional inputs:
   #  'qc',flags   : show only values with the given QC flags (array)

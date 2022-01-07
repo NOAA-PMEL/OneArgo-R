@@ -1,6 +1,12 @@
-show_sections <- function(float_ids=Setting$demo_float, variables="DOXY",
-                          plot_isopyc=1, plot_mld=0, max_depth=NULL, raw="no", 
-                          obs="off", qc_flags=0:9) {
+show_sections <- function(float_ids=Setting$demo_float, 
+                          variables="DOXY",
+                          float_profs=NULL,
+                          plot_isopyc=1, 
+                          plot_mld=0, 
+                          max_depth=NULL, 
+                          raw="no", 
+                          obs="off", 
+                          qc_flags=0:9) {
   # show_sections  
   #
   # This function is part of the
@@ -9,20 +15,25 @@ show_sections <- function(float_ids=Setting$demo_float, variables="DOXY",
   # It is an intermediary function that downloads profile(s) for the given
   # float(s) and calls plot_sections to create the plot(s).
   #
-  # Inputs:
+  # INPUTS:
   #   float_ids  : WMO ID(s) of one or more floats 
-  #                (if not set: 5904021 is used as a demo)
+  #                (if not set: Setting$demo_float is used as a demo)
   #   variables  : cell array of variable(s) (i.e., sensor(s)) to show 
   #                (if not set: {'DOXY'} (=O2) is used)
   #
-  # Optional inputs:
-  #   'isopyc',isopyc    : plot isopycnal lines if set (default: 1=on)
-  #   'mld',mld          : plot mixed layer depth, using either a 
+  # OPTIONAL INPUTS:
+  #   float_profs        : per-float indices of the profiles to be shown,
+  #                        as returned by select_profiles
+  #   plot_isopyc        : plot isopycnal lines if set (default: 1=on)
+  #   plot_mld           : plot mixed layer depth, using either a 
   #                        temperature criterion (mld=1) or a density
   #                        criterion (mld=2); default: 0=off
-  #   'time_label',label : use either years ('y', by default) or months ('m')
-  #   'max_depth',depth  : maximum depth to be plotted (default: all)
-  #   'qc',flags         : show only values with the given QC flags (as an array)
+  #   max_depth          : maximum depth to be plotted (default: all)
+  #   raw = 'yes'/'no'   : plot raw, i.e., unadjusted data if set to 'yes';
+  #                        default: 'no' (i.e., plot adjusted data if available)
+  #   obs = 'on' / 'off  : if 'on', add dots at the depths of observations
+  #                        default: 'on'; use 'off' to turn off this behavior
+  #   qc                 : show only values with the given QC flags (as an array)
   #                        0: no QC was performed; 
   #                        1: good data; 
   #                        2: probably good data;
@@ -35,8 +46,7 @@ show_sections <- function(float_ids=Setting$demo_float, variables="DOXY",
   #                        default setting: [1,2]
   #                        See Table 7 in Bittig et al.:
   #                        https://www.frontiersin.org/files/Articles/460352/fmars-06-00502-HTML-r1/image_m/fmars-06-00502-t007.jpg
-  #
-  # Output:
+  # OUTPUT:
   #   good_float_ids : array of the float IDs whose Sprof files were
   #                    successfully downloaded or existed already
   # CITATION:
@@ -53,6 +63,11 @@ show_sections <- function(float_ids=Setting$demo_float, variables="DOXY",
   # and A. Gray (UW))
   
   # Update 24 June 2021
+  
+  # make sure Setting is initialized
+  if (is.null(Setting)) {
+    initialize_argo()
+  }
   
   # download Sprof files if necessary
   good_float_ids = download_multi_floats(float_ids)
@@ -71,7 +86,7 @@ show_sections <- function(float_ids=Setting$demo_float, variables="DOXY",
       }
     }
     
-    loaded = load_float_data(good_float_ids, variables)
+    loaded = load_float_data(good_float_ids, variables,float_profs)
     Data = loaded$Data
     Mdata = loaded$Mdata
   

@@ -15,7 +15,7 @@ get_var_name_units <- function(short_name){
   # Outputs:
   #   long_name  : long name of the variable
   #   units      : units of the variable
-  
+  #
   # CITATION:
   # BGC-Argo-R: A R toolbox for accessing and visualizing
   # Biogeochemical Argo data,
@@ -82,7 +82,7 @@ get_var_name_units <- function(short_name){
     long_name = 'Downwelling irradiance'
     units = parse(text='"("*W~m^{-2}~nm^{-1}*")"', keep.source=FALSE)[[1]]
   }
-  if(startsWith(short_name, 'UP_IRRADIANCE')){
+  if(startsWith(short_name, 'UP_RADIANCE')){
     long_name = 'Upwelling irradiance'
     units = parse(text='"("*W~m^{-2}~nm^{-1}*")"', keep.source=FALSE)[[1]]
   }

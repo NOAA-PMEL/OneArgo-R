@@ -36,7 +36,7 @@ if (!require("ncdf4")) { install.packages("ncdf4"); library(ncdf4) } # deal with
 
 # Fill here the path to the code directory, you can instead set the code
 # directory as the working directory with setwd()
-path_code = ""
+path_code = "workshop_R_GO_BGC/"
 
 
 # Load the functions --------------------------------
@@ -61,6 +61,9 @@ source(paste0(path_code, "show_profiles.R"))
 source(paste0(path_code, "plot_profiles.R"))
 source(paste0(path_code, "show_sections.R"))
 source(paste0(path_code, "plot_sections.R"))
+source(paste0(path_code, "get_dims.R"))
+source(paste0(path_code, "get_lon_lat_time.R"))
+source(paste0(path_code, "combine_variables.R"))
 
 # Exercise 0: Initialize --------------------------------------------------
 # This function defines standard settings and paths and creates Index
@@ -140,7 +143,6 @@ do_pause()
 
 show_profiles( profile_ids=WMO, 
                variables=c('PSAL','NITRATE'),
-               type="floats", # given IDs refer to the floats
                obs='on', # 'on' shows points on the profile at which each measurement was made
                raw="yes" # show the unadjusted data 
 )
@@ -149,14 +151,12 @@ show_profiles( profile_ids=WMO,
 # this plots the adjusted data.
 show_profiles(profile_ids=WMO, 
               variables=c('PSAL','NITRATE'),
-              type="floats", # given IDs refer to the floats
               obs='on', # 'on' shows points on the profile at which each measurement was made
 )
 
 # this plots the adjusted, good (qc flag 1) and probably-good (qc flag 2) data.
 show_profiles(profile_ids=WMO, 
               variables=c('PSAL','NITRATE'),
-              type="floats", # given IDs refer to the floats
               obs='on', # 'on' shows points on the profile at which each measurement was made
               qc_flags =c(1:2) # tells the function to plot good and probably-good data
 )
@@ -221,9 +221,9 @@ OSP_data= select_profiles ( lon_lim,
 
 
 # Display the number of matching floats and profiles
-print(paste('# of matching profiles:',length(OSP_data$profiles)))
+print(paste('# of matching profiles:',sum(lengths(OSP_data$float_profs))))
 
-print(paste('# of matching floats:',length(OSP_data$floats)))
+print(paste('# of matching floats:',length(OSP_data$float_ids)))
 
 
 # Show trajectories for the matching floats
@@ -231,7 +231,7 @@ print(paste('# of matching floats:',length(OSP_data$floats)))
 # files have already been downloaded) and then loads the data for plotting.
 # Adding the optional input pair 'color','multiple' will plot different
 # floats in different colors
-trajectory = show_trajectories(float_ids = OSP_data$floats,
+trajectory = show_trajectories(float_ids = OSP_data$float_ids,
                                return_ggplot = TRUE #do not plot and return a ggplot object
 ) # this plots different floats in different colors
 
@@ -256,18 +256,16 @@ do_pause()
 
 # Case #1: all profiles from one float (1)
 
-show_profiles(profile_ids=OSP_data$floats[1], 
+show_profiles(profile_ids=OSP_data$float_ids[1], 
               variables=c('PSAL','DOXY'),
-              type="floats", # given IDs refer to the floats
               obs='on',# 'on' shows points on the profile at which
               #  each measurement was made
 )
 
 # Case #2: mean and standard deviation of all profiles from one float (1)
 
-show_profiles(profile_ids=OSP_data$floats[1], 
+show_profiles(profile_ids=OSP_data$float_ids[1], 
               variables=c('PSAL','DOXY'),
-              type="floats", # given IDs refer to the floats
               obs='on', # 'on' shows points on the profile at which
               #  each measurement was made
               method="mean" # this tells the function to just plot the mean profile
@@ -305,16 +303,16 @@ HW_data= select_profiles ( lon_lim,
 
 
 # display the number of matching floats and profiles
-print(paste('# of matching profiles:',length(HW_data$profiles)))
+print(paste('# of matching profiles:',sum(lengths(HW_data$float_profs))))
 
-print(paste('# of matching floats:',length(HW_data$floats)))
+print(paste('# of matching floats:',length(HW_data$float_ids)))
 
 
 # Show trajectories for the matching floats, along with the geo limits
 # This function downloads the specified floats from the GDAC (unless the
 # files have already been downloaded) and then loads the data for plotting.
 
-trajectory = show_trajectories(float_ids=HW_data$floats, return_ggplot=TRUE)  # this plots different floats in different colors
+trajectory = show_trajectories(float_ids=HW_data$float_ids, return_ggplot=TRUE)  # this plots different floats in different colors
 
 x11() # new window
 plot(trajectory)
@@ -337,22 +335,30 @@ do_pause()
 
 # Show matching profiles from all floats
 # Show profiles (from all floats) within specified domain and times
-show_profiles( profile_ids=HW_data$floats, 
+show_profiles( float_ids=HW_data$float_ids, 
                variables=c('PSAL','DOXY'),
-               type="floats",  # given IDs refer to the floats
-               per_float=0,  # show all profiles in one plot:
+               float_profs=HW_data$float_profs,
+               per_float=F,  # show all profiles in one plot:
                qc_flags =c(1,2) # tells the function to plot good and probably-good data
 )
 
 do_pause()
 
-# Show only matching profiles from September
-prof_ids_September =   which (month( Sprof$date)==9) # find the profiles measured in September in global float index
-HW_profiles_Sep =  HW_data$profiles [which ( (HW_data$profiles %in%  prof_ids_September)=="TRUE") ]  # determine profiles that occur in September
-show_profiles( profile_ids=HW_profiles_Sep, 
+## Show only matching profiles from September
+# determinde profiles that occur in September for each float separately
+date<-get_lon_lat_time(HW_data$float_ids,
+                       HW_data$float_profs)$time
+
+HW_float_profs_Sep<-list()
+for (f in 1:length(HW_data$float_ids)){
+  HW_float_profs_Sep <-HW_data$float_profs[which (month(date)==9)]
+  
+}
+
+show_profiles( float_ids=HW_data$float_ids, 
                variables=c('PSAL','DOXY'),
-               type="profiles", # given IDs refer to the profiles
-               per_float=0,  # show all profiles in one plot:
+               profile_ids=HW_float_prof_Sep, 
+               per_float=F,  # show all profiles in one plot:
                obs='on', # plot a marker at each observation
                qc_flags=c(1,2),  # apply QC flags
                title_add= 'September' 
@@ -364,7 +370,7 @@ do_pause()
 # this shows the raw, unadjusted data 
 # mixed layer depth is shown based on the temperature threshold
 # (set the value to 2 after 'mld' to use the density threshold instead)
-show_sections( float_ids=HW_data$floats[5], 
+show_sections( float_ids=HW_data$float_ids[5], 
                variables=c('PH_IN_SITU_TOTAL','DOXY'),
                plot_mld=1,   # tells the function to plot mixed layer depth
                raw="yes" # tells the function to plot raw (unadjusted) data
@@ -374,7 +380,7 @@ do_pause()
 
 # Show sections for pH and oxygen for the fifth float in the list of Hawaii floats
 # this shows the adjusted data
-show_sections( float_ids=HW_data$floats[5], 
+show_sections( float_ids=HW_data$float_ids[5], 
                variables=c('PH_IN_SITU_TOTAL','DOXY'),
                plot_mld=1,   # tells the function to plot mixed layer depth
                raw="no"  # tells the function to plot adjusted data

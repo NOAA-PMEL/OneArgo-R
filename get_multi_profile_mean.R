@@ -1,12 +1,24 @@
 get_multi_profile_mean <- function (Datai, variable) {
   # get_multi_profile_mean  
   #
-  #This function is part of the
+  # This function is part of the
   # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
   #
   #
-  # Inputs:
-  # Optional inputs:
+  # DESCRIPTION:
+  #   This function computes mean and standard deviation of a
+  #   depth-interpolated variable. Missing values are omitted in the 
+  #   calculations.
+  #
+  # INPUTS:
+  #   Datai     : struct with depth-interpolated fields from multiple floats
+  #               that must include PRES and the given variable
+  #   variable  : string with the name of the variable (e.g., DOXY)
+  #
+  # OUTPUTS:
+  #   mean_prof : mean value of the variable across floats (column vector)
+  #   std_prof  : standard variation of the variable across floats (column vector)
+  #   mean_pres : mean pressure across floats (column vector)
   #
   # CITATION:
   # BGC-Argo-R: A R toolbox for accessing and visualizing
