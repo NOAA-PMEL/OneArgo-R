@@ -159,18 +159,14 @@ plot_profiles <- function(Data,
   for (v in 1:nvars) {
     if (!per_float) {
       x11()
-      mean_prof[[v]] = get_multi_profile_mean(Datai, variables[v])$mean_prof
-      std_prof[[v]] = get_multi_profile_mean(Datai, variables[v])$std_prof
-      
-      this_mean_prof = mean_prof[[v]]
-      this_std_prof = std_prof[[v]]
+      this_mean_prof = get_multi_profile_mean(Datai, variables[v])$mean_prof
+      this_std_prof = get_multi_profile_mean(Datai, variables[v])$std_prof
       this_mean_pres = mean_pres[[v]]
     }
     for (f in 1:nfloats) {
       if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {
         PRES = Data[[floats[f]]][['PRES_ADJUSTED']]
-      }
-      else{
+      } else {
         PRES = Data[[floats[f]]][['PRES']]
       }
       
@@ -178,12 +174,9 @@ plot_profiles <- function(Data,
       if (per_float) {
         x11()
         par(las=1)
-        mean_prof[[v]][[f]] = get_multi_profile_mean(Datai, variables[v])$mean_prof
-        std_prof[[v]][[f]] = get_multi_profile_mean(Datai, variables[v])$std_prof
-        
-        this_mean_prof = mean_prof[[v]][[f]]
-        this_std_prof = std_prof[[v]][[f]]
-        this_mean_pres = mean_pres[[v]][[f]]
+        this_mean_prof = get_multi_profile_mean(Datai, variables[v])$mean_prof
+        this_std_prof = get_multi_profile_mean(Datai, variables[v])$std_prof
+        this_mean_pres = mean_pres[[f]]
       }
         
       if (method == "all") {
@@ -232,6 +225,13 @@ plot_profiles <- function(Data,
         )
       }
       else{
+        long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
+        units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
+        plot(range(Data[[floats[f]]][[variables[v]]],na.rm=T)[1],range(PRES, na.rm=T)[1],type='n', 
+             ylim = rev(range(PRES, na.rm=T)),
+             xlim = range(Data[[floats[f]]][[variables[v]]],na.rm=T),
+             xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
+             ylab = 'Pressure (dbar)')
         points(
           this_mean_prof,
           this_mean_pres,
@@ -273,7 +273,6 @@ plot_profiles <- function(Data,
       title(ttitle)
     }
   }
-  return(list(mean_prof=mean_prof,std_prof=std_prof,mean_pres=mean_pres))
 }
 
   

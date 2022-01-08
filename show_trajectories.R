@@ -68,7 +68,7 @@ show_trajectories <- function(float_ids=Setting$demo_float,
     loaded = load_float_data(float_ids=good_float_ids, float_profs=float_profs)
     Data = loaded$Data
     
-    if(!is.null(pos)){
+    if(!is.null(position)){
       nfloats = length(Data)
       if(position=="first"){
         for (f in 1:nfloats){

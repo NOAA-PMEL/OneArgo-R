@@ -89,7 +89,7 @@ plot_trajectories <- function(Data,
   
   g1 = ggplot(df, mapping=aes(x=LONGITUDE, y=LATITUDE, group=WMO)) +
     theme_bw() +
-    gg_title(title)+
+    ggtitle(title)+
     geom_polygon(data=world, aes(x=long, y=lat, group=group), 
                  fill="#dddddd")
 

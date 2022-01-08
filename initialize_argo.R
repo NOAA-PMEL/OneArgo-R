@@ -176,7 +176,6 @@ initialize_argo <- function() {
   Float$file_name <<- Sprof_fnames
   Float$dac <<- dacs
   Float$wmoid <<- uwmo
-  Float$update <<- ymd_hms(sprof_update[ia])
   Float$nfloats <<- length(uwmo)
   # range of profile indices per float
   Float$prof_idx1 <<- ia

@@ -36,7 +36,7 @@ if (!require("ncdf4")) { install.packages("ncdf4"); library(ncdf4) } # deal with
 
 # Fill here the path to the code directory, you can instead set the code
 # directory as the working directory with setwd()
-path_code = "workshop_R_GO_BGC/"
+path_code = ""
 
 
 # Load the functions --------------------------------
@@ -141,7 +141,7 @@ do_pause()
 # this plots the raw, unadjusted data, and includes multiple profiles 
 # compromised by biofouling that has affected the optics.
 
-show_profiles( profile_ids=WMO, 
+show_profiles( float_ids=WMO, 
                variables=c('PSAL','NITRATE'),
                obs='on', # 'on' shows points on the profile at which each measurement was made
                raw="yes" # show the unadjusted data 
@@ -149,13 +149,14 @@ show_profiles( profile_ids=WMO,
 
 
 # this plots the adjusted data.
-show_profiles(profile_ids=WMO, 
+show_profiles(float_ids=WMO, 
               variables=c('PSAL','NITRATE'),
               obs='on', # 'on' shows points on the profile at which each measurement was made
+              raw="no"
 )
 
 # this plots the adjusted, good (qc flag 1) and probably-good (qc flag 2) data.
-show_profiles(profile_ids=WMO, 
+show_profiles(float_ids = WMO, 
               variables=c('PSAL','NITRATE'),
               obs='on', # 'on' shows points on the profile at which each measurement was made
               qc_flags =c(1:2) # tells the function to plot good and probably-good data
@@ -256,15 +257,15 @@ do_pause()
 
 # Case #1: all profiles from one float (1)
 
-show_profiles(profile_ids=OSP_data$float_ids[1], 
+show_profiles(float_ids=OSP_data$float_ids[1], 
               variables=c('PSAL','DOXY'),
               obs='on',# 'on' shows points on the profile at which
-              #  each measurement was made
+                       #  each measurement was made
 )
 
 # Case #2: mean and standard deviation of all profiles from one float (1)
 
-show_profiles(profile_ids=OSP_data$float_ids[1], 
+show_profiles(float_ids=OSP_data$float_ids[1], 
               variables=c('PSAL','DOXY'),
               obs='on', # 'on' shows points on the profile at which
               #  each measurement was made

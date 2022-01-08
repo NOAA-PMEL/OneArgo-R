@@ -111,7 +111,7 @@ show_profiles=function( float_ids,
   variables = as.character(variables)
   
   # download Sprof files if necessary
-  good_float_ids = download_multi_floats(uniq_float_ids)
+  good_float_ids = download_multi_floats(float_ids)
   
   if ( is.null( good_float_ids) ){
     warning('no valid floats found')
@@ -119,7 +119,7 @@ show_profiles=function( float_ids,
     Float_Data=load_float_data(float_ids = good_float_ids, 
                                variables = variables, 
                                float_profs = float_profs)
-    out_mean<-plot_profiles(Data =  Float_Data$Data, 
+    plot_profiles(Data =  Float_Data$Data, 
                             Mdata = Float_Data$Mdata, 
                             variables = variables,
                             method = method ,
@@ -130,10 +130,6 @@ show_profiles=function( float_ids,
                             qc_flags = qc_flags
     )
   }
-  return(list(mean_prof = out_mean$mean_prof,
-         std_prof = out_mean$std_prof,
-         mean_pres = out_mean$mean_pres))
-  
 }  
 
 
