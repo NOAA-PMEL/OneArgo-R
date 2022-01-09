@@ -40,30 +40,11 @@ path_code = ""
 
 
 # Load the functions --------------------------------
-
-source(paste0(path_code, "initialize_argo.R"))
-source(paste0(path_code, "try_download.R"))
-source(paste0(path_code, "do_download.R"))
-source(paste0(path_code, "download_float.R"))
-source(paste0(path_code, "download_multi_floats.R"))
-source(paste0(path_code, "check_dir.R"))
-source(paste0(path_code, "get_var_name_units.R"))
-source(paste0(path_code, "select_profiles.R"))
-source(paste0(path_code, "load_float_data.R"))
-source(paste0(path_code, "plot_trajectories.R"))
-source(paste0(path_code, "get_lon_lat_lims.R"))
-source(paste0(path_code, "show_trajectories.R"))
-source(paste0(path_code, "do_pause.R"))
-source(paste0(path_code, "depth_interp.R"))
-source(paste0(path_code, "calc_auxil.R"))
-source(paste0(path_code, "get_multi_profile_mean.R"))
-source(paste0(path_code, "show_profiles.R"))
-source(paste0(path_code, "plot_profiles.R"))
-source(paste0(path_code, "show_sections.R"))
-source(paste0(path_code, "plot_sections.R"))
-source(paste0(path_code, "get_dims.R"))
-source(paste0(path_code, "get_lon_lat_time.R"))
-source(paste0(path_code, "combine_variables.R"))
+func.sources = list.files(pattern="*.R")
+func.sources = func.sources[which(func.sources %in% c('Main_workshop.R',
+                                                      "bgc_argo_workshop_R_license.R")==F)]
+func.sources = func.sources[-grep("Rproj",func.sources)]
+invisible(sapply(func.sources,source,.GlobalEnv))
 
 # Exercise 0: Initialize --------------------------------------------------
 # This function defines standard settings and paths and creates Index
