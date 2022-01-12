@@ -161,7 +161,7 @@ plot_profiles <- function(Data,
       x11()
       this_mean_prof = get_multi_profile_mean(Datai, variables[v])$mean_prof
       this_std_prof = get_multi_profile_mean(Datai, variables[v])$std_prof
-      this_mean_pres = mean_pres[[v]]
+      this_mean_pres = get_multi_profile_mean(Datai, variables[v])$mean_pres
     }
     for (f in 1:nfloats) {
       if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {

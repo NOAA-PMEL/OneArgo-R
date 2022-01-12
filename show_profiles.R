@@ -89,13 +89,7 @@ show_profiles=function( float_ids,
     initialize_argo()
   }
   
-  # assign empty variables to all return values in case of early return
   good_float_ids = NULL
-  
-  out_mean<-list()
-  out_mean$mean_prof = NULL
-  out_mean$std_prof = NULL
-  out_mean$mean_pres = NULL
   
   
   if ( is.null(float_ids) ){

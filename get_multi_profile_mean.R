@@ -38,6 +38,8 @@ get_multi_profile_mean <- function (Datai, variable) {
   floats = names(Datai)
   nfloats = length(floats)
   
+  mean_pres<-NULL
+  
   # all Datai structs have the same depth resolution, but the maximum
   # value varies by float; need to find the float with the most depths
   imax = 0
@@ -77,7 +79,7 @@ get_multi_profile_mean <- function (Datai, variable) {
   
   mean_prof = apply(all_profs,1,function(x){mean(x,na.rm=TRUE)})
   std_prof =  apply(all_profs,1,function(x){sd(x,na.rm=TRUE)})
-  mean_pres = mean_pres[[1]]
+  mean_pres = mean_pres[,1]
   
   return(list(mean_prof=mean_prof, std_prof= std_prof, mean_pres=mean_pres))
   

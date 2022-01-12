@@ -40,11 +40,11 @@ path_code = ""
 
 
 # Load the functions --------------------------------
-func.sources = list.files(pattern="*.R")
+func.sources = list.files(path_code,pattern="*.R")
 func.sources = func.sources[which(func.sources %in% c('Main_workshop.R',
                                                       "bgc_argo_workshop_R_license.R")==F)]
 func.sources = func.sources[-grep("Rproj",func.sources)]
-invisible(sapply(func.sources,source,.GlobalEnv))
+invisible(sapply(paste0(path_code,func.sources),source,.GlobalEnv))
 
 # Exercise 0: Initialize --------------------------------------------------
 # This function defines standard settings and paths and creates Index
@@ -67,6 +67,7 @@ do_pause()
 
 # Example: Look at the profile ID numbers and available sensors for the
 # profiles that have been executed by new GO-BGC float #5906439.
+
 
 float_idx <-which(Float$wmoid=='5906439') # float IDs for float #5906439 in the S_file index
 float_idx 
@@ -101,6 +102,9 @@ float_file
 
 # Extract informational data from the NetCDF
 names (float_file$var) 
+
+# Close the file
+nc_close(float_file)
 
 do_pause()
 
@@ -320,26 +324,27 @@ do_pause()
 show_profiles( float_ids=HW_data$float_ids, 
                variables=c('PSAL','DOXY'),
                float_profs=HW_data$float_profs,
-               per_float=F,  # show all profiles in one plot:
+               per_float=F,  # show all profiles in one plot
                qc_flags =c(1,2) # tells the function to plot good and probably-good data
 )
 
 do_pause()
 
 ## Show only matching profiles from September
-# determinde profiles that occur in September for each float separately
+# determine profiles that occur in September for each float separately
 date<-get_lon_lat_time(HW_data$float_ids,
                        HW_data$float_profs)$time
 
 HW_float_profs_Sep<-list()
 for (f in 1:length(HW_data$float_ids)){
-  HW_float_profs_Sep <-HW_data$float_profs[which (month(date)==9)]
+  HW_float_profs_Sep[[f]] <-
+    HW_data$float_profs[[f]][which(month(as.POSIXct(date[[f]]))==9)]
   
 }
 
 show_profiles( float_ids=HW_data$float_ids, 
                variables=c('PSAL','DOXY'),
-               profile_ids=HW_float_prof_Sep, 
+               float_profs = HW_float_profs_Sep, 
                per_float=F,  # show all profiles in one plot:
                obs='on', # plot a marker at each observation
                qc_flags=c(1,2),  # apply QC flags
