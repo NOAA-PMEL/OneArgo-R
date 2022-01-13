@@ -180,12 +180,13 @@ select_profiles <- function(lon_lim=c(-180,180),
     has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
     is_good = inpoly & indate & has_sensor & is_ocean
     idx = all_floats[is_good]
+    varlist<-strsplit(Sprof$sens," ")
     if(length(idx)!=0){
       for (i in 1:length(idx)) {
-        pos = sensor == strsplit(Sprof$sens," ")[[idx[i]]]
+        pos = sensor == varlist[[idx[i]]]
         if(any(pos)){
           for (j in 1:nchar(mode)){
-            if (substr(mode,i,i) == substr(Sprof$data_mode[idx[i]],
+            if (substr(mode,j,j) == substr(Sprof$data_mode[idx[i]],
                                            which(pos),
                                            which(pos))){
               has_mode[idx[i]]<-TRUE
