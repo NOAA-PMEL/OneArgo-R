@@ -180,11 +180,15 @@ select_profiles <- function(lon_lim=c(-180,180),
     has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
     is_good = inpoly & indate & has_sensor & is_ocean
     idx = all_floats[is_good]
+    if(length(idx)==0){
+      stop("No float profiles available for this selection")
+    }
+    
     for (i in 1:length(idx)) {
-      pos = "PSAL" == strsplit(Sprof$sens," ")[[idx[i]]]
+      pos = sensor == strsplit(Sprof$sens," ")[[idx[i]]]
       if(any(pos)){
         for (j in 1:nchar(mode)){
-          if (substr(mode[j],i,i) == substr(Sprof$data_mode[idx[i]],
+          if (substr(mode,i,i) == substr(Sprof$data_mode[idx[i]],
               which(pos),
               which(pos))){
             has_mode[idx[i]]<-TRUE
@@ -197,6 +201,10 @@ select_profiles <- function(lon_lim=c(-180,180),
   
   profiles = which(inpoly & indate & has_sensor & is_ocean & has_mode)
   float_ids = unique(Sprof$wmo[profiles])
+  
+  if(length(float_ids)==0){
+    stop("No float profiles available for this selection")
+  }
   
   # download Sprof files if necessary
   good_float_ids = download_multi_floats(float_ids)
@@ -267,7 +275,10 @@ select_profiles <- function(lon_lim=c(-180,180),
     } else {
       is_ocean = rep(FALSE, length(inpoly))
       for(ii in 1:length(lon)) {
-        print(ii)
+        if(is.na(lon[ii]) | is.na(lat[ii])) {
+          warning("NA lon or lat for float ", good_float_ids[fl], "; profile ",ii)
+          next
+        }
         slon_diff<-abs(Sprof$lon - lon[ii])
         slat_diff<-abs(Sprof$lat - lat[ii])
         ssum<-slon_diff+slat_diff

@@ -112,7 +112,7 @@ initialize_argo <- function() {
                            'DOWN_IRRADIANCE555','DOWN_IRRADIANCE670','UP_RADIANCE',
                            'UP_RADIANCE412','UP_RADIANCE443','UP_RADIANCE490','UP_RADIANCE555',
                            'UP_RADIANCE','UP_RADIANCE412','UP_RADIANCE443','UP_RADIANCE490',
-                           'UP_RADIANCE555','DOWWELLING_PAR','DOXY2','DOXY3')
+                           'UP_RADIANCE555','DOWNWELLING_PAR','DOXY2','DOXY3')
   
   # Write Sprof index file from GDAC to Index directory
   sprof = 'argo_synthetic-profile_index.txt' # file used locally
