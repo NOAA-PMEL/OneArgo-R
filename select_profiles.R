@@ -180,146 +180,148 @@ select_profiles <- function(lon_lim=c(-180,180),
     has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
     is_good = inpoly & indate & has_sensor & is_ocean
     idx = all_floats[is_good]
-    if(length(idx)==0){
-      stop("No float profiles available for this selection")
-    }
-    
-    for (i in 1:length(idx)) {
-      pos = sensor == strsplit(Sprof$sens," ")[[idx[i]]]
-      if(any(pos)){
-        for (j in 1:nchar(mode)){
-          if (substr(mode,i,i) == substr(Sprof$data_mode[idx[i]],
-              which(pos),
-              which(pos))){
-            has_mode[idx[i]]<-TRUE
+    if(length(idx)!=0){
+      for (i in 1:length(idx)) {
+        pos = sensor == strsplit(Sprof$sens," ")[[idx[i]]]
+        if(any(pos)){
+          for (j in 1:nchar(mode)){
+            if (substr(mode,i,i) == substr(Sprof$data_mode[idx[i]],
+                                           which(pos),
+                                           which(pos))){
+              has_mode[idx[i]]<-TRUE
+            }
           }
         }
       }
     }
+    
+   
   }
   
   
   profiles = which(inpoly & indate & has_sensor & is_ocean & has_mode)
   float_ids = unique(Sprof$wmo[profiles])
-  
-  if(length(float_ids)==0){
-    stop("No float profiles available for this selection")
-  }
-  
-  # download Sprof files if necessary
-  good_float_ids = download_multi_floats(float_ids)
-  
-  # the information from the index file is only used for an initial
-  # filtering of floats, the actual information from the Sprof files
-  # is used in a second step
-  
-  float_ids = good_float_ids
   float_profs = list()
   
-  for (fl in 1:length(good_float_ids)) {
-    filename = paste(Setting$prof_dir,good_float_ids[fl],"_Sprof.nc",sep="")
-    n_prof = get_dims(filename)$n_prof
-    n_param = get_dims(filename)$n_param
-    fl_idx = which(Float$wmoid==good_float_ids[fl])
-    n_prof_exp = Float$prof_idx2[fl_idx] - Float$prof_idx1[fl_idx] + 1
-    if (n_prof_exp > n_prof) {
-      warning(paste("The index file lists", n_prof_exp,"profiles for float",
-                    good_float_ids[fl],"but the Sprof file has only",n_prof,"profiles."))
-    }
+  if(length(float_ids)!=0){
+    # download Sprof files if necessary
+    good_float_ids = download_multi_floats(float_ids)
     
-    nc<-nc_open(filename)
-    lon = ncvar_get(nc, 'LONGITUDE')
-    lat = ncvar_get(nc, 'LATITUDE')
-    juld = ncvar_get(nc, 'JULD')
+    # the information from the index file is only used for an initial
+    # filtering of floats, the actual information from the Sprof files
+    # is used in a second step
     
-    if(!is.null(sensor) & mode!="ADR"){
-      params = ncvar_get(nc,"PARAMETER")
-      param_names = rep(NA,n_param)
-      for(p in 1:n_param){
-        param_names[p]<-trimws(params[[p,1,1]])
+    float_ids = good_float_ids
+    
+    for (fl in 1:length(good_float_ids)) {
+      filename = paste(Setting$prof_dir,good_float_ids[fl],"_Sprof.nc",sep="")
+      n_prof = get_dims(filename)$n_prof
+      n_param = get_dims(filename)$n_param
+      fl_idx = which(Float$wmoid==good_float_ids[fl])
+      n_prof_exp = Float$prof_idx2[fl_idx] - Float$prof_idx1[fl_idx] + 1
+      if (n_prof_exp > n_prof) {
+        warning(paste("The index file lists", n_prof_exp,"profiles for float",
+                      good_float_ids[fl],"but the Sprof file has only",n_prof,"profiles."))
       }
-      param_idx = which(param_names==sensor)
-      data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
-    }
-    
-    date = as.POSIXct(juld*3600*24,origin=as.Date("1950-01-01"), tz="UTC")
-    
-    if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-      lonv1 = c(lon_lim[1], 180)
-      lonv2 = c(-180, lon_lim[2])
-      inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
-                   (lon>lonv2[1] & lon<lonv2[2])) & 
-        (lat>lat_lim[1] & lat<lat_lim[2])
-    } else {
-      inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
-                  lat>lat_lim[1] & lat<lat_lim[2])
-    }
-    
-    
-    indate = date >= dn1 & date <= dn2
-    
-    if ( is.null(sensor) ) {
-      has_sensor = rep(TRUE, length(inpoly)) # no sensor was selected
-    } else {
-      param = ncvar_get(nc, 'PARAMETER')
-      has_sensor = rep(FALSE, length(inpoly))
-      for (p in 1:n_prof) {
-        has_sensor[p] = any(grepl(sensor, param[,,p]))
-        end
-      }
-    }
-    nc_close(nc)
-    
-    if(is.null(ocean)){
-      is_ocean = rep(TRUE, length(inpoly))
-    } else {
-      is_ocean = rep(FALSE, length(inpoly))
-      for(ii in 1:length(lon)) {
-        if(is.na(lon[ii]) | is.na(lat[ii])) {
-          warning("NA lon or lat for float ", good_float_ids[fl], "; profile ",ii)
-          next
+      
+      nc<-nc_open(filename)
+      lon = ncvar_get(nc, 'LONGITUDE')
+      lat = ncvar_get(nc, 'LATITUDE')
+      juld = ncvar_get(nc, 'JULD')
+      
+      if(!is.null(sensor) & mode!="ADR"){
+        params = ncvar_get(nc,"PARAMETER")
+        param_names = rep(NA,n_param)
+        for(p in 1:n_param){
+          param_names[p]<-trimws(params[[p,1,1]])
         }
-        slon_diff<-abs(Sprof$lon - lon[ii])
-        slat_diff<-abs(Sprof$lat - lat[ii])
-        ssum<-slon_diff+slat_diff
-        if(Sprof$ocean[which.min(ssum)[1]]==ocean){
-          is_ocean[ii]<-TRUE
+        param_idx = which(param_names==sensor)
+        data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
+      }
+      
+      date = as.POSIXct(juld*3600*24,origin=as.Date("1950-01-01"), tz="UTC")
+      
+      if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
+        lonv1 = c(lon_lim[1], 180)
+        lonv2 = c(-180, lon_lim[2])
+        inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
+                     (lon>lonv2[1] & lon<lonv2[2])) & 
+          (lat>lat_lim[1] & lat<lat_lim[2])
+      } else {
+        inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
+                    lat>lat_lim[1] & lat<lat_lim[2])
+      }
+      
+      
+      indate = date >= dn1 & date <= dn2
+      
+      if ( is.null(sensor) ) {
+        has_sensor = rep(TRUE, length(inpoly)) # no sensor was selected
+      } else {
+        param = ncvar_get(nc, 'PARAMETER')
+        has_sensor = rep(FALSE, length(inpoly))
+        for (p in 1:n_prof) {
+          has_sensor[p] = any(grepl(sensor, param[,,p]))
+          end
         }
       }
-      sprof_loc = as.character(paste0(Sprof$lon,'i ',Sprof$lat))
-      this_loc = as.character(paste0(lon,'i ',lat))
-    }
-    
-    if (is.null(mode) | mode=="ADR") {
-      has_mode = rep(TRUE, length(inpoly))
-    } else {
-      has_mode = rep(FALSE, length(inpoly))
-      for(m in 1:nchar(mode)) {
-        has_mode[which(substr(data_mode,param_idx,param_idx)==
-                         substr(mode,m,m))]<- TRUE
+      nc_close(nc)
+      
+      if(is.null(ocean)){
+        is_ocean = rep(TRUE, length(inpoly))
+      } else {
+        is_ocean = rep(FALSE, length(inpoly))
+        for(ii in 1:length(lon)) {
+          if(is.na(lon[ii]) | is.na(lat[ii])) {
+            warning("NA lon or lat for float ", good_float_ids[fl], "; profile ",ii)
+            next
+          }
+          slon_diff<-abs(Sprof$lon - lon[ii])
+          slat_diff<-abs(Sprof$lat - lat[ii])
+          ssum<-slon_diff+slat_diff
+          if(Sprof$ocean[which.min(ssum)[1]]==ocean){
+            is_ocean[ii]<-TRUE
+          }
+        }
+        sprof_loc = as.character(paste0(Sprof$lon,'i ',Sprof$lat))
+        this_loc = as.character(paste0(lon,'i ',lat))
       }
+      
+      if (is.null(mode) | mode=="ADR") {
+        has_mode = rep(TRUE, length(inpoly))
+      } else {
+        has_mode = rep(FALSE, length(inpoly))
+        for(m in 1:nchar(mode)) {
+          has_mode[which(substr(data_mode,param_idx,param_idx)==
+                           substr(mode,m,m))]<- TRUE
+        }
+      }
+      
+      # now apply the given constraints
+      
+      if (outside == 'none' ){
+        float_profs[[fl]] = which(inpoly & indate & has_sensor & 
+                                    is_ocean & has_mode)
+      } else if ( outside == 'time' ) { # must meet time constraint
+        float_profs[[fl]] = which(inpoly & has_sensor & is_ocean & has_mode)
+      } else if ( outside == 'space' ) { # must meet time constraint
+        float_profs[[fl]] = which(indate & has_sensor & is_ocean & has_mode)
+      } else if ( outside == 'both' ) { # no time or space constraint
+        float_profs[[fl]] = which(has_sensor & is_ocean & has_mode)
+      } else {
+        warning('no such setting for "outside": ', outside)
+      }
+      
+      if (is.null(float_profs[[fl]])){
+        warning('no matching profiles found for float ', good_float_ids[fl])
+      }
+      
     }
-    
-    # now apply the given constraints
-    
-    if (outside == 'none' ){
-      float_profs[[fl]] = which(inpoly & indate & has_sensor & 
-                                  is_ocean & has_mode)
-    } else if ( outside == 'time' ) { # must meet time constraint
-      float_profs[[fl]] = which(inpoly & has_sensor & is_ocean & has_mode)
-    } else if ( outside == 'space' ) { # must meet time constraint
-      float_profs[[fl]] = which(indate & has_sensor & is_ocean & has_mode)
-    } else if ( outside == 'both' ) { # no time or space constraint
-      float_profs[[fl]] = which(has_sensor & is_ocean & has_mode)
-    } else {
-      warning('no such setting for "outside": ', outside)
-    }
-    
-    if (is.null(float_profs[[fl]])){
-      warning('no matching profiles found for float ', good_float_ids[fl])
-    }
-    
+  }else{
+    float_ids = list()
   }
+  
+  
   
   return(list(float_ids=float_ids, float_profs=float_profs))
 }
