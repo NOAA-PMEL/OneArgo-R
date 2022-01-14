@@ -65,7 +65,7 @@ show_sections <- function(float_ids=Setting$demo_float,
   # Update 24 June 2021
   
   # make sure Setting is initialized
-  if (is.null(Setting)) {
+  if (exists("Setting")==F) {
     initialize_argo()
   }
   

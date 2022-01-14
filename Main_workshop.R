@@ -27,24 +27,23 @@
 cat("\014")
 rm(list = ls())
 
-# Load/Install required libraries
-if (!require("gsw")) { install.packages("gsw"); library(gsw) } # calculate sea water paramters 
-if (!require("R.utils")) { install.packages("R.utils"); library(R.utils) } # gunzip S index file
-if (!require("lubridate")) { install.packages("lubridate"); library(lubridate) } # convert date from Sprof file to date object
-if (!require("Matrix")) { install.packages("Matrix"); library(Matrix) } # create reduced-size matrix to deal with the Synthetic profile Index
-if (!require("ncdf4")) { install.packages("ncdf4"); library(ncdf4) } # deal with netcdf files
 
 # Fill here the path to the code directory, you can instead set the code
 # directory as the working directory with setwd()
 path_code = ""
 
 
-# Load the functions --------------------------------
+# Load the functions and libraries--------------------------------
+setwd(path_code)
 func.sources = list.files(path_code,pattern="*.R")
 func.sources = func.sources[which(func.sources %in% c('Main_workshop.R',
                                                       "bgc_argo_workshop_R_license.R")==F)]
-func.sources = func.sources[-grep("Rproj",func.sources)]
-invisible(sapply(paste0(path_code,func.sources),source,.GlobalEnv))
+if(length(grep("Rproj",func.sources))!=0){
+  func.sources = func.sources[-grep("Rproj",func.sources)]
+}
+
+invisible(sapply(paste0(func.sources),source,.GlobalEnv))
+
 
 # Exercise 0: Initialize --------------------------------------------------
 # This function defines standard settings and paths and creates Index
@@ -117,8 +116,20 @@ names(data$Data[[paste0('F', WMO)]]) # show data that has been loaded into R
 
 do_pause()
 
+
+# Load the float data in the R with the format of data frame if "format" is specificed
+data_df = load_float_data( float_ids= WMO, # specify WMO number
+                        variables=c('PSAL','TEMP','NITRATE'), # specify variables,
+                        format="dataframe" # specify format;  
+)
+
+colnames(data_df) # show data that has been loaded into R
+
+
 # Show the trajectory of the downloaded float
-show_trajectories(float_ids=WMO)
+show_trajectories(float_ids=WMO, 
+                  return_ggplot="True" # return the plot to ggplot panel
+                  )
 
 do_pause()
 
@@ -129,7 +140,8 @@ do_pause()
 show_profiles( float_ids=WMO, 
                variables=c('PSAL','NITRATE'),
                obs='on', # 'on' shows points on the profile at which each measurement was made
-               raw="yes" # show the unadjusted data 
+               raw="yes" # show the unadjusted data ,
+              
 )
 
 
@@ -137,7 +149,7 @@ show_profiles( float_ids=WMO,
 show_profiles(float_ids=WMO, 
               variables=c('PSAL','NITRATE'),
               obs='on', # 'on' shows points on the profile at which each measurement was made
-              raw="no"
+              raw="no",
 )
 
 # this plots the adjusted, good (qc flag 1) and probably-good (qc flag 2) data.
@@ -210,6 +222,13 @@ OSP_data= select_profiles ( lon_lim,
 print(paste('# of matching profiles:',sum(lengths(OSP_data$float_profs))))
 
 print(paste('# of matching floats:',length(OSP_data$float_ids)))
+
+# Load the data for the matching float with format of data frame
+data_OSP_df= load_float_data( float_ids= OSP_data$float_ids, # specify WMO number
+                           float_profs=OSP_data$float_profs, # specify selected profiles
+                            variables="ALL", # load all the variables
+                            format="dataframe" # specify format;  
+)
 
 
 # Show trajectories for the matching floats
@@ -298,7 +317,8 @@ print(paste('# of matching floats:',length(HW_data$float_ids)))
 # This function downloads the specified floats from the GDAC (unless the
 # files have already been downloaded) and then loads the data for plotting.
 
-trajectory = show_trajectories(float_ids=HW_data$float_ids, return_ggplot=TRUE)  # this plots different floats in different colors
+trajectory = show_trajectories(float_ids=HW_data$float_ids, 
+                               return_ggplot=TRUE)  # this plots different floats in different colors
 
 x11() # new window
 plot(trajectory)
@@ -332,8 +352,8 @@ do_pause()
 
 ## Show only matching profiles from September
 # determine profiles that occur in September for each float separately
-date<-get_lon_lat_time(HW_data$float_ids,
-                       HW_data$float_profs)$time
+date<-get_lon_lat_time(float_ids=HW_data$float_ids,
+                       float_profs=HW_data$float_profs)$time
 
 HW_float_profs_Sep<-list()
 for (f in 1:length(HW_data$float_ids)){

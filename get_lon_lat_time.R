@@ -42,13 +42,19 @@ get_lon_lat_time=function(float_ids, float_profs=NULL){
   fnames = names(Data)
   
   
-  
+
   for (f in 1:nfloats){
    lon[[f]]<-Data[[fnames[f]]]$LONGITUDE[1,]
+   names(lon)[f] <-  names(Data[f]) #
    lat[[f]]<-Data[[fnames[f]]]$LATITUDE[1,]
+   names(lat)[f] <-  names(Data[f]) #
    time[[f]]<-Data[[fnames[f]]]$TIME[1,]
-    
+   names(  time)[f] <-  names(Data[f]) #
+  
+     
   }
+  
+  
   
   return(list(lon=lon,lat=lat,time=time))
 

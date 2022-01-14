@@ -26,18 +26,17 @@ plot_profiles <- function(Data,
   #   variables : cell array with names of the measured fields (e.g., DOXY)
   #
   # OPTIONAL INPUTS :
-  #   method           : either 'all' (all profiles from each float are
-  #                      shown in one plot per variable) or 'mean'
-  #                      (mean and standard deviation across profiles);
-  #                      default is 'all'
-  #   per_float        : show profiles separately for each float (TRUE)
-  #                      or all in one plot (FALSE); default: TRUE --
-  #                      either option can be used with 'all' and
-  #                     'mean' methods
-  #   obs = 'on'/'off' : by default (obs='off') only lines are shown for each
-  #                      profile; 'obs','on' shows points on the profile at which
-  #                      each measurement was made
-  #  raw = 'yes'/'no'  : plot raw, i.e., unadjusted data if set to n;
+  #  method ='all'/'mean': 'all' (default) shows one plot
+  #                         per variable or 'mean'
+  #                         mean and standard deviation across profiles;
+  #                          
+  #  per_float='TRUE'/'FALSE':   "TRUE" (default) show profiles separately for each float；
+  #                               "FALSE" show all in one plot 
+  #  obs = 'on'/'off' :      "off" (default") only shows the lines for each
+  #                           profile; 'on' shows points on the profile at which
+  #                           shows points on the profile at which
+  #                           each measurement was made
+  #  raw = 'yes'/'no' : plot raw, i.e., unadjusted data if set to n;
   #                      default: y (i.e., plot adjusted data if available)
   #  qc_flags          : show only values with the given QC flags (as an array)
   #                      0: no QC was performed; 

@@ -18,7 +18,7 @@ show_profiles=function( float_ids,
   # DESCRIPTION:
   #   This an intermediary function that downloads profile(s) for the given
   #   float(s) and calls plot_profile to create the plot(s).
-  #
+  #   Require to install the "xquartz" for macOS system for figure plot ("https://www.xquartz.org/")
   # INPUTS:
   #   float_ids   : WMO ID(s) of the float(s)
   #   variables   : cell array of variable(s) (i.e., sensor(s)) to show 
@@ -85,7 +85,7 @@ show_profiles=function( float_ids,
   # Update 24 June 2021
   
   # make sure Setting is initialized
-  if (is.null(Setting)) {
+  if (exists("Setting")==F) {
     initialize_argo()
   }
   

@@ -22,7 +22,7 @@ show_trajectories <- function(float_ids=Setting$demo_float,
   #                   colors for different floats), or any standard R
   #                   color descriptor ('red', 'blue', 'green', 'black' etc.)
   #                   (all trajectories will be plotted in the same color)
-  #  float_profs    : fp is an array with the per-float indices of the
+  #  float_profs    : float profile is an array with the per-float indices of the
   #                   selected profiles, as returned by function
   #                   select_profiles - use this optional argument if you
   #                   don't want to plot the full trajectories of the
@@ -31,7 +31,9 @@ show_trajectories <- function(float_ids=Setting$demo_float,
   #  position       : show only the selected position (either 'first' or
   #                   'last')
   #  title          : title for the plot (default: "Float trajectories")
-  #
+  #  return_ggplot  : return the plot to the ggplot panel if setting to "TRUE"; By default,
+  #                   return the plot to "x11"          
+  
   # OUPUT:
   #   good_float_ids : array of the float IDs whose Sprof files were
   #                    successfully downloaded or existed already
@@ -53,7 +55,7 @@ show_trajectories <- function(float_ids=Setting$demo_float,
   # Last update: June 24, 2021
   
   # make sure Settings is initialized
-  if (is.null(Setting)){
+  if (exists("Setting")==F) {
     initialize_argo()
   }
   

@@ -51,6 +51,8 @@ select_profiles <- function(lon_lim=c(-180,180),
   #           'D', in any combination. Only profiles with the selected
   #           mode(s) will be listed in float_profs.
   #           Default is 'RAD' (all modes).
+  #           If multiple sensors are specified, all of them must be in 
+  #           the selected mode(s).
   #           If 'sensor' option is not used, the 'mode' option is ignored.
   #
   # OUTPUTS:
@@ -77,7 +79,7 @@ select_profiles <- function(lon_lim=c(-180,180),
   # Update 04 January 2021
   
   # make sure Setting is initialized
-  if (is.null(Setting)) {
+  if (exists("Setting")==F) {
     initialize_argo()
   }
   
@@ -86,8 +88,13 @@ select_profiles <- function(lon_lim=c(-180,180),
     if ( ! sensor %in% Setting$avail_vars ) {
       warning("unknown sensor: ", sensor)
       Sys.sleep(3)
-      sensor<-NULL
+      sensor = NULL
     }
+  }
+  
+  # only use mode is sensor was specified
+  if (is.null(sensor)){
+    mode = NULL
   }
   
   # check if specified ocean is correct
@@ -174,30 +181,31 @@ select_profiles <- function(lon_lim=c(-180,180),
   }
   
   # SELECT BY DATA MODE
-  if ( is.null(mode) | mode=="ADR" ) {
-    has_mode = rep(TRUE, length(inpoly)) 
-  } else {
-    has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
-    is_good = inpoly & indate & has_sensor & is_ocean
-    idx = all_floats[is_good]
-    varlist<-strsplit(Sprof$sens," ")
-    if(length(idx)!=0){
-      for (i in 1:length(idx)) {
-        pos = sensor == varlist[[idx[i]]]
-        if(any(pos)){
-          for (j in 1:nchar(mode)){
-            if (substr(mode,j,j) == substr(Sprof$data_mode[idx[i]],
-                                           which(pos),
-                                           which(pos))){
-              has_mode[idx[i]]<-TRUE
-            }
-          }
-        }
-      }
-    }
-    
-   
-  }
+  # Note: due to inconsistencies between index and Sprof files, this
+  # matching is not performed in the first round, only in the second
+  # round below (based on Sprof files)
+  # if ( is.null(mode) | mode=="ADR" ) {
+     has_mode = rep(TRUE, length(inpoly)) 
+  # } else {
+  #   has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
+  #   is_good = inpoly & indate & has_sensor & is_ocean
+  #   idx = all_floats[is_good]
+  #   varlist<-strsplit(Sprof$sens," ")
+  #   if(length(idx)!=0){
+  #     for (i in 1:length(idx)) {
+  #       pos = sensor == varlist[[idx[i]]]
+  #       if(any(pos)){
+  #         for (j in 1:nchar(mode)){
+  #           if (substr(mode,j,j) == substr(Sprof$data_mode[idx[i]],
+  #                                          which(pos),
+  #                                          which(pos))){
+  #             has_mode[idx[i]]<-TRUE
+  #           }
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
   
   
   profiles = which(inpoly & indate & has_sensor & is_ocean & has_mode)
@@ -232,9 +240,16 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       if(!is.null(sensor) & mode!="ADR"){
         params = ncvar_get(nc,"PARAMETER")
+        # find the index of a profile that has the most sensors available
+        tmp = nchar(trimws(params))
+        sum_tmp<-NULL
+        for (ii in 1:n_prof){
+          sum_tmp<-c(sum_tmp,sum(tmp[,1,ii]))
+        }
+        pidx = which.max(sum_tmp)[1]
         param_names = rep(NA,n_param)
         for(p in 1:n_param){
-          param_names[p]<-trimws(params[[p,1,1]])
+          param_names[p]<-trimws(params[[p,1,pidx]])
         }
         param_idx = which(param_names==sensor)
         data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
@@ -288,7 +303,7 @@ select_profiles <- function(lon_lim=c(-180,180),
         this_loc = as.character(paste0(lon,'i ',lat))
       }
       
-      if (is.null(mode) | mode=="ADR") {
+      if (mode=="ADR") {
         has_mode = rep(TRUE, length(inpoly))
       } else {
         has_mode = rep(FALSE, length(inpoly))
@@ -313,15 +328,23 @@ select_profiles <- function(lon_lim=c(-180,180),
         warning('no such setting for "outside": ', outside)
       }
       
-      if (is.null(float_profs[[fl]])){
+      if (length(float_profs[[fl]])==0 | is.null(float_profs[[fl]])){
         warning('no matching profiles found for float ', good_float_ids[fl])
+        float_ids[which(float_ids == good_float_ids[fl])] = NA
       }
       
     }
+    
+    float_profs = float_profs[which(is.na(float_ids)==F)]
+    float_ids = float_ids[which(is.na(float_ids)==F)]
+    
+    if(length(float_ids)==0){
+      float_ids = list()
+    }
+    
   }else{
     float_ids = list()
   }
-  
   
   
   return(list(float_ids=float_ids, float_profs=float_profs))

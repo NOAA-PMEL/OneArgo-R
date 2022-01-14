@@ -1,4 +1,4 @@
-load_float_data <- function (float_ids, variables=NULL, float_profs=NULL) {
+load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=NULL) {
   # load_floats  This function is part of the
   # GO-BGC workshop Matlab tutorial for accessing BGC Argo float data.
   #
@@ -6,7 +6,6 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL) {
   #
   # Inputs:
   #   float_ids   : WMO ID of one or more floats
-  #                 (if not set: a default float is used as a demo)
   #
   # Optional inputs:
   #   variables   : cell array with variable names to be loaded (use 'ALL'
@@ -14,17 +13,28 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL) {
   #                  float)
   #   float_profs : cell array with indices of selected profiles (per float,
   #                 not global)
+  #   format :      specific the format of data loaded (use 'dataframe'
+  #                 # to export the data in the format of "data frame" 
+  #                 (if not set, the default ouput is"list" with multiple matrix)
+
   #
-  # Output:
+  # Output_1 (if "format" option is not be specificd):
   #   Data        : struct with the requested variables (including QC flags.
   #                 adjusted values if available) and general ones
   #                 (LONGITUDE,LATITUDE,JULD)
   #   Mdata       : struct with meta data (WMO_NUMBER)
+  
+  #
+  # Output_2 (if "format" option is set to "dataframe"):
+  #  Data: Single data frame including all floats data
+  #  Note: The data will be exported as a 
+  #  list containing multiple data frame for each float data if the length of merged data frame exceeds the  
+  #  memory limit of data frame. 
+    
 
   
-  if (  ! exists("Setting")  ){
-    initialize_argo() # Take some minutes to download the global Index
-    
+  if (exists("Setting")==F) {
+    initialize_argo()
   }
   
   add_pres = 0;# Default: do not add 'PRES' to list of variables
@@ -41,6 +51,11 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL) {
     }
   }
   
+  if ( is.null   (format)  ){ # Set to export the data in the format of listif "format" are not specific
+    
+    format="list"
+    
+  }
   
   # only some variables are always loaded, others only by request
 
@@ -263,5 +278,68 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL) {
     
   } # end loop good floats
   
-  return(list(Data=Data, Mdata=Mdata))
+
+  if (format!="dataframe"){
+    return(list(Data=Data, Mdata=Mdata))
+  }
+  
+  
+  if (format=="dataframe"){ # convert the data into the data frame format 
+    
+    float_data_list_dtfr= vector("list",
+                                 length(Data)
+    )# Create a list to store the multiple data frame for each float data
+    
+    
+    for (i in 1:length(Data)  ){ # loop for each float data 
+      
+      float_data_single=Data[[i]] # Pull out each float
+      
+      length_float_data=length(  float_data_single$CYCLE_NUMBER)
+      number_variable_float_data=length(float_data_single)
+      
+      
+      # create a matrix to deposite the float data
+      float_data_single_dtfr= matrix (nrow=   length_float_data,
+                                      ncol=   number_variable_float_data
+                                      
+      ) 
+      float_data_single_dtfr=as.data.frame(  float_data_single_dtfr)
+      colnames(float_data_single_dtfr) = names(float_data_single) # names the data frame
+      
+      
+      # loop to tranform the each variable 
+      for (ii in 1:   number_variable_float_data ){  
+        
+        
+        float_data_single_dtfr[,ii]=as.vector(float_data_single[[ii]])
+        
+        
+      } # end loop in number_variable_float_data
+      
+      
+      float_data_single_dtfr$WMOID= names(Data[i])  # add the WMOID in data frame 
+      
+      
+      #  assign data frame into the list array 
+      float_data_list_dtfr[[i]]=  float_data_single_dtfr 
+      names(  float_data_list_dtfr)[i] <-  names(Data[i]) #  name the each element in list 
+      
+    }# end loop in float_data
+    
+    # merge the multiple data frame into the single one
+    tryCatch( {
+      
+      float_data_list_dtfr=bind_rows(float_data_list_dtfr)
+    },  error = function(e){
+      
+      print("data exceeds the memorylimit of dataframe so data isinput as a list containing multiple data frame for each float ")
+    }
+    )
+    
+    
+  return( float_data_list_dtfr)
+    
+    
+  } # end loop format=="dataframe"
 }
