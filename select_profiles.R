@@ -94,7 +94,7 @@ select_profiles <- function(lon_lim=c(-180,180),
   
   # only use mode is sensor was specified
   if (is.null(sensor)){
-    mode = NULL
+    mode = "ADR"
   }
   
   # check if specified ocean is correct
@@ -126,7 +126,7 @@ select_profiles <- function(lon_lim=c(-180,180),
   }
   
   # make sure Sprof is initialized
-  if (is.null(Sprof)) {
+  if (exists("Sprof")==F) {
     initialize_argo()
   }
   
