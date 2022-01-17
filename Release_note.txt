@@ -49,3 +49,9 @@ of these can be used).
 Auxilary functions have been moved to a dedicated folder (now called in the main_workshop).
 
 A function has also been created to load/install the required packages (load_library.R).
+
+Load_float_data has a new option  ‘format’ , which allows the users to specify the format of 
+exported float data  (‘list’ or ‘data frame’).
+
+ A new created function namely “get_lon_lat_time’ enables  the users to extract the longitude, 
+latitude and sampling date by given a set of float IDs and profile index.
