@@ -1,15 +1,12 @@
 get_lon_lat_lims <- function(Data) {
-  # get_lon_lat_lims  
-  #
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  # USAGE:
-  #   [lon_lim, lat_lim, Data] = get_lon_lat_lims(Data)
-  #
+  
+  
   # DESCRIPTION:
   #   This function obtains maximum and minimum latitude and longitude values
   #   from input data
+  #
+  # USAGE:
+  #   [lon_lim, lat_lim, Data] = get_lon_lat_lims(Data)
   #
   # PREREQUISITE: 
   #   None
@@ -25,21 +22,19 @@ get_lon_lat_lims <- function(Data) {
   #   Data     : if all points are within 30 degrees of 180W/E, a field
   #              ALT_LON is added that uses a 0..360 range instead;
   #              it is unchanged from the input otherwise
-  
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  #  AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
+  
   
   floats = names(Data)
   nfloats = length(floats)

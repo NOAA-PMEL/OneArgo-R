@@ -6,77 +6,72 @@ select_profiles <- function(lon_lim=c(-180,180),
                             sensor=NULL,
                             ocean=NULL,
                             mode="RAD") {
-  # select_profiles  
-  # This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  # It returns the indices of profiles and floats that match the given
-  # criteria (spatial, temporal, sensor availability). It does not download
-  # any files.
-  #
-  # INPUT:
-  #
-  # lon_lim    : Longitude limits (a two element vector)
-  # lat_lim    : Latitude limits (a two element vector)
-  #            * Longitude can be input in either the -180 to 180 degrees
-  #            format or 0 to 360 degrees format
-  # start_date : start date
-  # end_date   : end date
-  #            * Dates should be in one of the following formats:
-  #            "YYYY-MM-DD HH:MM-SS" or "YYYY-MM-DD"
-  #
-  # OPTIONAL INPUTS:
-  #
-  # outside = 'none' / 'time' / 'space' / 'both': By default, only float profiles
-  #           that are within both the temporal and spatial constraints are
-  #           returned ('none'); specify to also maintain profiles outside
-  #           the temporal constraints ('time'), spatial constraints
-  #           ('space'), or both constraints ('both')
-  # sensor = 'SENSOR_TYPE': By default, all floats within the lon/lat/time
-  #           limits are considered. This option allows the selection by 
-  #           sensor type. Available are: PRES, PSAL, TEMP, DOXY, BBP,
-  #           BBP470, BBP532, BBP700, TURBIDITY, CP, CP660, CHLA, CDOM,
-  #           NITRATE, BISULFIDE, PH_IN_SITU_TOTAL, DOWN_IRRADIANCE,
-  #           DOWN_IRRADIANCE380, DOWN_IRRADIANCE412, DOWN_IRRADIANCE443, 
-  #           DOWN_IRRADIANCE490, DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, 
-  #           UP_RADIANCE, UP_RADIANCE412, UP_RADIANCE443, UP_RADIANCE490,
-  #           UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
-  #           (Currently, only one sensor type can be selected.)
-  # ocean : Valid choices are 'A' (Atlantic), 'P' (Pacific), and
-  #           'I' (Indian). This selection is in addition to the specified
-  #           longitude and latitude limits. (To select all floats and 
-  #           profiles from one ocean basin, leave lon_lim and lat_lim
-  #           empty.)
-  # mode : Valid modes are 'R' (real-time), 'A' (adjusted), and
-  #           'D', in any combination. Only profiles with the selected
-  #           mode(s) will be listed in float_profs.
-  #           Default is 'RAD' (all modes).
-  #           If multiple sensors are specified, all of them must be in 
-  #           the selected mode(s).
-  #           If 'sensor' option is not used, the 'mode' option is ignored.
-  #
-  # OUTPUTS:
-  #
-  # float_ids   : array with the WMO IDs of all matching floats
-  # float_profs : cell array with the per-float indices of all matching profiles
+  
+  # DESCRIPTION:
+  #   This function returns the indices of profiles and floats that match the given
+  #   criteria (spatial, temporal, sensor availability). It does not download
+  #   any files.
   #
   # PREREQUISITE: 
   #   Globals Sprof and Setting
   #
+  # INPUTS:
+  #   lon_lim    : Longitude limits (a two element vector)
+  #   lat_lim    : Latitude limits (a two element vector)
+  #              * Longitude can be input in either the -180 to 180 degrees
+  #              format or 0 to 360 degrees format
+  #   start_date : start date
+  #   end_date   : end date
+  #              * Dates should be in one of the following formats:
+  #              "YYYY-MM-DD HH:MM-SS" or "YYYY-MM-DD"
+  #
+  # OPTIONAL INPUTS:
+  #   outside = 'none' / 'time' / 'space' / 'both': By default, only float profiles
+  #             that are within both the temporal and spatial constraints are
+  #             returned ('none'); specify to also maintain profiles outside
+  #             the temporal constraints ('time'), spatial constraints
+  #             ('space'), or both constraints ('both')
+  #   sensor = 'SENSOR_TYPE': By default, all floats within the lon/lat/time
+  #             limits are considered. This option allows the selection by 
+  #             sensor type. Available are: PRES, PSAL, TEMP, DOXY, BBP,
+  #             BBP470, BBP532, BBP700, TURBIDITY, CP, CP660, CHLA, CDOM,
+  #             NITRATE, BISULFIDE, PH_IN_SITU_TOTAL, DOWN_IRRADIANCE,
+  #             DOWN_IRRADIANCE380, DOWN_IRRADIANCE412, DOWN_IRRADIANCE443, 
+  #             DOWN_IRRADIANCE490, DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, 
+  #             UP_RADIANCE, UP_RADIANCE412, UP_RADIANCE443, UP_RADIANCE490,
+  #             UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
+  #             (Currently, only one sensor type can be selected.)
+  #   ocean :   Valid choices are 'A' (Atlantic), 'P' (Pacific), and
+  #             'I' (Indian). This selection is in addition to the specified
+  #             longitude and latitude limits. (To select all floats and 
+  #             profiles from one ocean basin, leave lon_lim and lat_lim
+  #             empty.)
+  #   mode :    Valid modes are 'R' (real-time), 'A' (adjusted), and
+  #             'D', in any combination. Only profiles with the selected
+  #             mode(s) will be listed in float_profs.
+  #             Default is 'RAD' (all modes).
+  #             If multiple sensors are specified, all of them must be in 
+  #             the selected mode(s).
+  #             If 'sensor' option is not used, the 'mode' option is ignored.
+  #
+  # OUTPUTS:
+  #   float_ids   : array with the WMO IDs of all matching floats
+  #   float_profs : cell array with the per-float indices of all matching profiles
+  #
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 04 January 2021
+  
+  
+  
   
   # make sure Setting is initialized
   if (exists("Setting")==F) {

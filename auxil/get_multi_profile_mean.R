@@ -1,10 +1,5 @@
 get_multi_profile_mean <- function (Datai, variable) {
-  # get_multi_profile_mean  
-  #
-  # This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  #
+  
   # DESCRIPTION:
   #   This function computes mean and standard deviation of a
   #   depth-interpolated variable. Missing values are omitted in the 
@@ -20,20 +15,17 @@ get_multi_profile_mean <- function (Datai, variable) {
   #   std_prof  : standard variation of the variable across floats (column vector)
   #   mean_pres : mean pressure across floats (column vector)
   #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
   
   floats = names(Datai)
   nfloats = length(floats)

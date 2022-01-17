@@ -1,40 +1,30 @@
 
 download_float<-function(floatid) {
   
-  # download_float  
+  # DESCRIPTION:
+  # This is function is designed to download the Sprof file for one float with a given floatid.
   #
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  # It downloads the Sprof file for one float with a given floatid.
-  #
-  # Prerequisites:
+  # PREREQUISITE:
   #   The Sprof index file must have been downloaded already. 
   #
-  # Input:
+  # INPUT:
   #   floatid  : WMO ID of a float (integer)
   #
-  # Output:
+  # OUTPUT:
   #   success  : 1 for success, 0 for failure
   #
-  # Authors: H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW)
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
   #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  #  AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
+  
   
   #global Settings Float;
   

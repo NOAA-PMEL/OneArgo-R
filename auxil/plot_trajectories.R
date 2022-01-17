@@ -1,14 +1,8 @@
-if (!require("ggplot2")) { install.packages("ggplot2"); library(ggplot2) }
-if (!require("maps")) { install.packages("maps"); library(maps) }
 
 plot_trajectories <- function(Data, 
                               color,
                               title=NULL) {
-  # plot_trajectories  
-  # 
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.  
-  #
+  # DESCRIPTION:
   # This function plots the trajectories of one or more specified float(s).
   #
   # PREREQUISITE: Sprof file for the specified float(s) must exist locally.
@@ -20,21 +14,18 @@ plot_trajectories <- function(Data,
   #           'black' etc.) (all trajectories will be plotted in the same color)
   #   title : title of the plot
   #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
-   
+  
+  
   # Determine which floats have been imported
   floats = names(Data)
   nfloats = length(floats)

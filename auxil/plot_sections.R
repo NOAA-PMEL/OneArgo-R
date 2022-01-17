@@ -1,5 +1,3 @@
-if (!require("ggplot2")) { install.packages("ggplot2"); library(ggplot2) }
-if (!require("metR")) { install.packages("metR"); library(metR) }
 
 plot_sections <- function(Data, 
                           Mdata, 
@@ -12,17 +10,14 @@ plot_sections <- function(Data,
                           obs="off",
                           qc_flags=0:9) {
 
-  # plot_sections  
+  # DESCRIPTION:
+  #   This function plots sections of one or more specified float(s) for
+  #   the specified variable(s).
   #
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
+  # PREREQUISITES: 
+  #   Sprof file(s) for the specified float(s) must exist locally.
   #
-  # This function plots sections of one or more specified float(s) for
-  # the specified variable(s).
-  #
-  # Prerequisite: Sprof file(s) for the specified float(s) must exist locally.
-  #
-  # Inputs:
+  # INPUTS:
   #   Data        : struct that must contain the PRES field and the given
   #                 variables (_ADJUSTED fields are used if available)
   #   Mdata       : struct that must contain the WMO_ID field
@@ -43,7 +38,7 @@ plot_sections <- function(Data,
   #   raw         : if 'no', use adjusted variables if available,
   #                 if 'yes', always use raw values
   #
-  # Optional inputs:
+  # OPTIONAL INPUTS:
   #  'qc',flags   : show only values with the given QC flags (array)
   #                 0: no QC was performed; 
   #                 1: good data; 
@@ -59,20 +54,18 @@ plot_sections <- function(Data,
   #                 See Table 7 in Bittig et al.:
   #                 https://www.frontiersin.org/files/Articles/460352/fmars-06-00502-HTML-r1/image_m/fmars-06-00502-t007.jpg
   #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
+  
   
   floats = names(Data)
   float_ids = names(Mdata)

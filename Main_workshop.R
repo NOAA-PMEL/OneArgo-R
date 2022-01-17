@@ -1,26 +1,19 @@
 # Main_workshop.R
+
 # Driver routine for the GO-BGC workshop R tutorial
-# June 28-30, 2021
-# It uses the R toolbox for accessing BGC-Argo float data.
-#
+# June 28-30, 2021 (https://www.youtube.com/watch?v=w_6pEGNXQQ4)
 # Demonstrates the downloading of BGC-Argo float data with sample plots,
 # a discussion of available data, quality control flags etc.
 #
+# UPDATE RECORD: 
+#   Version 1:   June 2021 
+#   Version 1.1: January 2022 
+#
 # CITATION:
-# BGC-Argo-R: A R toolbox for accessing and visualizing
-# Biogeochemical Argo data,
-#
-# AUTHORS: 
-# M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-# R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-#
-# Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-# (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-# J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-# and A. Gray (UW))
-
-# Update 24 June 2021
-
+#   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+#   C. Schmechtig (OSU ECCE TERRA), 2021.
+#   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+#   Zenodo. http://doi.org/10.5281/zenodo.5028139
 
 
 # Close figures, clean up workspace, clear command window
@@ -38,12 +31,14 @@ setwd(path_code)
 func.sources = list.files(path_code,pattern="*.R")
 func.sources = func.sources[which(func.sources %in% c('Main_workshop.R',
                                                       "bgc_argo_workshop_R_license.R")==F)]
+
 if(length(grep("Rproj",func.sources))!=0){
   func.sources = func.sources[-grep("Rproj",func.sources)]
 }
-
 invisible(sapply(paste0(func.sources),source,.GlobalEnv))
 
+aux.func.sources = list.files(paste0(path_code,"/auxil"),pattern="*.R")
+invisible(sapply(paste0(path_code,"/auxil/",aux.func.sources),source,.GlobalEnv))
 
 # Exercise 0: Initialize --------------------------------------------------
 # This function defines standard settings and paths and creates Index
@@ -186,7 +181,7 @@ do_pause()
 
 ## Clean up the workspace
 cat("\014")
-rm (list= c("data","float_file","success","WMO")) 
+rm (list= c("data","float_file","success","WMO","data_df")) 
 
 
 # Exercise 2: Ocean Station Papa floats -----------------------------------
@@ -279,7 +274,7 @@ show_profiles(float_ids=OSP_data$float_ids[1],
 do_pause()
 
 # clean up the workspace
-rm (list= c("OSP_data")) 
+rm (list= c("OSP_data","data_OSP_df")) 
 
 
 # Exercise 3: Hawaii floats -----------------------------------------------

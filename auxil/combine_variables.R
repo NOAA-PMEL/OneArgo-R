@@ -1,39 +1,35 @@
 
 combine_variables=function(base_vars, new_vars){
   
-  #combine_variables  This function is part of the
-  # R toolbox for accessing BGC Argo float data.
-  #
-  # USAGE:
-  #   all_vars = combine_variables(base_vars, new_vars)
-  #
+
   # DESCRIPTION:
   #   This function combines the given variables along with all
   #   associated variables (e.g., _ADJUSTED, _QC, etc.) and returns them.
   #
+  # USAGE:
+  #   all_vars = combine_variables(base_vars, new_vars)
+  #
   # INPUTS:
   #   base_vars : cell array with names of the basic variables
   #   new_vars  : cell array with names of additional variables (tracer
-  #   fields etc.) that have the standard associated variables
-#
-# OUTPUT:
-#  all_vars   : cell array with names of all variables
-#
-# AUTHORS: 
-#   H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL), N. Buzby (UW),
-#   J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-#  and A. Gray (UW)
-#
-# CITATION:
-#   H. Frenzel*, J. Sharp*, A. Fassbender, N. Buzby, J. Plant, T. Maurer,
-#   Y. Takeshita, D. Nicholson, A. Gray, 2021. BGC-Argo-Mat: A MATLAB
-#   toolbox for accessing and visualizing Biogeochemical Argo data.
-#   Zenodo. https://doi.org/10.5281/zenodo.4971318.
-#   (*These authors contributed equally to the code.)
-#
-# LICENSE: bgc_argo_mat_license.m
-#
-# DATE: DECEMBER 1, 2021  (Version 1.1)
+  #               fields etc.) that have the standard associated variables
+  #
+  # OUTPUT:
+  #  all_vars   : cell array with names of all variables
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
+  # CITATION:
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  
+  
+  
+  
   # always include all associated variables
   cnt_vars = length(base_vars);
   

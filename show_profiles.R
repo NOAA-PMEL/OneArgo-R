@@ -7,36 +7,30 @@ show_profiles=function( float_ids,
                         method = "all", 
                         title_add = NULL,  
                         per_float = T){
-  # show_profiles 
-  #
-  # This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  # USAGE:
-  #   good_float_ids = show_profiles(float_ids, variables)
-  #
+  
   # DESCRIPTION:
   #   This an intermediary function that downloads profile(s) for the given
   #   float(s) and calls plot_profile to create the plot(s).
   #   Require to install the "xquartz" for macOS system for figure plot ("https://www.xquartz.org/")
+  # 
   # INPUTS:
-  #   float_ids   : WMO ID(s) of the float(s)
-  #   variables   : cell array of variable(s) (i.e., sensor(s)) to show 
+  #      float_ids   : WMO ID(s) of the float(s)
+  #      variables   : cell array of variable(s) (i.e., sensor(s)) to show 
   #                  (if not set: {'DOXY'} (=O2) is used)
   #
   # OPTIONAL INPUTS:
-  #  float_profs = 'fp'        : per-float indices of the profiles to be shown,
-  #                              as returned by select_profiles
-  #  obs = 'on' / 'off         : by default (obs='off') only lines are shown 
+  #   float_profs : float profile is an array with the per-float indices 
+  #                 as returned by function "select_profiles";  
+  #   obs = 'on' / 'off : by default (obs='off') only lines are shown 
   #                              for each profile; 'obs','on' shows points on 
   #                              the profile at which each measurement was made
-  #  per_float = TRUE / FALSE  : show profiles separately for each float (T)
+  #   per_float = 'TRUE' / 'FALSE': show profiles separately for each float (T)
   #                              or all in one plot (F) default: T
-  #  raw= 'yes'/ 'no'          : plot raw, i.e., unadjusted data if set to n;
+  #   raw= 'yes'/ 'no':         plot raw, i.e., unadjusted data if set to n;
   #                              default: y (i.e., plot adjusted data if 
   #                              available)
-  #  qc_flags                  : show only values with the given QC flags 
-  #                              (as an array)
+  #   qc_flags=   : show only values with the given QC flags 
+  #                   (as an array)
   #                  0: no QC was performed; 
   #                  1: good data; 
   #                  2: probably good data;
@@ -50,10 +44,10 @@ show_profiles=function( float_ids,
   #                  [1,2] for adjusted data; [0:9] for raw data
   #                  See Table 7 in Bittig et al.:
   #                  https://www.frontiersin.org/files/Articles/460352/fmars-06-00502-HTML-r1/image_m/fmars-06-00502-t007.jpg
-  # method = 'all' / 'mean'    :  by default (method = 'all') show all profiles 
+  #   method = 'all' / 'mean'    :  by default (method = 'all') show all profiles 
   #                               per variable in one plot; use method='mean' 
   #                               to plot mean and standard deviation 
-  # title_add = text           :  add the given text to all titles
+  #   title_add = text:   add the given text to all titles
   #
   # OUTPUT:
   #   good_float_ids : array of the float IDs whose Sprof files were
@@ -69,20 +63,17 @@ show_profiles=function( float_ids,
   #                    vectors if per_float is set to 1,
   #                    column vector if per_float is 0)
   #
-  # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  # Update record: 
+  #   Version 1: 24 June 2021 
+  #   Version 1.1: January 2022 
   
-  # Update 24 June 2021
+  # CITATION:
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  
+  
   
   # make sure Setting is initialized
   if (exists("Setting")==F) {

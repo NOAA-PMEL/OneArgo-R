@@ -7,11 +7,7 @@ plot_profiles <- function(Data,
                           raw = "no",
                           title_add = NULL,
                           qc_flags = 0:9) {
-  # plot_profiles  
-  #
-  # This function is part of the
-  # GO-BGC workshop Matlab tutorial for accessing BGC Argo float data.
-  #
+  
   # DESCRIPTION: 
   #   This function plots profiles of one or more specified float(s) for 
   #   the specified variable(s).
@@ -60,20 +56,18 @@ plot_profiles <- function(Data,
   #               vectors if per_float is set to 1,
   #               column vector if per_float is 0)
   #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
+  
   
   # empty return values in case of warnings
   mean_prof = NULL
@@ -109,7 +103,7 @@ plot_profiles <- function(Data,
   } else{
     title_add=list(list=floats)
     # names(title_add) = names(Data)
-    xlabel_add = ''
+    xlabel_add = ' [adj. values]'
     for (v in 1:nvars) {
       # if all floats have adjusted values available for a variable,
       # they will be used instead of raw values

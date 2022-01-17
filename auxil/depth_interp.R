@@ -1,11 +1,9 @@
 depth_interp <- function(Data, qc_flags, 
                          prs_res=2, calc_dens=0, calc_mld_dens=0, dens_thres=0.03, calc_mld_temp=0, temp_thres=0.2){
   
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
-  #This function interpolates values for BGC-Argo parameters against depth
-  # for a set of float profiles.
+  # DESCRIPTION:
+  #   This function interpolates values for BGC-Argo parameters against depth
+  #   for a set of float profiles.
   #
   # Inputs:
   #   Data     : struct with data for one or more floats; expected fields are
@@ -14,37 +12,34 @@ depth_interp <- function(Data, qc_flags,
   #              description)
   #
   # Optional inputs:
-  #   'prs_res',prs_res             : pressure resolution (default: 2 dbar)
-  #   'calc_dens',calc_dens         : if set to 1, calculate density on
-  #                                   interpolated depth levels
-  #   'calc_mld_dens',calc_mld_dens : if set to 1, calculate mixed layer
-  #                                   depth (MLD) based on a density criterion
-  #   'dens_thres',dens_thres       : density threshold for MLD calculation;
-  #                                   default value is set in initialize_argo
-  #   'calc_mld_temp',calc_mld_temp : if set to 1, calculate mixed layer
-  #                                   depth based on a temperature criterion
-  #   'dens_thres',dens_thres       : temperature threshold for MLD calculation;
-  #                                   default value is set in initialize_argo
+  #   'prs_res'       : pressure resolution (default: 2 dbar)
+  #   'calc_dens'     : if set to 1, calculate density on
+  #                     interpolated depth levels
+  #   'calc_mld_dens' : if set to 1, calculate mixed layer
+  #                     depth (MLD) based on a density criterion
+  #   'dens_thres'    : density threshold for MLD calculation;
+  #                     default value is set in initialize_argo
+  #   'calc_mld_temp' : if set to 1, calculate mixed layer
+  #                     depth based on a temperature criterion
+  #   'dens_thres'    : temperature threshold for MLD calculation;
+  #                     default value is set in initialize_argo
   #
-  # Note that MLD can be computed both ways at the same time.
+  #   Note that MLD can be computed both ways at the same time.
   # 
-  # Output:
-  # Datai : struct with depth-interpolated variables
-  
+  # OUTPUT:
+  #   Datai : struct with depth-interpolated variables
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  #  AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
   
   
   # DEFINE PRESSURE DATA AS 'X'

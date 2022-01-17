@@ -1,35 +1,49 @@
 load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=NULL) {
-  # load_floats  This function is part of the
-  # GO-BGC workshop Matlab tutorial for accessing BGC Argo float data.
+  
+  
+  
+  # DESCRIPTION: 
+  #   This function loads data of at least one specified float.
   #
-  # This function loads data of at least one specified float.
+  # INPUTS:
+  #   float_ids: WMO ID of one or more floats
   #
-  # Inputs:
-  #   float_ids   : WMO ID of one or more floats
-  #
-  # Optional inputs:
-  #   variables   : cell array with variable names to be loaded (use 'ALL'
+  # OPTIONAL INPUTS:
+  #   variables: cell array with variable names to be loaded (use 'ALL'
   #                  # to load all available variables, which may differ by
   #                  float)
-  #   float_profs : cell array with indices of selected profiles (per float,
-  #                 not global)
-  #   format :      specific the format of data loaded (use 'dataframe'
-  #                 # to export the data in the format of "data frame" 
-  #                 (if not set, the default ouput is"list" with multiple matrix)
-
+  #   float_profs : float profile is an array with the per-float indices 
+  #                 as returned by function "select_profiles" 
+  #                
+  #   format= 'dataframe' :    
+  #                 specific the format of data loaded (use 'dataframe'
+  #                 to export the data in the format of "data frame" 
+  #                 (if not set, the default output is a "list" with multiple matrix)
   #
-  # Output_1 (if "format" option is not be specificd):
-  #   Data        : struct with the requested variables (including QC flags.
+  # OUTPUTS:
+  #   Output_1 (if "format" option is not be specified):
+  #    Data        : struct with the requested variables (including QC flags.
   #                 adjusted values if available) and general ones
   #                 (LONGITUDE,LATITUDE,JULD)
-  #   Mdata       : struct with meta data (WMO_NUMBER)
-  
+  #    Mdata       : struct with meta data (WMO_NUMBER)
   #
-  # Output_2 (if "format" option is set to "dataframe"):
-  #  Data: Single data frame including all floats data
-  #  Note: The data will be exported as a 
-  #  list containing multiple data frame for each float data if the length of merged data frame exceeds the  
-  #  memory limit of data frame. 
+  #   Output_2 (if "format" option is set to "dataframe"):
+  #    Data: A data frame including all floats data
+  #          Note: The data will be exported as a 
+  #          list containing multiple data frame for each float data if 
+  #          the length of merged data frame exceeds the  
+  #          memory limit of data frame. 
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
+  # CITATION:
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  
     
 
   

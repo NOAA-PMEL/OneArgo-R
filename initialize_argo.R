@@ -1,46 +1,29 @@
-if (!require("gsw")) { install.packages("gsw"); library(gsw) }
-if (!require("R.utils")) { install.packages("R.utils"); library(R.utils) } # to gunzip S index file
-if (!require("lubridate")) { install.packages("lubridate"); library(lubridate) } # convert date from Sprof to date object
-if (!require("Matrix")) { install.packages("Matrix"); library(Matrix) } # create reduced-size matrix
-
 
 initialize_argo <- function() {
-  # initialize_argo  
-  #
-  # This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
-  #
+ 
+  
+  # DESCRIPTION:
   #   It defines standard Setting and paths and downloads index files.
   #   It must be called once before any other functions
   #   can be used, either directly or indirectly by calling any of
   #   the functions load_float_data, select_profiles, show_profiles,
   #   show_sections, or show_trajectories.
   #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
   
   Setting<<-list() 
   Sprof<<-list() 
   Float<<-list()
-  
-  
-  library(gsw)
-  library(R.utils) # to gunzip S index file
-  library(lubridate) # convert date from Sprof to date object
-  library(Matrix) # create reduced-size matrix
-  
+
   ###########################################################################
   # BEGINNING OF SECTION WITH USER SPECIFIC OPTIONS
   # this part of the function can be modified to meet specific needs

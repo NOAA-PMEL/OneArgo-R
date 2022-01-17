@@ -1,58 +1,52 @@
-if (!require("gsw")) { install.packages("gsw"); library(gsw) }
 
 calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc_mld_dens=0, dens_thresh=0.03){
 
-  #This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
+  # DESCRIPTION:
+  #   This function calculates various auxiliary variables from Argo
+  #   float data: Density, mixed layer depth (MLD), based either on
+  #   a temperature or a density threshold.
+  #   Any combination of these variables can be requested.
   #
-  #This function calculates various auxiliary variables from Argo
-  #float data: Density, mixed layer depth (MLD), based either on
-  #a temperature or a density threshold.
-  #Any combination of these variables can be requested.
-  #
-  #Input:
-  # Data      : struct (note that this can be on the original or the
+  # INPUTS:
+  #   Data      : struct (note that this can be on the original or the
   #                                        interpolated pressure/depth axis)
-  #Optional inputs (all calc* values are 0=off by default, set them to
-  #                   % 1=on to activate the calculation):
-  # 'calc_dens', calc_dens:         if set, calculate in situ density
-  # 'calc_mld_temp', calc_mld_temp: if set, compute MLD based on T threshold
-  # 'temp_thresh', temp_threshold : temperature threshold for MLD calculation
-  #                                 (default: 0.2 dg C); ignored if
-  #                                 calc_mld_temp is not set to 1
-  # 'calc_mld_dens', calc_mld_dens: if set, compute MLD based on rho
-  #                                 threshold
-  # 'dens_thresh', dens_threshold : density threshold for MLD calculation
-  #                                 (default: 0.03 kg/m3); ignored if
-  #                                 calc_mld_dens is not set to 1
+  # OPTIONAL INPUTS:
+  #   (all calc* values are 0=off by default, set them to
+  #   1=on to activate the calculation):
+  #   'calc_dens':                    if set, calculate in situ density
+  #   'calc_mld_temp':                if set, compute MLD based on T threshold
+  #   'temp_thresh':                  temperature threshold for MLD calculation
+  #                                   (default: 0.2 dg C); ignored if
+  #                                   calc_mld_temp is not set to 1
+  #   'calc_mld_dens':                if set, compute MLD based on rho
+  #                                   threshold
+  #   'dens_thresh':                  density threshold for MLD calculation
+  #                                   (default: 0.03 kg/m3); ignored if
+  #                                   calc_mld_dens is not set to 1
   #
-  # Output:
-  # Data        : struct with added auxiliary variables - for all variables,
-  #               either raw or adjusted fields are added to the structure.
-  #               The raw fields are (adjusted fields have the same names
-  #                                                  with _ADJUSTED added at the end):
-  #               calc_dens: DENS (in situ density),
+  # OUTPUT:
+  #   Data        : struct with added auxiliary variables - for all variables,
+  #                 either raw or adjusted fields are added to the structure.
+  #                 The raw fields are (adjusted fields have the same names
+  #                 with _ADJUSTED added at the end):
+  #                 calc_dens: DENS (in situ density),
   #                          PSAL_ABS (absolute salinity),
   #                          TEMP_CNS (conservative temperature)
-  #               calc_mld_temp: MLD_TEMP (mixed layer depth based on a
-  #                                                                     temperature threshold)
-  #               calc_mld_dens: MLD_DENS (mixed layer depth based on a
-  #                                                                     density threshold)
- 
+  #                 calc_mld_temp: MLD_TEMP (mixed layer depth based on a
+  #                 temperature threshold)
+  #                 calc_mld_dens: MLD_DENS (mixed layer depth based on a
+  #                 density threshold)
+  #
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  #  AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
   
   # Calculate in situ density:
   if(calc_dens){

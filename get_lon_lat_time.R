@@ -1,33 +1,34 @@
 
 get_lon_lat_time=function(float_ids, float_profs=NULL){
-  # get_lon_lat_time  This function is part of the
-  # MATLAB toolbox for accessing BGC Argo float data.
-
+  
+  
   # DESCRIPTION:
   #   This function loads longitude, latitude, and time information
   #   for the specified floats (and their specified profiles, if given).
   #
   # INPUT:
-  #   float_ids   : WMO ID(s) of one or more floats
+  #   float_ids: WMO ID(s) of one or more floats
   #
   # OPTIONAL INPUT:
-  #   float_profs : cell array with indices of selected profiles (per float,
-                                                                     # %                 not global)
+  #   float_profs : float profile is an array with the per-float indices 
+  #                 as returned by function "select_profiles";  
   #
   # OUTPUTS:
   #   lon  : cell array with longitude values for all specified floats
   #   lat  : cell array with latitude values for all specified floats
   #   time : cell array with time values for all specified floats (in 
-                                                                 #    %          datenum format)   
+  #     datenum format)   
   #
-  # AUTHORS: 
-  #  H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL), N. Buzby (UW),
-  #   J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  #   and A. Gray (UW)
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
   #
-    
-  # DATE: DECEMBER 1, 2021  (Version 1.1)
-
+  # CITATION:
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  
   lon=NULL
   lat=NULL
   time=NULL

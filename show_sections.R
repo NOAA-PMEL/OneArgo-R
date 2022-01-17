@@ -7,23 +7,23 @@ show_sections <- function(float_ids=Setting$demo_float,
                           raw="no", 
                           obs="off", 
                           qc_flags=0:9) {
-  # show_sections  
+  # DESCRIPTION:
+  #  This an intermediary function that  downloads profile(s) for the given
+  #  float(s) and calls plot_sections to create the plot(s).
   #
-  # This function is part of the
-  # GO-BGC workshop R tutorial and R toolbox for accessing BGC Argo float data.
+  # PREREQUISITE:
+  #   Require to install the "xquartz" for macOS system for figure plot 
+  #   ("https://www.xquartz.org/")
   #
-  # It is an intermediary function that downloads profile(s) for the given
-  # float(s) and calls plot_sections to create the plot(s).
-  #
-  # INPUTS:
-  #   float_ids  : WMO ID(s) of one or more floats 
+  #  INPUTS:
+  #    float_ids  : WMO ID(s) of one or more floats 
   #                (if not set: Setting$demo_float is used as a demo)
-  #   variables  : cell array of variable(s) (i.e., sensor(s)) to show 
+  #    variables  : cell array of variable(s) (i.e., sensor(s)) to show 
   #                (if not set: {'DOXY'} (=O2) is used)
   #
   # OPTIONAL INPUTS:
-  #   float_profs        : per-float indices of the profiles to be shown,
-  #                        as returned by select_profiles
+  #   float_profs : float profile is an array with the per-float indices 
+  #                 as returned by function "select_profiles";  
   #   plot_isopyc        : plot isopycnal lines if set (default: 1=on)
   #   plot_mld           : plot mixed layer depth, using either a 
   #                        temperature criterion (mld=1) or a density
@@ -49,20 +49,20 @@ show_sections <- function(float_ids=Setting$demo_float,
   # OUTPUT:
   #   good_float_ids : array of the float IDs whose Sprof files were
   #                    successfully downloaded or existed already
+  # UPDATE RECORD: 
+  #   Version 1:   June 2021 
+  #   Version 1.1: January 2022 
+  #
   # CITATION:
-  # BGC-Argo-R: A R toolbox for accessing and visualizing
-  # Biogeochemical Argo data,
-  #
-  # AUTHORS: 
-  # M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), 
-  # R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA),
-  #
-  # Adapted from the Matlab toolbox BGC-Argo-Mat:  https://doi.org/10.5281/zenodo.4971318
-  # (H. Frenzel, J. Sharp, A. Fassbender (NOAA-PMEL),
-  # J. Plant, T. Maurer, Y. Takeshita (MBARI), D. Nicholson (WHOI),
-  # and A. Gray (UW))
+  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
   
-  # Update 24 June 2021
+  
+  
+  
+  
   
   # make sure Setting is initialized
   if (exists("Setting")==F) {
