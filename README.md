@@ -2,7 +2,9 @@
 
 ## ABOUT
 This toolbox contains a variety of functions for accessing, processing, and visualizing Biogeochemical Argo data. Functions are designed to be maximally efficient, to provide access to the most up-to-date data available, and to allow for downloading and plotting of those data based on numerous user-defined conditions. 
+
 This toolbox is created and maintained by M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021 (All authors contributed equally to the code.)
+
 This toolbox is adapted from the BGC-Argo-Mat Toolbox: H. Frenzel*, J. Sharp*, A. Fassbender, J. Plant, T. Maurer, Y. Takeshita, D. Nicholson, A. Gray, 2021.
 BGC-Argo-Mat: A MATLAB toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. https://doi.org/10.5281/zenodo.4971318.
 
@@ -29,7 +31,7 @@ select_profiles.R        : returns profiles and corresponding floats based on in
 show_profiles.R          : downloads float data and calls plot_profiles to create plot<br/>
 show_sections.R          : downloads float data and calls plot_sections to create plot<br/>
 show_trajectories.R      : downloads float data and calls plot_trajectories to create plot<br/>
-get_lon_lat_time.R:      : extracts the longitude, latitude, and time information for the specified floats (and their specified profiles, if given)<br/>
+get_lon_lat_time.R:      : extracts the longitude, latitude, and time information for the specified floats)<br/>
 main_workshop.R          : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
 ### Background functions (primarily called by main functions in background):
 
