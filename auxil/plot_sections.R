@@ -55,14 +55,14 @@ plot_sections <- function(Data,
   #                 https://www.frontiersin.org/files/Articles/460352/fmars-06-00502-HTML-r1/image_m/fmars-06-00502-t007.jpg
   #
   # UPDATE RECORD: 
-  #   Version 1:   June 2021 
-  #   Version 1.1: January 2022 
+  #   Version 1 & 2:   June 2021 
+  #   Version 2.1: January 2022 
   #
   # CITATION:
-  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
   #   C. Schmechtig (OSU ECCE TERRA), 2021.
   #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
-  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
   
   

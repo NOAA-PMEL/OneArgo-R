@@ -29,7 +29,7 @@ show_trajectories <- function(float_ids=Setting$demo_float,
   #   position='first' or 'last:  show only the selected position (either 'first' or
   #                             'last')
   #   title          : title for the plot (default: "Float trajectories")
-  #   return_ggplot=’TRUE‘ or 'FALSE' : FALSE' (by default) returns the plot to X11; 'TRUE'
+  #   return_ggplot='TRUE' or 'FALSE' : FALSE' (by default) returns the plot to X11; 'TRUE'
   #                  returns the plot to the ggplot panel if setting to "TRUE"; By default,
   #                               
   #
@@ -38,14 +38,14 @@ show_trajectories <- function(float_ids=Setting$demo_float,
   #                    successfully downloaded or existed already
   #
   # UPDATE RECORD: 
-  #   Version 1:   June 2021 
-  #   Version 1.1: January 2022 
+  #   Version 1 & 2:   June 2021 
+  #   Version 2.1: January 2022 
   #
   # CITATION:
-  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
   #   C. Schmechtig (OSU ECCE TERRA), 2021.
   #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
-  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
   
   # make sure Settings is initialized

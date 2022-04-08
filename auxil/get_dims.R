@@ -12,15 +12,15 @@ get_dims<- function(filename) {
   #   n_param     : number of parameters (integer)
   #   n_levels    : number of depth levels (integers)
   #
-  # Update record: 
-  #   Version 1:   June 2021 
-  #   Version 1.1: January 2022 
+  # UPDATE RECORD: 
+  #   Version 1 & 2:   June 2021 
+  #   Version 2.1: January 2022 
   #
   # CITATION:
-  #   M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
+  #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
   #   C. Schmechtig (OSU ECCE TERRA), 2021.
   #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
-  #   Zenodo. http://doi.org/10.5281/zenodo.5028139
+  #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
   
   

@@ -1,9 +1,9 @@
-# GO-BGC toolbox for R
+# BGC-Argo toolbox for R
 
 ## ABOUT
 This toolbox contains a variety of functions for accessing, processing, and visualizing Biogeochemical Argo data. Functions are designed to be maximally efficient, to provide access to the most up-to-date data available, and to allow for downloading and plotting of those data based on numerous user-defined conditions. 
 
-This toolbox is created and maintained by M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021 (All authors contributed equally to the code.)
+This toolbox is created and maintained by M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021 (All authors contributed equally to the code.)
 
 This toolbox is adapted from the BGC-Argo-Mat Toolbox: H. Frenzel*, J. Sharp*, A. Fassbender, J. Plant, T. Maurer, Y. Takeshita, D. Nicholson, A. Gray, 2021.
 BGC-Argo-Mat: A MATLAB toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. https://doi.org/10.5281/zenodo.4971318.
@@ -57,8 +57,8 @@ try_download.R           : attempts to download a file from any of the specified
 You can open the corresponding R script file to check out the description of input and output parameters for individual functions. 
 
 ## UPDATE RECORD
-Version 1: June 2021<br/>
-Version 1.1: January 2022
+Version 1 & 2: June 2021<br/>
+Version 2.1: January 2022
 
 ## COMMENTS, BUGS etc.?
 Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes.
@@ -73,4 +73,4 @@ H. C. Bittig et al., Front. Mar. Sci., 2019, https://doi.org/10.3389/fmars.2019.
 ## CITATION
 
 M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021.
-BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. http://doi.org/10.5281/zenodo.5028139
+BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. https://doi.org/10.5281/zenodo.5028138
