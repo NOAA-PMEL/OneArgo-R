@@ -192,7 +192,7 @@ select_profiles <- function(lon_lim=c(-180,180),
     phys_float_ids = NULL
   }
 
-  float_ids = c(bgc_float_ids, phys_float_ids)
+  float_ids = unique(c(bgc_float_ids, phys_float_ids))
   float_profs = list()
   
   

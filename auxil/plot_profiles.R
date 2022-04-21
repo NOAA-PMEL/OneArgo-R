@@ -67,7 +67,21 @@ plot_profiles <- function(Data,
   #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
   
+  # Remove the floats that show empty variables
+  index_non_empty<-NULL
+  for(i in 1:length(names(Data))) {
+    if(length(Data[[i]][["CYCLE_NUMBER"]])!=0){
+      index_non_empty<-c(index_non_empty,i)
+    }
+  }
   
+  Data<-Data[index_non_empty]
+  Mdata<-Mdata[index_non_empty]
+  
+  if(length(Data)==0){
+    print('No available profiles for the plot selected plot options')
+    stop()
+  }
   
   # empty return values in case of warnings
   mean_prof = NULL
@@ -89,13 +103,20 @@ plot_profiles <- function(Data,
   
   float_ids = names(Mdata)
   nvars = length(variables)
-  nplots = nfloats * nvars
+  
+  if (per_float==T){
+    nplots = nfloats * nvars
+  } else {
+    nplots =  nvars
+  }
   if (nplots > Setting$max_plots) {
     print(
       'too many plots requested - use fewer profiles and/or variables,or increase Setting$max_plots if possible'
     )
     stop()
   }
+  
+  
   
   # unless 'raw' is specified, plot adjusted data
   if (raw == "yes") {
@@ -116,7 +137,8 @@ plot_profiles <- function(Data,
           has_adj = has_adj + 1
           title_add[[floats[f]]][[variables[v]]] = '' 
         }
-        else{
+        else if (variables[v] %in% names(Data[[floats[f]]]) &
+                 !all(is.na(Data[[floats[f]]][[variables[v]]]))) {
           print(
             paste0(
               'adjusted values for ',
@@ -128,6 +150,16 @@ plot_profiles <- function(Data,
             )
           )
           title_add[[floats[f]]][[variables[v]]] = '[raw values]'
+        } else {
+          print(
+            paste0(variables[v],
+                   ' for float ',
+                   floats[f],
+                   ' is not available.'
+            )
+          )
+          has_adj = has_adj + 1
+          title_add[[floats[f]]][[variables[v]]] = ''
         }
       }
       if (has_adj == nfloats) {
@@ -150,81 +182,209 @@ plot_profiles <- function(Data,
   }
   
   for (v in 1:nvars) {
+    if(per_float) {
+      for (f in 1:nfloats) {
+        if(is.null(Data[[floats[f]]][[variables[v]]])){ # Check if the float has variable
+          print(paste("No",variables[v],"available for float",floats[f]))
+          next
+        }
+        if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {
+          PRES = Data[[floats[f]]][['PRES_ADJUSTED']]
+          if(length(which(is.finite(PRES))) < 0.5*length(PRES)){
+            PRES = Data[[floats[f]]][['PRES']]
+          }
+        } else {
+          PRES = Data[[floats[f]]][['PRES']]
+        }
+        
+        nprofs = ncol( as.matrix((Data[[floats[f]]][['PRES']]))) # convert the matrix to avoid the error when profile number is only 1 (ncol does not work in the case of vector)
+        if (per_float) {
+          x11()
+          par(las=1)
+          this_mean_prof = get_multi_profile_mean(Datai[f], variables[v])$mean_prof
+          this_std_prof = get_multi_profile_mean(Datai[f], variables[v])$std_prof
+          this_mean_pres = mean_pres[[f]]
+        }
+        
+        if (method == "all") {
+          long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
+          units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
+          plot(range(Data[[floats[f]]][[variables[v]]],na.rm=T)[1],range(PRES, na.rm=T)[1],type='n', 
+               ylim = rev(range(PRES, na.rm=T)),
+               xlim = range(Data[[floats[f]]][[variables[v]]],na.rm=T),
+               xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
+               ylab = 'Pressure (dbar)')
+          for (p in 1:nprofs) {
+            idx = !is.na(as.matrix(Data[[floats[f]]][[variables[v]]])[, p]) &    # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
+              !is.na(as.matrix(PRES)[, p]) &
+              as.matrix( Data[[floats[f]]][[paste0(variables[v], '_QC')]])[, p] %in% qc_flags   # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))    
+            if (sum(idx)) {
+              points(
+                as.matrix( Data[[floats[f]]][[variables[v]]])[idx, p],
+                as.matrix(PRES)[idx, p],
+                type = 'l'
+              )
+              if (obs == "on") {
+                points(      as.matrix(Data[[floats[f]]][[variables[v]]])[idx, p], # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))      
+                             as.matrix(PRES) [idx, p],  # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
+                             type = 'points',
+                             ylim = rev(range(as.matrix( PRES)[idx, p], na.rm=T))
+                )
+              }
+            }else
+            {
+              print(
+                paste0(
+                  'no valid observations matching selected QC flags found for profile ',
+                  p,
+                  ' of float ',
+                  floats[f]
+                )
+              )
+            }
+          }
+          points(
+            this_mean_prof,
+            this_mean_pres,
+            type = "l",
+            lwd = 2,
+            col="red"
+          )
+        }
+        else{
+          long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
+          units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
+          plot(range(Data[[floats[f]]][[variables[v]]],na.rm=T)[1],range(PRES, na.rm=T)[1],type='n', 
+               ylim = rev(range(PRES, na.rm=T)),
+               xlim = range(Data[[floats[f]]][[variables[v]]],na.rm=T),
+               xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
+               ylab = 'Pressure (dbar)')
+          points(
+            this_mean_prof,
+            this_mean_pres,
+            type = "l",
+            lwd = 2
+          )
+          points(
+            this_mean_prof - this_std_prof,
+            this_mean_pres,
+            type = "l",
+            lwd = 2,
+            col="blue"
+          )
+          points(
+            this_mean_prof + this_std_prof,
+            this_mean_pres,
+            type = "l",
+            lwd = 2,
+            col="blue"
+          )
+        }
+        
+        title(paste('Float', Mdata[[float_ids[f]]]$WMO_NUMBER, 
+                    title_add[[floats[f]]][[unlist(strsplit(variables[v],'_ADJUSTED'))]], sep = " "))
+        
+      }
+    }
+    
     if (!per_float) {
       x11()
       this_mean_prof = get_multi_profile_mean(Datai, variables[v])$mean_prof
       this_std_prof = get_multi_profile_mean(Datai, variables[v])$std_prof
       this_mean_pres = get_multi_profile_mean(Datai, variables[v])$mean_pres
-    }
-    for (f in 1:nfloats) {
-      if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {
-        PRES = Data[[floats[f]]][['PRES_ADJUSTED']]
-      } else {
-        PRES = Data[[floats[f]]][['PRES']]
+      
+      long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
+      units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
+      
+      # Define the range limits for the global plots
+      range_var<-NULL
+      range_pres<-NULL
+      for (f in 1:nfloats) {
+        if(is.null(Data[[floats[f]]][[variables[v]]])){ # Check if the float has variable
+          next
+        }
+        idx = Data[[floats[f]]][[paste0(variables[v], '_QC')]] %in% qc_flags # base only the range of the values from the chosen QC
+        range_var<-c(range_var, range(Data[[floats[f]]][[variables[v]]][which(idx==T)],na.rm=T))
+        if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {
+          PRES = Data[[floats[f]]][['PRES_ADJUSTED']]
+          if(length(which(is.finite(PRES))) < 0.5*length(PRES)){
+            PRES = Data[[floats[f]]][['PRES']]
+          }
+        } else {
+          PRES = Data[[floats[f]]][['PRES']]
+        }
+        idx = !is.na(Data[[floats[f]]][[variables[v]]]) &    # base only the range of PRES values according to the variable values from the chosen QC
+          Data[[floats[f]]][[paste0(variables[v], '_QC')]] %in% qc_flags
+        PRES<-PRES[which(idx==T)]
+        range_pres<-c(range_pres,range(PRES, na.rm=T))
       }
       
-      nprofs = ncol( as.matrix((Data[[floats[f]]][['PRES']]))) # convert the matrix to avoid the error when profile number is only 1 (ncol does not work in the case of vector)
-      if (per_float) {
-        x11()
-        par(las=1)
-        this_mean_prof = get_multi_profile_mean(Datai, variables[v])$mean_prof
-        this_std_prof = get_multi_profile_mean(Datai, variables[v])$std_prof
-        this_mean_pres = mean_pres[[f]]
-      }
-        
+      range_var<-range(range_var[which(is.finite(range_var))], na.rm=T)
+      range_pres<-range(range_pres[which(is.finite(range_pres))], na.rm=T)
+      
+      plot(range_var[1],range_pres[1],type='n', 
+           ylim = rev(range_pres),
+           xlim = range_var,
+           xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
+           ylab = 'Pressure (dbar)')
+      
       if (method == "all") {
-        long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
-        units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
-        plot(range(Data[[floats[f]]][[variables[v]]],na.rm=T)[1],range(PRES, na.rm=T)[1],type='n', 
-             ylim = rev(range(PRES, na.rm=T)),
-             xlim = range(Data[[floats[f]]][[variables[v]]],na.rm=T),
-             xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
-             ylab = 'Pressure (dbar)')
-        for (p in 1:nprofs) {
-          idx = !is.na(as.matrix(Data[[floats[f]]][[variables[v]]])[, p]) &    # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
-            !is.na(as.matrix(PRES)[, p]) &
-            as.matrix( Data[[floats[f]]][[paste0(variables[v], '_QC')]])[, p] %in% qc_flags   # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))    
-          if (sum(idx)) {
-            points(
-              as.matrix( Data[[floats[f]]][[variables[v]]])[idx, p],
-              as.matrix(PRES)[idx, p],
-              type = 'l'
-            )
-            if (obs == "on") {
-              points(      as.matrix(Data[[floats[f]]][[variables[v]]])[idx, p], # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))      
-                           as.matrix(PRES) [idx, p],  # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
-                           type = 'points',
-                           ylim = rev(range(as.matrix( PRES)[idx, p], na.rm=T))
+        
+        for (f in 1:nfloats) {
+          if(is.null(Data[[floats[f]]][[variables[v]]])){ # Check if the float has variable
+            print(paste("No",variables[v],"available for float",floats[f]))
+            next
+          }
+          if ('PRES_ADJUSTED' %in% names(Data[[floats[f]]])) {
+            PRES = Data[[floats[f]]][['PRES_ADJUSTED']]
+            if(length(which(is.finite(PRES))) < 0.5*length(PRES)){
+              PRES = Data[[floats[f]]][['PRES']]
+            }
+          } else {
+            PRES = Data[[floats[f]]][['PRES']]
+          }
+          
+          nprofs = ncol( as.matrix((Data[[floats[f]]][['PRES']]))) # convert the matrix to avoid the error when profile number is only 1 (ncol does not work in the case of vector)
+          
+          
+          for (p in 1:nprofs) {
+            idx = !is.na(as.matrix(Data[[floats[f]]][[variables[v]]])[, p]) &    # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
+              !is.na(as.matrix(PRES)[, p]) &
+              as.matrix( Data[[floats[f]]][[paste0(variables[v], '_QC')]])[, p] %in% qc_flags   # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))    
+            if (sum(idx)) {
+              points(
+                as.matrix( Data[[floats[f]]][[variables[v]]])[idx, p],
+                as.matrix(PRES)[idx, p],
+                type = 'l'
+              )
+              if (obs == "on") {
+                points(      as.matrix(Data[[floats[f]]][[variables[v]]])[idx, p], # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))      
+                             as.matrix(PRES) [idx, p],  # convert to the matrix to avoid the error when profile number is only 1 (Data[[floats[f]]][[variables[v]]])[, p]  does not work in the case of vector))   
+                             type = 'points',
+                             ylim = rev(range(as.matrix( PRES)[idx, p], na.rm=T))
+                )
+              }
+            } else {
+              print(
+                paste0(
+                  'no valid observations matching selected QC flags found for profile ',
+                  p,
+                  ' of float ',
+                  floats[f]
+                )
               )
             }
-          }else
-          {
-            print(
-              paste0(
-                'no valid observations matching selected QC flags found for profile ',
-                p,
-                ' of float ',
-                floats[f]
-              )
-            )
           }
+          points(
+            this_mean_prof,
+            this_mean_pres,
+            type = "l",
+            lwd = 2,
+            col="red"
+          )
         }
-        points(
-          this_mean_prof,
-          this_mean_pres,
-          type = "l",
-          lwd = 2,
-          col="red"
-        )
       }
       else{
-        long_name = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['long_name']]
-        units = get_var_name_units(unlist(strsplit(variables[v],'_ADJUSTED')))[['units']]
-        plot(range(Data[[floats[f]]][[variables[v]]],na.rm=T)[1],range(PRES, na.rm=T)[1],type='n', 
-             ylim = rev(range(PRES, na.rm=T)),
-             xlim = range(Data[[floats[f]]][[variables[v]]],na.rm=T),
-             xlab = bquote(.(long_name)~.(units)~.(xlabel_add)),
-             ylab = 'Pressure (dbar)')
         points(
           this_mean_prof,
           this_mean_pres,
@@ -246,16 +406,12 @@ plot_profiles <- function(Data,
           col="blue"
         )
       }
-      
-      if (per_float==T) {
-        title(paste('Float', Mdata[[float_ids[f]]]$WMO_NUMBER, 
-                    title_add[[floats[f]]][[unlist(strsplit(variables[v],'_ADJUSTED'))]], sep = " "))
-      }
-    }
-    if (!per_float) {
       if (nfloats < 4) {
         ttitle = 'Floats'
         for (ff in 1:nfloats) {
+          if(is.null(Data[[floats[ff]]][[variables[v]]])){ # Check if the float has variable
+            next
+          }
           ttitle = paste(ttitle, Mdata[[float_ids[ff]]][['WMO_NUMBER']], 
                          title_add[[floats[ff]]][[unlist(strsplit(variables[v], '_ADJUSTED'))]], sep=' ')
         }
@@ -267,8 +423,3 @@ plot_profiles <- function(Data,
     }
   }
 }
-
-  
-  
-  
-  

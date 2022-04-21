@@ -45,8 +45,10 @@ depth_interp <- function(Data, qc_flags,
   # DEFINE PRESSURE DATA AS 'X'
   if('PRES_ADJUSTED' %in% names(Data)){
     X = Data[['PRES_ADJUSTED']]
-  }
-  else{
+    if(length(which(is.finite(X))) < 0.5*length(X)){
+      X = Data[['PRES']]
+    }
+  } else{
     X = Data[['PRES']]
   }
   

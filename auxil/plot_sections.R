@@ -64,7 +64,21 @@ plot_sections <- function(Data,
   #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
   #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
+  # Remove the floats that show empty variables
+  index_non_empty<-NULL
+  for(i in 1:length(names(Data))) {
+    if(length(Data[[i]][["CYCLE_NUMBER"]])!=0){
+      index_non_empty<-c(index_non_empty,i)
+    }
+  }
   
+  Data<-Data[index_non_empty]
+  Mdata<-Mdata[index_non_empty]
+  
+  if(length(Data)==0){
+    print('No available profiles for the plot selected plot options')
+    stop()
+  }
   
   
   floats = names(Data)
@@ -99,12 +113,30 @@ plot_sections <- function(Data,
               is.finite(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]])
               ) ) {
           has_adj = has_adj + 1
-        } else {
-          warning("adjusted values for ", variables[v], " for float ", 
-                  floats[f], 
-                  " are not available, showing raw value profiles instead")
-          title_add = ' [raw values]'
-        }
+         } else if (variables[v] %in% names(Data[[floats[f]]]) &
+                   !all(is.na(Data[[floats[f]]][[variables[v]]]))) {
+            print(
+              paste0(
+                'adjusted values for ',
+                variables[v],
+                ' for float ',
+                floats[f],
+                ' are not available,',
+                ' showing raw values for all profiles instead'
+              )
+            )
+            title_add[[floats[f]]][[variables[v]]] = '[raw values]'
+          } else {
+            print(
+              paste0(variables[v],
+                     ' for float ',
+                     floats[f],
+                     ' is not available.'
+              )
+            )
+            has_adj = has_adj + 1
+            title_add[[floats[f]]][[variables[v]]] = ''
+          }
       }
       if ( has_adj == nfloats ) {
         variables[v] = paste0(variables[v], '_ADJUSTED')
@@ -166,6 +198,10 @@ plot_sections <- function(Data,
     df$xmax = rep(full_xmax, each=nrow(Datai$TIME))
     
     for ( v in 1:nvars ) {
+      if(is.null(Data[[floats[f]]][[variables[v]]])){ # Check if the float has variable
+        print(paste("No",variables[v],"available for float",floats[f]))
+        next
+      }
       
       if ("PRES_ADJUSTED" %in% names(Datai)) {
         g1 = ggplot(df, aes(x=TIME, y=PRES_ADJUSTED))
