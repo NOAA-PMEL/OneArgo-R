@@ -5,12 +5,16 @@ select_profiles <- function(lon_lim=c(-180,180),
                             outside="none", 
                             sensor=NULL,
                             ocean=NULL,
-                            mode="RAD") {
+                            mode="RAD",
+                            type="all") {
   
   # DESCRIPTION:
-  #   This function returns the indices of profiles and floats that match the given
-  #   criteria (spatial, temporal, sensor availability). It does not download
-  #   any files.
+  #   This function returns the indices of profiles and floats that match
+  #   the given criteria (spatial, temporal, sensor availability).
+  #   It calls function initialize_argo if necessary.
+  #   Sprof files that match most criteria (except data mode, if specified)
+  #   and those that have missing longitude/latitude values in the index file
+  #   are downloaded from a GDAC.
   #
   # PREREQUISITE: 
   #   Globals Sprof and Setting
@@ -53,6 +57,12 @@ select_profiles <- function(lon_lim=c(-180,180),
   #             If multiple sensors are specified, all of them must be in 
   #             the selected mode(s).
   #             If 'sensor' option is not used, the 'mode' option is ignored.
+  #   type :    type: Valid choices are 'bgc' (select BGC floats only),
+  #            'phys' (select core and deep floats only), and 'all'
+  #             (select all floats that match other criteria; the default)
+  #             If type is not specified, but sensors are, then the type will
+  #             be set to 'all' if only pTS (PRES, PSAL, TEMP, CNDC) sensors
+  #             are specified, and to 'bgc' otherwise.
   #
   # OUTPUTS:
   #   float_ids   : array with the WMO IDs of all matching floats
@@ -92,6 +102,28 @@ select_profiles <- function(lon_lim=c(-180,180),
     mode = "ADR"
   }
   
+  # check if type selection is coherent with sensor selection
+  if( ! is.null(sensor)){
+    bgc_sensors<-F
+    for (g in sensor) {
+      if(!(g %in% c("PRES","PSAL","TEMP","CNDC"))){
+        bgc_sensors<-T
+      }
+    }
+    if(bgc_sensors==T) {
+      if(type=="phys") {
+        warning('You specified BGC sensors and  type "phys".')
+        warning('Please revise either setting!')
+        stop()
+      } else {
+        # setting may have been 'all', 'bgc', or no setting yet
+        # in any case, since BGC sensors are requested, only BGC
+        # floats will be considered
+        type="bgc"
+      }
+    }
+  }
+  
   # check if specified ocean is correct
   if(!is.null(ocean)){
     if(ocean != "P" & ocean != "A" & ocean != "I") {
@@ -121,7 +153,7 @@ select_profiles <- function(lon_lim=c(-180,180),
   }
   
   # make sure Sprof is initialized
-  if (exists("Sprof")==F) {
+  if (exists("Sprof")==F || exists("Prof")==F) {
     initialize_argo()
   }
   
@@ -134,91 +166,48 @@ select_profiles <- function(lon_lim=c(-180,180),
   dn1 = as.POSIXct(start_date, tz="UTC")
   dn2 = as.POSIXct(end_date, tz="UTC")
   
-  # GET INDEX OF PROFILES WITHIN USER-SPECIFIED GEOGRAPHIC POLYGON
-  if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-    lonv1 = c(lon_lim[1], 180)
-    lonv2 = c(-180, lon_lim[2])
-    inpoly =  ( (Sprof$lon>lonv1[1] & Sprof$lon<lonv1[2]) | 
-                  (Sprof$lon>lonv2[1] & Sprof$lon<lonv2[2]) ) & 
-      (Sprof$lat>lat_lim[1] & Sprof$lat<lat_lim[2])
+  # select bgc and phys floats separately, then combine the results
+  if (type == 'bgc' |  type== 'all'){
+    bgc_float_ids = select_profiles_per_type(Sprof,
+                                             lon_lim, 
+                                             lat_lim, 
+                                             dn1, 
+                                             dn2, 
+                                             type, 
+                                             sensor,
+                                             ocean)
   } else {
-    inpoly = (Sprof$lon>lon_lim[1] & Sprof$lon<lon_lim[2] & 
-                Sprof$lat>lat_lim[1] & Sprof$lat<lat_lim[2])
+    bgc_float_ids = NULL
   }
   
-  # Find index of dates that are within the time window
-  
-  indate_poly = (Sprof$date[inpoly] >= dn1 & Sprof$date[inpoly] <= dn2)
-  
-  # Now create an indate array of TRUE/FALSE that has the same
-  # size as inpoly so that it can be used in the & operations below
-  
-  indate = rep(FALSE,length(inpoly))
-  all_floats = 1:length(inpoly)
-  sel_floats_space = all_floats[inpoly]
-  indate[sel_floats_space[indate_poly]]<-TRUE
-  
-  # SELECT BY SENSOR
-  if ( is.null(sensor) ) {
-    has_sensor = rep(TRUE, length(indate)) # no sensor was selected
+  if (type == 'phys' |  type== 'all'){
+  phys_float_ids = select_profiles_per_type(Prof,
+                                            lon_lim, 
+                                            lat_lim, 
+                                            dn1, 
+                                            dn2, 
+                                            type, 
+                                            sensor,ocean)
   } else {
-    has_sensor = grepl(sensor, Sprof$sens)
+    phys_float_ids = NULL
   }
-  if(any(has_sensor)==F){
-    warning('no data found for sensor ', sensor)
-  }
-  
-  # SELECT BY OCEAN BASIN
-  if ( is.null(ocean) ) {
-    is_ocean = rep(TRUE, length(inpoly)) # no ocean was selected
-  } else {
-    is_ocean = grepl(ocean, Sprof$ocean)
-  }
-  
-  # SELECT BY DATA MODE
-  # Note: due to inconsistencies between index and Sprof files, this
-  # matching is not performed in the first round, only in the second
-  # round below (based on Sprof files)
-  # if ( is.null(mode) | mode=="ADR" ) {
-     has_mode = rep(TRUE, length(inpoly)) 
-  # } else {
-  #   has_mode = rep(FALSE, length(inpoly)) # no sensor was selected
-  #   is_good = inpoly & indate & has_sensor & is_ocean
-  #   idx = all_floats[is_good]
-  #   varlist<-strsplit(Sprof$sens," ")
-  #   if(length(idx)!=0){
-  #     for (i in 1:length(idx)) {
-  #       pos = sensor == varlist[[idx[i]]]
-  #       if(any(pos)){
-  #         for (j in 1:nchar(mode)){
-  #           if (substr(mode,j,j) == substr(Sprof$data_mode[idx[i]],
-  #                                          which(pos),
-  #                                          which(pos))){
-  #             has_mode[idx[i]]<-TRUE
-  #           }
-  #         }
-  #       }
-  #     }
-  #   }
-  # }
-  
-  
-  profiles = which(inpoly & indate & has_sensor & is_ocean & has_mode)
-  float_ids = unique(Sprof$wmo[profiles])
+
+  float_ids = c(bgc_float_ids, phys_float_ids)
   float_profs = list()
   
+  
   if(length(float_ids)!=0){
-    # download Sprof files if necessary
+    # download Prof and Sprof files if necessary
     good_float_ids = download_multi_floats(float_ids)
     
     # the information from the index file is only used for an initial
-    # filtering of floats, the actual information from the Sprof files
+    # filtering of floats, the actual information from the prof/Sprof files
     # is used in a second step
     
     float_ids = good_float_ids
     
     for (fl in 1:length(good_float_ids)) {
-      filename = paste(Setting$prof_dir,good_float_ids[fl],"_Sprof.nc",sep="")
+      filename = paste(Setting$prof_dir,Float$file_name[which(Float$wmoid==good_float_ids[fl])],sep="")
       n_prof = get_dims(filename)$n_prof
       n_param = get_dims(filename)$n_param
       fl_idx = which(Float$wmoid==good_float_ids[fl])

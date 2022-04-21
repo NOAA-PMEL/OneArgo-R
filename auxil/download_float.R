@@ -61,11 +61,11 @@ download_float<-function(floatid) {
         # existing file has all profiles, no need to download again
         success = 1
       } else {success = try_download(paste('dac/',Float$file_path[float_idx],sep=""),
-                                     local_path, 'Sprof.nc')}}
+                                     local_path)}}
       , error = function(e) warning('something went wrong, try downloading the file again')
     )
   } else {success = try_download(paste('dac/',Float$file_path[float_idx],sep=""),
-                                      local_path, 'Sprof.nc')}
+                                      local_path)}
   
   
   

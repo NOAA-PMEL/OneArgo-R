@@ -1,4 +1,4 @@
-try_download<-function (filename, dest_path, ftype) {
+try_download<-function (filename, dest_path) {
   
   # DESCRIPTION:
   #   This function attempts to download a file from any of the GDACs specified in the
@@ -7,7 +7,6 @@ try_download<-function (filename, dest_path, ftype) {
   # INPUTS:
   #   filename  : name of the file at the GDAC
   #   dest_path : full (relative or absolute) path to the local file
-  #   ftype     : type of the file (used for an informational message only)
   #
   # OUTPUT:
   #   success   : 1 for successul download; 2 for unsuccessful download,

@@ -2,7 +2,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
   
   
   # DESCRIPTION: 
-  #   This function loads data of at least one specified float.
+  #   This function loads data (at least one variable)
+  #   of at least one specified float.
   #
   # INPUTS:
   #   float_ids: WMO ID of one or more floats
@@ -110,8 +111,10 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
   # LOOP TO IMPORT PROFILES AND EXTRACT VARIABLES
   for ( n in 1:length(good_float_ids)) {
     floatnum = good_float_ids[n] 
-    filename = paste0(Setting$prof_dir, floatnum,'_Sprof.nc')
+    is_bgc_float = Float$type[which(Float$wmoid==floatnum)]=="bgc"
     FWMO = paste0('F',floatnum)
+    filename = paste0(Setting$prof_dir, Float$file_name[which(Float$wmoid==floatnum)])
+    
     
     # LOAD VARIABLES FROM FILE
     info = nc_open(filename)	 #  Read netcdf information
@@ -128,6 +131,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     
     }
     
+    # Find 'number of profiles', 'number of parameters', and 'number of
+    # depth levels'
     dims=get_dims(filename)
     n_prof = dims$n_prof
     n_param =dims$n_param
@@ -142,6 +147,13 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     Mdata[[FWMO]] = NULL
 
     for (l in 1:amt) {
+      
+      if (is_bgc_float==F) {
+        if (all_vars[l]== 'PARAMETER_DATA_MODE' | 
+            endsWith(all_vars[l],'dPRES')){
+          next # these variables are only in Sprof files
+        }
+      } 
   
       # Catch up the error 
       if (!names[l] %in% names(info$var) ){
@@ -237,26 +249,32 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     }
       
     # parse parameter data modes
-    for (l in 1:length(mnames)) {
-      if (mnames[l] == 'PARAMETER_DATA_MODE'){
-        # create data mode variable for each parameter
-        # expand that variable to match size of data matrix
-        z=1
-        for (m in 1:n_param) {
-          if (params_keep[m]) { 
-            Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
+    if (is_bgc_float==T) {
+      for (l in 1:length(mnames)) {
+        if (mnames[l] == 'PARAMETER_DATA_MODE'){
+          # create data mode variable for each parameter
+          # expand that variable to match size of data matrix
+          z=1
+          for (m in 1:n_param) {
+            if (params_keep[m]) { 
+              Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
                 matrix(
-                    rep(substr(Mdata[[FWMO]][[mnames[l]]],m,m), each=n_levels),
-                    nrow=n_levels, ncol=n_prof)
-            z=z+1
+                  rep(substr(Mdata[[FWMO]][[mnames[l]]],m,m), each=n_levels),
+                  nrow=n_levels, ncol=n_prof)
+              z=z+1
+            }
           }
         }
       }
+      # clear both parameter and parameter data mode from metadata
+      Mdata[[FWMO]]$PARAMETER = NULL
+      Mdata[[FWMO]]$PARAMETER_DATA_MODE = NULL
+    } else {
+      Mdata[[FWMO]]$PARAMETER = NULL
     }
+    
 
-    # clear both parameter and parameter data mode from metadata
-    Mdata[[FWMO]]$PARAMETER = NULL
-    Mdata[[FWMO]]$PARAMETER_DATA_MODE = NULL
+   
  
     # add information about deploying organization and PI to meta data
     Mdata[[FWMO]]$WMO_NUMBER = floatnum
