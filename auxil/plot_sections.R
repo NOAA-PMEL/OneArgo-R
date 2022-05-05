@@ -234,7 +234,9 @@ plot_sections <- function(Data,
                                               y = as.vector(Datai$MLD_TEMP)),
                             size=2
         )
-      } else if (plot_mld == 2) {
+      } else if (plot_mld == 2 & "MLD_DENS" %in% names(Datai)) {
+        # some old core floats don't have PSAL and therefore
+        # density cannot be computed
         g1 = g1 + geom_line(aes(x = x, y = y),
                             data = data.frame(x = as.POSIXct(Datai$TIME[1,], tz="UTC"),
                                               y = as.vector(Datai$MLD_DENS)),

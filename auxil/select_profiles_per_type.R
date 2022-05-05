@@ -3,7 +3,6 @@ select_profiles_per_type <- function(Profiles,
                                          lat_lim=c(-90, 90), 
                                          start_date="1995-01-01", 
                                          end_date="2038-01-19",
-                                         type="all", 
                                          sensor=NULL,
                                          ocean=NULL) {
   
@@ -29,9 +28,6 @@ select_profiles_per_type <- function(Profiles,
   #              * Dates should be in one of the following formats:
   #              "YYYY-MM-DD HH:MM-SS" or "YYYY-MM-DD"
   #
-  #   type :    Valid choices are 'bgc' (select BGC floats only; the
-  #             default), 'phys' (select core and deep floats only), and
-  #             'all' (select all floats that match other criteria)
   #   sensor : 'SENSOR_TYPE': By default, all floats within the lon/lat/time
   #             limits are considered. This option allows the selection by 
   #             sensor type. Available are: PRES, PSAL, TEMP, DOXY, BBP,
@@ -102,15 +98,6 @@ select_profiles_per_type <- function(Profiles,
   sel_floats_space = all_floats[inpoly]
   indate[sel_floats_space[indate_poly]]<-TRUE
   
-  # SELECT BY TYPE OF FLOAT XXXX
-  # is_type = rep(TRUE, length(indate))
-  # if (type!="all") {
-  #   is_type = Float$type==type
-  # }
-  # if(any(is_type)==F){
-  #   warning('no floats of the selected type were found')
-  # }
-  
   # SELECT BY SENSOR
   if ( is.null(sensor) ) {
     has_sensor = rep(TRUE, length(indate)) # no sensor was selected
@@ -129,7 +116,7 @@ select_profiles_per_type <- function(Profiles,
   }
   
   # perform selection
-  profiles = which(inpoly & indate & has_sensor & is_ocean #& is_type XXXX
+  profiles = which(inpoly & indate & has_sensor & is_ocean
                    )
   float_ids = unique(Profiles$wmo[profiles])
   

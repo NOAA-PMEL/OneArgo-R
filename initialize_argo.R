@@ -146,9 +146,9 @@ initialize_argo <- function() {
   
   uwmo_sprof = unique(Sprof$wmo) # keep list order
   ia = seq_along(Sprof$wm)[!duplicated(Sprof$wm)]  ## logical vector of unique values
-  bgc_prof_idx1 <<- ia
+  bgc_prof_idx1 <- ia
   ia<-c(ia,(length(Sprof$urls) + 1))
-  bgc_prof_idx2 <<- ia[2:length(ia)] - 1
+  bgc_prof_idx2 <- ia[2:length(ia)] - 1
   
   # Download prof index file from GDAC to Index directory
   prof = 'ar_index_global_prof.txt' # file used locally
@@ -236,7 +236,7 @@ initialize_argo <- function() {
   len_sens = lapply(Sprof$sens,nchar)
   count = 0
   index_bgc = 0
-  is_true_bgc = rep("T",length(bgc_prof_idx1))
+  is_true_bgc = rep(T,length(bgc_prof_idx1))
   for (f in c(1:Float$nfloats)) {
     if (Float$type[f]== 'phys'){
       # ar_index_global_prof.txt does not contain information about
@@ -276,6 +276,18 @@ initialize_argo <- function() {
   
   print(paste("Note:",count,"floats from Sprof index file do not have BGC sensors"))
   
+  # assign index of first and last profile to true BGC floats only, referring
+  # to the indices within the Sprof struct
+  # these variables should never be used for non-BGC floats, so their value
+  # of 0 serves as a flag that would result in an out-of-bounds error
+  Float$bgc_prof_idx1 <<- rep(NA,length(Float$prof_idx1))
+  Float$bgc_prof_idx2 <<- Float$bgc_prof_idx1
+  bgc_prof_idx1 = bgc_prof_idx1[which(is_true_bgc == T)]
+  bgc_prof_idx2 = bgc_prof_idx2[which(is_true_bgc == T)]
+  Float$bgc_prof_idx1[which(Float$type=='bgc')] <<- bgc_prof_idx1
+  Float$bgc_prof_idx2[which(Float$type=='bgc')] <<- bgc_prof_idx2
+  
+  
   # for all "true" BGC floats, i.e., those that are listed in the Sprof
   # index file and have more than pTS sensors, Sprof files will be used
   # instead of prof files
@@ -287,5 +299,5 @@ initialize_argo <- function() {
   Float$file_name[which(Float$type=='bgc')] <<- gsub('prof', 'Sprof',Float$file_name[which(Float$type=='bgc')])
   
   # determine profile indices per float for all "true" BGC floats
-  Float$update[which(Float$type=='bgc')] = Sprof$date_update[bgc_prof_idx2[which(is_true_bgc==T)]]
+  Float$update[which(Float$type=='bgc')] = Sprof$date_update[bgc_prof_idx2]
 }

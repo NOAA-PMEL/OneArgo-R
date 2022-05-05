@@ -66,7 +66,7 @@ do_pause()
 float_idx <-which(Float$wmoid=='5906439') # float IDs for float #5906439 in the S_file index
 float_idx 
 
-prof_ids = c(Float$prof_idx1[float_idx]:Float$prof_idx2[float_idx]) # profile IDs for float #5906439 in the S_file index
+prof_ids = c(Float$bgc_prof_idx1[float_idx]:Float$bgc_prof_idx2[float_idx]) # profile IDs for float #5906439 in the S_file index
 prof_ids 
 
 dates = Sprof$date[prof_ids] # dates of each profile from float #5906439

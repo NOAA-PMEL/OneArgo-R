@@ -12,9 +12,9 @@ select_profiles <- function(lon_lim=c(-180,180),
   #   This function returns the indices of profiles and floats that match
   #   the given criteria (spatial, temporal, sensor availability).
   #   It calls function initialize_argo if necessary.
-  #   Sprof files that match most criteria (except data mode, if specified)
-  #   and those that have missing longitude/latitude values in the index file
-  #   are downloaded from a GDAC.
+  #   Prof and Sprof files that match most criteria (except data mode, if 
+  #   specified) and those that have missing longitude/latitude values in the 
+  #   index file are downloaded from a GDAC.
   #
   # PREREQUISITE: 
   #   Globals Sprof and Setting
@@ -173,7 +173,6 @@ select_profiles <- function(lon_lim=c(-180,180),
                                              lat_lim, 
                                              dn1, 
                                              dn2, 
-                                             type, 
                                              sensor,
                                              ocean)
   } else {
@@ -181,17 +180,20 @@ select_profiles <- function(lon_lim=c(-180,180),
   }
   
   if (type == 'phys' |  type== 'all'){
-  phys_float_ids = select_profiles_per_type(Prof,
-                                            lon_lim, 
-                                            lat_lim, 
-                                            dn1, 
-                                            dn2, 
-                                            type, 
-                                            sensor,ocean)
+    phys_float_ids = select_profiles_per_type(Prof,
+                                              lon_lim, 
+                                              lat_lim, 
+                                              dn1, 
+                                              dn2, 
+                                              sensor,ocean)
+    if(is.null(phys_float_ids)==F){
+      phys_float_idx<-which(Float$wmoid %in% phys_float_ids)
+      phys_float_ids<-phys_float_ids[which(Float$type[phys_float_idx]=='phys')]
+    }
   } else {
     phys_float_ids = NULL
   }
-
+  
   float_ids = unique(c(bgc_float_ids, phys_float_ids))
   float_profs = list()
   
@@ -200,7 +202,7 @@ select_profiles <- function(lon_lim=c(-180,180),
     # download Prof and Sprof files if necessary
     good_float_ids = download_multi_floats(float_ids)
     
-    # the information from the index file is only used for an initial
+    # the information from the index files is only used for an initial
     # filtering of floats, the actual information from the prof/Sprof files
     # is used in a second step
     
@@ -213,8 +215,12 @@ select_profiles <- function(lon_lim=c(-180,180),
       fl_idx = which(Float$wmoid==good_float_ids[fl])
       n_prof_exp = Float$prof_idx2[fl_idx] - Float$prof_idx1[fl_idx] + 1
       if (n_prof_exp > n_prof) {
+        type<-"prof"
+        if(length(grep("Sprof",filename))==1){
+          type<-"Sprof"
+        }
         warning(paste("The index file lists", n_prof_exp,"profiles for float",
-                      good_float_ids[fl],"but the Sprof file has only",n_prof,"profiles."))
+                      good_float_ids[fl],"but the",type," file has only",n_prof,"profiles."))
       }
       
       nc<-nc_open(filename)
@@ -276,15 +282,13 @@ select_profiles <- function(lon_lim=c(-180,180),
             warning("NA lon or lat for float ", good_float_ids[fl], "; profile ",ii)
             next
           }
-          slon_diff<-abs(Sprof$lon - lon[ii])
-          slat_diff<-abs(Sprof$lat - lat[ii])
+          slon_diff<-abs(Prof$lon - lon[ii])
+          slat_diff<-abs(Prof$lat - lat[ii])
           ssum<-slon_diff+slat_diff
-          if(Sprof$ocean[which.min(ssum)[1]]==ocean){
+          if(Prof$ocean[which.min(ssum)[1]]==ocean){
             is_ocean[ii]<-TRUE
           }
         }
-        sprof_loc = as.character(paste0(Sprof$lon,'i ',Sprof$lat))
-        this_loc = as.character(paste0(lon,'i ',lat))
       }
       
       if (mode=="ADR") {
