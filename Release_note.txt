@@ -1,6 +1,14 @@
 RELEASE NOTES FOR USERS OF THE BGC_ARGO RTOOLBOX
 
-Version 1.1 (January 17, 2022)
+Version 3.0 (May 2022)
+
+This version adds a new type of plot (time series) that can be used
+either per float or with multiple floats in one plot. If it is used
+to plot each float's time series separately, a second variable can
+be plotted for comparison.
+
+
+Version 2.1 (January 2022)
 
 The most important change since version 1.0 regards the evaluation of
 the index file (argo_synthetic-profile_index.txt). Previously, its
