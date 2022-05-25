@@ -388,6 +388,17 @@ show_sections( float_ids=HW_data$float_ids[5],
                raw="no"  # tells the function to plot adjusted data
 )
 
+# Show time series of near-surface pH and oxygen for two floats
+
+# The pH sensor for float 5906039 failed in late 2019, 
+# which is evident from the premature end to 
+# the blue line halfway through the first figure.
+show_time_series ( float_ids=HW_data$float_ids[4:5], 
+                   variables=c('PH_IN_SITU_TOTAL','DOXY'),
+                   plot_depth=20, # tells the function to plot the time-series for the given depth 
+                   raw="no"   # tells the function to plot raw data
+) 
+
 
 # clean up the workspace
 cat("\014")

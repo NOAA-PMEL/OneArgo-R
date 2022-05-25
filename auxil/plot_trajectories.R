@@ -95,15 +95,15 @@ plot_trajectories <- function(Data,
   
   g1 = g1 +
     coord_cartesian(xlim=lonlim, ylim=latlim) +
-    theme(axis.title.x = element_text(size=12, colour="black", face="bold", family="serif"), 
-          axis.text.x = element_text(size=12, colour="black", face="bold", family="serif"),
-          axis.title.y = element_text(size=12, colour="black", face="bold", family="serif"), 
-          axis.text.y = element_text(size=12, colour="black", face="bold", family="serif") ) +
-    labs(x = expression(bold(Longitude~"("~"degrees"~E~")")),
-         y = expression (bold(Latitude~"("~"degrees"~N~")")) ) +
-    theme(legend.text = element_text(size=12, face='bold', family="serif")) +
-    labs(colour=expression(bold("WMO ID")),size=5, family="serif")
-   
+    theme(axis.title.x = element_text(size=18, colour="black", face="bold", family="serif"), 
+          axis.text.x = element_text(size=18, colour="black", face="bold", family="serif"),
+          axis.title.y = element_text(size=18, colour="black", face="bold", family="serif"), 
+          axis.text.y = element_text(size=18, colour="black", face="bold", family="serif") ) +
+    labs(x =expression (bold(Longitude~"("~"°"~E~")")),
+         y =expression (bold(Latitude~"("~"°"~N~")")) ) +
+    theme(legend.text = element_text(size = 18,face = 'bold',family = "serif"))+
+    theme(legend.title=element_blank())+
+    theme(plot.title = element_text(size = 16, face = "bold",family = "serif"))
   return(g1)
   
 }

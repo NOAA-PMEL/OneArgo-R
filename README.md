@@ -31,6 +31,7 @@ select_profiles.R        : returns profiles and corresponding floats based on in
 show_profiles.R          : downloads float data and calls plot_profiles to create plot<br/>
 show_sections.R          : downloads float data and calls plot_sections to create plot<br/>
 show_trajectories.R      : downloads float data and calls plot_trajectories to create plot<br/>
+show_time_series.R       : downloads float data and calls plot_profiles to create plot<br/>
 get_lon_lat_time.R       : extracts the longitude, latitude, and time information for the specified floats)<br/>
 main_workshop.R          : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
 ### Background functions (primarily called by main functions in background):
@@ -49,6 +50,7 @@ get_multi_profile_mean   : calculates the mean profile of multiple profiles<br/>
 get_var_name_units.R     : returns the long variable name and units name for a given short parameter name input<br/>
 load_library.R           : load/install the required functions<br/>
 plot_profiles.R          : plots profiles of one or more specified float(s) for the specified variable(s)<br/>
+plot_time_series.R       : plots time-series of one or more specified float(s) for the specified variable(s)<br/>
 plot_sections.R          : plots sections of one or more specified float(s) for the specified variable(s)<br/>
 plot_trajectories.R      : plots trajectories of one or more specified float(s)<br/>
 try_download.R           : attempts to download a file from any of the specified GDACs<br/>
@@ -58,13 +60,15 @@ You can open the corresponding R script file to check out the description of inp
 
 ## UPDATE RECORD
 Version 1 & 2: June 2021<br/>
-Version 2.1: January 2022
+Version 2.1: January 2022<br/>
+Version 3: May 2022
 
 ## COMMENTS, BUGS etc.?
 Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes.
 
-## TOOLBOX VIDEO TUTORIAL
-https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be
+## TOOLBOX TUTORIAL
+https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be (VIDEO)
+https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md (Notebook)
 
 ## BGC-ARGO GUIDE
 More detailed information about quality control flags, raw and adjusted modes, etc., can be found in
