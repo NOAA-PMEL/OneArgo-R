@@ -18,9 +18,9 @@ BGC-Argo-Mat: A MATLAB toolbox for accessing and visualizing Biogeochemical Argo
 ## INSTALLATION AND USE
 This repository can be cloned using the command line or GitHub Desktop. Or the files can be directly downloaded in zipped format.
 
-Before use, make sure the files are placed in a directory that is in the R search path. Or add the directory where they are located to the search path https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces. Or run it in the directory where the main_workshop script was placed.
+Before use, make sure the files are placed in a directory that is in the R search path. Or add the directory where they are located to the search path https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces. Or run it in the directory where the Tutorial script was placed.
 
-For an overview of how to use this toolbox, step through the 'main_workshop' script (launching it in the R Console, or in the Rstudio console using the Run button or Ctrl+Alt+Enter, the Run All shortcut in R studio), a tutorial that was developed for the 2021 GO-BGC Scientific Workshop (6/30/21).
+For an overview of how to use this toolbox, step through the 'Tutorial' script (launching it in the R Console, or in the Rstudio console using the Run button or Ctrl+Alt+Enter, the Run All shortcut in R studio), a tutorial that was developed for the 2021 GO-BGC Scientific Workshop (6/30/21).
 
 ## FUNCTIONS
 
@@ -33,7 +33,7 @@ show_sections.R          : downloads float data and calls plot_sections to creat
 show_trajectories.R      : downloads float data and calls plot_trajectories to create plot<br/>
 show_time_series.R       : downloads float data and calls plot_profiles to create plot<br/>
 get_lon_lat_time.R       : extracts the longitude, latitude, and time information for the specified floats)<br/>
-main_workshop.R          : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
+Tutorial.R               : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
 ### Background functions (primarily called by main functions in background):
 
 calc_auxil.R             : calculates various auxiliary variables from Argo float data<br/>
@@ -41,7 +41,7 @@ check_dir.R              : determines if a directory needs to be created and doe
 combine_variables.R      : combines the given variables along with all associated variables and returns them<br/>
 depth_interp.R           : interpolates values for BGC-Argo parameters against depth<br/>
 do_download.R            : determines if a file should be downloaded or not<br/>
-do_pause.R               : pauses execution of main_workshop (if used without desktop)<br/>
+do_pause.R               : pauses execution of Tutorial (if used without desktop)<br/>
 download_float.R         : downloads the Sprof NetCDF file for one float<br/>
 download_multi_floats.R  : calls download_float to download Sprof NetCDF files for multiple floats<br/>
 get_dims                 : determines the number of profiles, parameters,and depth levels in an Sprof netcdf file<br/> 

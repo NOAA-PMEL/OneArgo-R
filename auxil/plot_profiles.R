@@ -26,7 +26,7 @@ plot_profiles <- function(Data,
   #                         per variable or 'mean'
   #                         mean and standard deviation across profiles;
   #                          
-  #  per_float='TRUE'/'FALSE':   "TRUE" (default) show profiles separately for each float；
+  #  per_float='TRUE'/'FALSE':   "TRUE" (default) show profiles separately for each float.
   #                               "FALSE" show all in one plot 
   #  obs = 'on'/'off' :      "off" (default") only shows the lines for each
   #                           profile; 'on' shows points on the profile at which

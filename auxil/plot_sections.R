@@ -1,4 +1,3 @@
-
 plot_sections <- function(Data, 
                           Mdata, 
                           variables, 

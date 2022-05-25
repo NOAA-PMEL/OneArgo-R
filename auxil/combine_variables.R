@@ -1,4 +1,3 @@
-
 combine_variables=function(base_vars, new_vars){
   
 

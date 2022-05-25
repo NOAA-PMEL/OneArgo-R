@@ -1,4 +1,3 @@
-
 plot_time_series <- function(Data, 
                           Mdata, 
                           plot_depth,
