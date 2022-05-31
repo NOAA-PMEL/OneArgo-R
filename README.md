@@ -1,12 +1,16 @@
-# BGC-Argo toolbox for R
+# Argo Toolbox for R (OneArgo-R)
+[![DOI](XXXXX)](XXXXX)
+
+## NOTE
+
+This is the first release of this toolbox under the OneArgo-R name. It is a further development of the [BGC-Argo-R](https://github.com/euroargodev/BGC-ARGO_R_WORKSHOP) toolbox.
 
 ## ABOUT
-This toolbox contains a variety of functions for accessing, processing, and visualizing Biogeochemical Argo data. Functions are designed to be maximally efficient, to provide access to the most up-to-date data available, and to allow for downloading and plotting of those data based on numerous user-defined conditions. 
+This toolbox contains a variety of functions for accessing, processing, and visualizing [Argo](https://argo.ucsd.edu) data, including Core, Deep, and Biogeochemical Argo. Functions are designed to be maximally efficient, to provide access to the most up-to-date data available, and to allow for downloading and plotting of those data based on numerous user-defined conditions.
 
-This toolbox is created and maintained by M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021 (All authors contributed equally to the code.)
 
-This toolbox is adapted from the BGC-Argo-Mat Toolbox: H. Frenzel*, J. Sharp*, A. Fassbender, J. Plant, T. Maurer, Y. Takeshita, D. Nicholson, A. Gray, 2021.
-BGC-Argo-Mat: A MATLAB toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. https://doi.org/10.5281/zenodo.4971318.
+This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PMEL/OneArgo-Mat) MATLAB Toolbox: 
+H. Frenzel, J. Sharp, A. Fassbender, N. Buzby, 2022. OneArgo-Mat: A MATLAB toolbox for accessing and visualizing Argo data. Zenodo. https://doi.org/10.5281/zenodo.6588041
 
 ## REQUIREMENTS
 1. Rstudio version 1.4 and R version 3.4 (or more recent) are needed to use these functions without modifications.  
@@ -14,13 +18,16 @@ BGC-Argo-Mat: A MATLAB toolbox for accessing and visualizing Biogeochemical Argo
 3. An Internet connection is needed to get the latest versions of index and Sprof files; but the repository includes versions of these files so that it can be run offline. 
 4. Memory requirements depend on the number of profiles and variables that are simultaneously loaded into memory. 
 
+## QUICK DEMO
+
+This <a href="demo_notebook.md">sample code</a> shows an example of selecting floats that match geographic and temporal limits and visualizing some of the data.
 
 ## INSTALLATION AND USE
 This repository can be cloned using the command line or GitHub Desktop. Or the files can be directly downloaded in zipped format.
 
 Before use, make sure the files are placed in a directory that is in the R search path. Or add the directory where they are located to the search path https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces. Or run it in the directory where the Tutorial script was placed.
 
-For an overview of how to use this toolbox, step through the 'Tutorial' script (launching it in the R Console, or in the Rstudio console using the Run button or Ctrl+Alt+Enter, the Run All shortcut in R studio), a tutorial that was developed for the 2021 GO-BGC Scientific Workshop (6/30/21).
+For an overview of how to use this toolbox, step through the 'Tutorial' script (launching it in the R Console, or in the Rstudio console using the Run button or Ctrl+Alt+Enter, the Run All shortcut in R studio), a tutorial that was developed for the [2021 GO-BGC Scientific Workshop](https://www.us-ocb.org/joint-gobgc-workshop/).
 
 ## FUNCTIONS
 
@@ -33,7 +40,9 @@ show_sections.R          : downloads float data and calls plot_sections to creat
 show_trajectories.R      : downloads float data and calls plot_trajectories to create plot<br/>
 show_time_series.R       : downloads float data and calls plot_profiles to create plot<br/>
 get_lon_lat_time.R       : extracts the longitude, latitude, and time information for the specified floats)<br/>
+
 Tutorial.R               : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
+
 ### Background functions (primarily called by main functions in background):
 
 calc_auxil.R             : calculates various auxiliary variables from Argo float data<br/>
@@ -58,23 +67,30 @@ try_download.R           : attempts to download a file from any of the specified
 
 You can open the corresponding R script file to check out the description of input and output parameters for individual functions. 
 
-## UPDATE RECORD
-Version 1 & 2: June 2021<br/>
-Version 2.1: January 2022<br/>
-Version 3: May 2022
-
 ## COMMENTS, BUGS etc.?
-Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes.
+Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes or additional features.
 
 ## TOOLBOX TUTORIAL
-https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be (VIDEO)
-https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md (Notebook)
+[Video Youtube: R Tutorial with GO-BGC data]https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be
+[Demo Notebook]https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md 
 
 ## BGC-ARGO GUIDE
 More detailed information about quality control flags, raw and adjusted modes, etc., can be found in
 H. C. Bittig et al., Front. Mar. Sci., 2019, https://doi.org/10.3389/fmars.2019.00502
 
+## TOOLBOX IN OTHER LANGUAGES
+This toolbox has been translated from MATLAB:<br/>
+[MATLAB Toolbox](https://github.com/NOAA-PMEL/OneArgo-Mat)
+
+A similar toolbox in Python:<br/>
+[Python toolbox](https://github.com/go-bgc/workshop-python)
+
+[Video tutorials for the toolbox](https://www.go-bgc.org/getting-started-with-go-bgc-data)
+
 ## CITATION
 
-M. Cornec (LOV), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and C. Schmechtig (OSU ECCE TERRA), 2021.
-BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. Zenodo. https://doi.org/10.5281/zenodo.5028138
+XXXXX
+
+## LEGAL DISCLAIMER
+
+This repository is a software product and is not official communication of the National Oceanic and Atmospheric Administration (NOAA), or the United States Department of Commerce (DOC). All NOAA GitHub project code is provided on an 'as is' basis and the user assumes responsibility for its use. Any claims against the DOC or DOC bureaus stemming from the use of this GitHub project will be governed by all applicable Federal law. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation, or favoring by the DOC. The DOC seal and logo, or the seal and logo of a DOC bureau, shall not be used in any manner to imply endorsement of any commercial product or activity by the DOC or the United States Government.

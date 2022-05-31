@@ -1,4 +1,35 @@
-RELEASE NOTES FOR USERS OF THE BGC_ARGO RTOOLBOX
+RELEASE NOTES FOR USERS OF THE ONEARGO-R TOOLBOX
+
+Version 1.0.1
+
+This version is an upgrade of the to version 3.0 of the BGC-Argo-R
+toolbox (described below).
+
+It expands access to all Argo float data. The select_profiles
+function now has an additional optional argument 'type', whose value can
+be set to either 'bgc', 'phys' (core and deep),  or 'all' (default setting).
+If the type is not specified, but sensors are, the type will be set
+to 'bgc' if sensors other than pressure, temperature, and/or salinity are
+selected.
+
+Previously written scripts that use select_profiles calls that implicitly
+assume BGC only floats (but not specify BGC sensors) should 
+have 'type','bgc' added to the calls to the select_profiles function.
+
+In previous versions, all floats that are listed in the Sprof index
+file were considered BGC floats. However, there are (183, as of
+April 2022) floats that are listed in the Sprof index file, but
+have only physical (pressure, temperature, salinity) sensors. These
+will now be labeled as physical floats.
+
+For BGC floats, only Sprof (not prof) files will be downloaded and used,
+even if only physical variables (p, T, S) are currently used for plots etc.
+
+==========================================================================
+
+RELEASE NOTES FOR USERS OF THE BGC-ARGO_R TOOLBOX
+
+(https://github.com/euroargodev/BGC-ARGO_R_WORKSHOP)
 
 Version 3.0 (May 2022)
 
@@ -6,6 +37,17 @@ This version adds a new type of plot (time series) that can be used
 either per float or with multiple floats in one plot. If it is used
 to plot each float's time series separately, a second variable can
 be plotted for comparison.
+
+The missing function get_lon_lat_time required in the Main_workshop 
+has been added (load the lon, lat and time from specified floats).
+The plot functions and get_multi_profile_mean were corrected to be able 
+to deal with selections of floats that does not all show the wanted variables.
+
+A bug in the plot_profile function were corrected in order to actually 
+plot all profiles of selected floats (and not only one float data).
+
+The depth_interp function was modified so it can now skip profiles with 
+not enough PRES values.
 
 
 Version 2.1 (January 2022)
