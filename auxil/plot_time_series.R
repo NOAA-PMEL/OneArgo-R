@@ -48,11 +48,26 @@ plot_time_series <- function(Data,
   #
   # CITATION:
   #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
-  #   C. Schmechtig (OSU ECCE TERRA), 2021.
+  #   C. Schmechtig (OSU ECCE TERRA), 2022.
   #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
   #   Zenodo. http://doi.org/10.5281/zenodo.5028138
   
   
+  # Remove the floats that show empty variables
+  index_non_empty<-NULL
+  for(i in 1:length(names(Data))) {
+    if(length(Data[[i]][["CYCLE_NUMBER"]])!=0){
+      index_non_empty<-c(index_non_empty,i)
+    }
+  }
+  
+  Data<-Data[index_non_empty]
+  Mdata<-Mdata[index_non_empty]
+  
+  if(length(Data)==0){
+    print('No available profiles for the plot selected plot options')
+    stop()
+  }
   
   
   floats = names(Data)
