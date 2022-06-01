@@ -20,7 +20,7 @@ Note: This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PME
 ## REQUIREMENTS
 1. Rstudio version 1.4 and R version 3.4 (or more recent) are needed to use these functions without modifications.  
 2. OSmac users need to install the ["xquartz"](https://www.xquartz.org/) for figure plot.
-3. An Internet connection is needed to get the latest versions of index and Sprof files; but the repository includes versions of these files so that it can be run offline. 
+3. An Internet connection is needed to get the latest versions of index and Sprof files. 
 4. Memory requirements depend on the number of profiles and variables that are simultaneously loaded into memory. 
 
 ## QUICK DEMO
@@ -77,7 +77,7 @@ Please feel free to use the GitHub Issues and Pull Requests features to report a
 
 ## TOOLBOX TUTORIAL
 [Video Youtube: R Tutorial with GO-BGC data](https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be)<br/>
-[Demo Notebook](https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md) 
+[Demo Notebook](https://github.com/NOAA-PMEL/OneArgo-R/blob/main/demo_notebook.md) 
 
 ## BGC-ARGO GUIDE
 More detailed information about quality control flags, raw and adjusted modes, etc., can be found in
