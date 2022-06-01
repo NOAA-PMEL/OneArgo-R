@@ -23,8 +23,8 @@ get_multi_profile_mean <- function (Datai, variable) {
   #
   # CITATION:
   #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
-  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
-  #   Zenodo. XXXXX
+  #   OneArgo-R: An R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. https://doi.org/10.5281/zenodo.6604650
   #
   # LICENSE: oneargo_r_license.m
   #

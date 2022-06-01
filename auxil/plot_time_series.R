@@ -50,12 +50,12 @@ plot_time_series <- function(Data,
   #
   # CITATION:
   #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
-  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
-  #   Zenodo. XXXXX
+  #   OneArgo-R: An R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. https://doi.org/10.5281/zenodo.6604650
   #
   # LICENSE: oneargo_r_license.m
   #
-  # DATE: JUNE 1, 2022  (Version 1.0.1) 
+  # DATE: JUNE 1, 2022  (Version 1.0.1)
   
   # Remove the floats that show empty variables
   index_non_empty<-NULL

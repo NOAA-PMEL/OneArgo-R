@@ -55,10 +55,10 @@ show_sections <- function(float_ids=Setting$demo_float,
   #   Quentin Jutard (OSU ECCE TERRA), Raphaelle Sauzede (IMEV) and 
   #   Catherine Schmechtig (OSU ECCE TERRA).
   #
-  # CITATION:
+  ## CITATION:
   #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
-  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
-  #   Zenodo. XXXXX
+  #   OneArgo-R: An R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. https://doi.org/10.5281/zenodo.6604650
   #
   # LICENSE: oneargo_r_license.m
   #

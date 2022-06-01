@@ -44,8 +44,8 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
   #
   # CITATION:
   #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
-  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
-  #   Zenodo. XXXXX
+  #   OneArgo-R: An R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. https://doi.org/10.5281/zenodo.6604650
   #
   # LICENSE: oneargo_r_license.m
   #

@@ -1,5 +1,5 @@
 # Argo Toolbox for R (OneArgo-R)
-[![DOI](XXXXX)](XXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6604650.svg)](https://doi.org/10.5281/zenodo.6604650)
 
 ## NOTE
 
@@ -11,7 +11,9 @@ This toolbox contains a variety of functions for accessing, processing, and visu
 ## CITATION
 
 Please cite this toolbox as:
-XXXXX
+
+M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. OneArgo-R: An R toolbox for accessing and visualizing Argo data. Zenodo. https://doi.org/10.5281/zenodo.6604650
+
 
 Note: This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PMEL/OneArgo-Mat) MATLAB Toolbox (H. Frenzel, J. Sharp, A. Fassbender, N. Buzby, 2022. OneArgo-Mat: A MATLAB toolbox for accessing and visualizing Argo data. Zenodo. https://doi.org/10.5281/zenodo.6588041)
 
