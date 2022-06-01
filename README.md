@@ -8,9 +8,12 @@ This is the first release of this toolbox under the OneArgo-R name. It is a furt
 ## ABOUT
 This toolbox contains a variety of functions for accessing, processing, and visualizing [Argo](https://argo.ucsd.edu) data, including Core, Deep, and Biogeochemical Argo. Functions are designed to be maximally efficient, to provide access to the most up-to-date data available, and to allow for downloading and plotting of those data based on numerous user-defined conditions.
 
+## CITATION
 
-This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PMEL/OneArgo-Mat) MATLAB Toolbox: 
-H. Frenzel, J. Sharp, A. Fassbender, N. Buzby, 2022. OneArgo-Mat: A MATLAB toolbox for accessing and visualizing Argo data. Zenodo. https://doi.org/10.5281/zenodo.6588041
+Please cite this toolbox as:
+XXXXX
+
+Note: This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PMEL/OneArgo-Mat) MATLAB Toolbox (H. Frenzel, J. Sharp, A. Fassbender, N. Buzby, 2022. OneArgo-Mat: A MATLAB toolbox for accessing and visualizing Argo data. Zenodo. https://doi.org/10.5281/zenodo.6588041)
 
 ## REQUIREMENTS
 1. Rstudio version 1.4 and R version 3.4 (or more recent) are needed to use these functions without modifications.  
@@ -86,10 +89,6 @@ A similar toolbox in Python:<br/>
 [Python toolbox](https://github.com/go-bgc/workshop-python)
 
 [Video tutorials for the toolbox](https://www.go-bgc.org/getting-started-with-go-bgc-data)
-
-## CITATION
-
-XXXXX
 
 ## LEGAL DISCLAIMER
 
