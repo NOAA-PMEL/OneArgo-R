@@ -71,8 +71,8 @@ You can open the corresponding R script file to check out the description of inp
 Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes or additional features.
 
 ## TOOLBOX TUTORIAL
-[Video Youtube: R Tutorial with GO-BGC data]https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be
-[Demo Notebook]https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md 
+[Video Youtube: R Tutorial with GO-BGC data](https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be)
+[Demo Notebook](https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md) 
 
 ## BGC-ARGO GUIDE
 More detailed information about quality control flags, raw and adjusted modes, etc., can be found in
