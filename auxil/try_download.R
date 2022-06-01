@@ -1,27 +1,31 @@
 try_download<-function (filename, dest_path) {
   
   # DESCRIPTION:
-  #   This function attempts to download a file from any of the GDACs specified in the
-  #   Setting.hosts cell array.
+  #   This function attempts to download a file from any of the GDACs specified 
+  #   in the Setting$hosts cell array.
   #
   # INPUTS:
   #   filename  : name of the file at the GDAC
   #   dest_path : full (relative or absolute) path to the local file
   #
   # OUTPUT:
-  #   success   : 1 for successul download; 2 for unsuccessful download,
+  #   success   : 1 for successful download; 2 for unsuccessful download,
   #               but the file exists locally already; 0 for failure
   #
-  # UPDATE RECORD: 
-  #   Version 1 & 2:   June 2021 
-  #   Version 2.1: January 2022 
+  #
+  # AUTHORS:
+  #   Marin Cornec (NOAA-PMEL), Yibin Huang (NOAA-PMEL), 
+  #   Quentin Jutard (OSU ECCE TERRA), Raphaelle Sauzede (IMEV) and 
+  #   Catherine Schmechtig (OSU ECCE TERRA).
   #
   # CITATION:
-  #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
-  #   C. Schmechtig (OSU ECCE TERRA), 2021.
-  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
-  #   Zenodo. http://doi.org/10.5281/zenodo.5028138
-
+  #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
+  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. XXXXX
+  #
+  # LICENSE: oneargo_r_license.m
+  #
+  # DATE: JUNE 1, 2022  (Version 1.0.1)
   
   success = 0 # default: failure
   for (h in 1:length(Setting$hosts)) {

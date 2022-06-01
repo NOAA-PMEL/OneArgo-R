@@ -23,16 +23,20 @@ get_lon_lat_lims <- function(Data) {
   #              ALT_LON is added that uses a 0..360 range instead;
   #              it is unchanged from the input otherwise
   #
-  # UPDATE RECORD: 
-  #   Version 1 & 2:   June 2021 
-  #   Version 2.1: January 2022 
+  #
+  # AUTHORS:
+  #   Marin Cornec (NOAA-PMEL), Yibin Huang (NOAA-PMEL), 
+  #   Quentin Jutard (OSU ECCE TERRA), Raphaelle Sauzede (IMEV) and 
+  #   Catherine Schmechtig (OSU ECCE TERRA).
   #
   # CITATION:
-  #   M. Cornec (LOV, now at NOAA-PMEL), Y. Huang (NOAA-PMEL), Q. Jutard (OSU ECCE TERRA), R. Sauzede (IMEV) and 
-  #   C. Schmechtig (OSU ECCE TERRA), 2021.
-  #   BGC-Argo-R: A R toolbox for accessing and visualizing Biogeochemical Argo data. 
-  #   Zenodo. http://doi.org/10.5281/zenodo.5028138
-  
+  #   M. Cornec, Y. Huang, Q. Jutard, R. Sauzede, and C. Schmechtig, 2022. 
+  #   OneArgo-R: A R toolbox for accessing and visualizing Argo data.
+  #   Zenodo. XXXXX
+  #
+  # LICENSE: oneargo_r_license.m
+  #
+  # DATE: JUNE 1, 2022  (Version 1.0.1) 
   
   
   
