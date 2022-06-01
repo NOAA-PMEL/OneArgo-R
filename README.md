@@ -14,7 +14,7 @@ H. Frenzel, J. Sharp, A. Fassbender, N. Buzby, 2022. OneArgo-Mat: A MATLAB toolb
 
 ## REQUIREMENTS
 1. Rstudio version 1.4 and R version 3.4 (or more recent) are needed to use these functions without modifications.  
-2. OSmac users need to install the "xquartz" for figure plot (https://www.xquartz.org/).
+2. OSmac users need to install the ["xquartz"](https://www.xquartz.org/) for figure plot.
 3. An Internet connection is needed to get the latest versions of index and Sprof files; but the repository includes versions of these files so that it can be run offline. 
 4. Memory requirements depend on the number of profiles and variables that are simultaneously loaded into memory. 
 
@@ -25,7 +25,7 @@ This <a href="demo_notebook.md">sample code</a> shows an example of selecting fl
 ## INSTALLATION AND USE
 This repository can be cloned using the command line or GitHub Desktop. Or the files can be directly downloaded in zipped format.
 
-Before use, make sure the files are placed in a directory that is in the R search path. Or add the directory where they are located to the search path https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces. Or run it in the directory where the Tutorial script was placed.
+Before use, make sure the files are placed in a [directory](https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces) that is in the R [search path](https://support.rstudio.com/hc/en-us/articles/200711843-Working-Directories-and-Workspaces). Or add the directory where they are located to the search path. Or run it in the directory where the Tutorial script was placed.
 
 For an overview of how to use this toolbox, step through the 'Tutorial' script (launching it in the R Console, or in the Rstudio console using the Run button or Ctrl+Alt+Enter, the Run All shortcut in R studio), a tutorial that was developed for the [2021 GO-BGC Scientific Workshop](https://www.us-ocb.org/joint-gobgc-workshop/).
 
@@ -71,7 +71,7 @@ You can open the corresponding R script file to check out the description of inp
 Please feel free to use the GitHub Issues and Pull Requests features to report any problems with this code and to suggest bug fixes or additional features.
 
 ## TOOLBOX TUTORIAL
-[Video Youtube: R Tutorial with GO-BGC data](https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be)
+[Video Youtube: R Tutorial with GO-BGC data](https://www.youtube.com/watch?v=w_6pEGNXQQ4&feature=youtu.be)<br/>
 [Demo Notebook](https://github.com/mcornec/workshop_R_GO_BGC/blob/Yibin/demo_notebook.md) 
 
 ## BGC-ARGO GUIDE
