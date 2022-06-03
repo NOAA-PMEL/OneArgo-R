@@ -7,7 +7,7 @@ Yibin Huang & Marin Cornec
 
 [Video tutorial](https://www.youtube.com/watch?v=w_6pEGNXQQ4)
 
-<img src="https://raw.githubusercontent.com/287408731/BGC-Argo-toolbox-figure/main/figures%20for%20demo/tutorial.jpg" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/tutorial.jpg" width="60%" />
 
 **Link: <https://www.youtube.com/watch?v=w_6pEGNXQQ4>**
 
