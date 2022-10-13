@@ -87,7 +87,7 @@ plot_time_series <- function(Data,
     return(1)
   }
   
-
+  
   # unless 'raw' is specified, plot adjusted data
   if ( raw == "yes" ) {
     title_add = ' [raw values]'
@@ -148,6 +148,10 @@ plot_time_series <- function(Data,
     if ("PRES_ADJUSTED" %in% names(Datai)) {
       df$ymin = df$PRES_ADJUSTED - prs_res/2
       df$ymax = df$PRES_ADJUSTED + prs_res/2
+      if(all(is.na(df$PRES_ADJUSTED))){
+        df$ymin = df$PRES - prs_res/2
+        df$ymax = df$PRES + prs_res/2
+      }
     } else {
       df$ymin = df$PRES - prs_res/2
       df$ymax = df$PRES + prs_res/2
@@ -182,10 +186,15 @@ plot_time_series <- function(Data,
     
     # extract the data at the given depth for each float 
     if ("PRES_ADJUSTED" %in% names(Datai)) {
-      df=subset(  df,  df$PRES_ADJUSTED==plot_depth)
+      if(all(is.na(df$PRES_ADJUSTED))==F){
+        df=subset(  df,  df$PRES_ADJUSTED==plot_depth)
+      }else {
+        df=subset(  df,  df$PRES==plot_depth)
+        
+      }
       
     } else {
-      df=subset(  df,  df$PRES_ADJUSTED==PRES)
+      df=subset(  df,  df$PRES==plot_depth)
       
     }
     

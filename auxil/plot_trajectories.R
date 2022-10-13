@@ -39,8 +39,8 @@ plot_trajectories <- function(Data,
   Data = limits$Data
   
   # Set lat and lon limits
-  latlim = c(lat_lim[1]-5, lat_lim[2]+5)
-  lonlim = c(lon_lim[1]-5, lon_lim[2]+5)
+  latlim = c(lat_lim[1]-2, lat_lim[2]+2)
+  lonlim = c(lon_lim[1]-2, lon_lim[2]+2)
   # Adjust limits outside range to minimum and maximum limits
   latlim[latlim < -90] = -90
   latlim[latlim >  90] =  90

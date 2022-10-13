@@ -54,40 +54,46 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
   # Calculate in situ density:
   if(calc_dens){
     if('PRES_ADJUSTED' %in% names(Data)){
-        Data[['PSAL_ABS_ADJUSTED']] = gsw_SA_from_SP(SP = Data[['PSAL_ADJUSTED']],
-                                                p = Data[['PRES_ADJUSTED']],
-                                                longitude = Data[['LONGITUDE']],
-                                                latitude = Data[['LATITUDE']]) # Calculate absolute salinity   
-        Data[['TEMP_CNS_ADJUSTED']] = gsw_CT_from_t(SA = Data[['PSAL_ABS_ADJUSTED']],
-                                               t = Data[['TEMP_ADJUSTED']],
-                                               p = Data[['PRES_ADJUSTED']]) # Calculate conservative temperature
-        Data[['DENS_ADJUSTED']] = gsw_rho(SA = Data[['PSAL_ABS_ADJUSTED']],
-                                     CT = Data[['TEMP_CNS_ADJUSTED']],
-                                     p = Data[['PRES_ADJUSTED']]) # Calculate in situ density
-      }
-      else{
-        Data[['PSAL_ABS']] = gsw_SA_from_SP(SP = Data[['PSAL']],
-                                       p = Data[['PRES']],
-                                       longitude = Data[['LONGITUDE']],
-                                       latitude = Data[['LATITUDE']]) # Calculate absolute salinity   
-        Data[['TEMP_CNS']] = gsw_CT_from_t(SA = Data[['PSAL_ABS']],
-                                      t = Data[['TEMP']],
-                                      p = Data[['PRES']]) # Calculate conservative temperature
-        Data[['DENS']] = gsw_rho(SA = Data[['PSAL_ABS']],
-                            CT = Data[['TEMP_CNS']],
-                            p = Data[['PRES']]) # Calculate in situ density
-      }
+      Data[['PSAL_ABS_ADJUSTED']] = gsw_SA_from_SP(SP = Data[['PSAL_ADJUSTED']],
+                                                   p = Data[['PRES_ADJUSTED']],
+                                                   longitude = Data[['LONGITUDE']],
+                                                   latitude = Data[['LATITUDE']]) # Calculate absolute salinity   
+      Data[['TEMP_CNS_ADJUSTED']] = gsw_CT_from_t(SA = Data[['PSAL_ABS_ADJUSTED']],
+                                                  t = Data[['TEMP_ADJUSTED']],
+                                                  p = Data[['PRES_ADJUSTED']]) # Calculate conservative temperature
+      Data[['DENS_ADJUSTED']] = gsw_rho(SA = Data[['PSAL_ABS_ADJUSTED']],
+                                        CT = Data[['TEMP_CNS_ADJUSTED']],
+                                        p = Data[['PRES_ADJUSTED']]) # Calculate in situ density
+    }
+    else{
+      Data[['PSAL_ABS']] = gsw_SA_from_SP(SP = Data[['PSAL']],
+                                          p = Data[['PRES']],
+                                          longitude = Data[['LONGITUDE']],
+                                          latitude = Data[['LATITUDE']]) # Calculate absolute salinity   
+      Data[['TEMP_CNS']] = gsw_CT_from_t(SA = Data[['PSAL_ABS']],
+                                         t = Data[['TEMP']],
+                                         p = Data[['PRES']]) # Calculate conservative temperature
+      Data[['DENS']] = gsw_rho(SA = Data[['PSAL_ABS']],
+                               CT = Data[['TEMP_CNS']],
+                               p = Data[['PRES']]) # Calculate in situ density
+    }
   }
   
   if(calc_mld_temp | calc_mld_dens){
     if('TEMP_ADJUSTED' %in% names(Data)){
-        temp = Data[['TEMP_ADJUSTED']]
+      temp = Data[['TEMP_ADJUSTED']]
+      if(length(which(is.finite(temp))) < 0.5*length(temp)){
+        temp = Data[['TEMP']]
+      }
     }
     else{
-        temp = Data[['TEMP']]
+      temp = Data[['TEMP']]
     }
     if('PRES_ADJUSTED' %in% names(Data)){
       pres = Data[['PRES_ADJUSTED']]
+      if(length(which(is.finite(pres))) < 0.5*length(pres)){
+        pres = Data[['PRES']]
+      }
     }
     else{
       pres = Data[['PRES']]
@@ -99,6 +105,10 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
     Data[['MLD_TEMP']] = rep(NaN, ncol(temp))
     # Calculate density based on temperature threshold
     for(n in 1:ncol(temp)){
+      if(all(is.na(pres[,n])) | all(is.na(temp[,n]))){
+        next
+        # skip calculation if no pres or temp values available
+      }
       pressure_prof = pres[,n] # extract pressure profile
       temperature_prof = temp[,n] # extract temperature profile
       # determine pressure closest to 10
@@ -116,10 +126,13 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
       }
     }
   }
- 
+  
   if(calc_mld_dens){
     if('PSAL_ADJUSTED' %in% names(Data)){
       salt = Data[['PSAL_ADJUSTED']]
+      if(length(which(is.finite(salt))) < 0.5*length(salt)){
+        sal = Data[['PSAL']]
+      }
     }
     else{
       salt = Data[['PSAL']]
@@ -134,6 +147,10 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
     # Identify first instance of potential density that is
     # "dens_thres" greater than surface potential density
     for(n in 1:ncol(temp)){
+      if(all(is.na(pres[,n])) | all(is.na(temp[,n])) | all(is.na(salt[,n]))){
+        next
+        # skip calculation if no pres or temp values available
+      }
       pressure_prof = pres[,n] # extract pressure profile
       # determine pressure closest to 10 dbar; use that as reference
       ref_idx = which.min(abs(pressure_prof-10))
