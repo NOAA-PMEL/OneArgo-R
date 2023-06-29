@@ -102,15 +102,14 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
   
   if(calc_mld_temp){
     # Pre-allocate mixed layer
-    Data[['MLD_TEMP']] = rep(NaN, ncol(temp))
-    # Calculate density based on temperature threshold
-    for(n in 1:ncol(temp)){
-      if(all(is.na(pres[,n])) | all(is.na(temp[,n]))){
+    if(is.null(dim(temp))){
+      Data[['MLD_TEMP']] = NaN
+      if(all(is.na(pres)) | all(is.na(temp))){
         next
         # skip calculation if no pres or temp values available
       }
-      pressure_prof = pres[,n] # extract pressure profile
-      temperature_prof = temp[,n] # extract temperature profile
+      pressure_prof = pres # extract pressure profile
+      temperature_prof = temp # extract temperature profile
       # determine pressure closest to 10
       ref_idx = which.min(abs(pressure_prof-10))
       # define reference temperature as closest to P = 10
@@ -122,9 +121,35 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
       temperature_prof = temperature_prof[under_ref]
       MLDt_idx = which(temperature_prof < temperature_ref-temp_thresh)
       if(length(MLDt_idx)>0){
-        Data[['MLD_TEMP']][n] = pressure_prof[MLDt_idx[1]]
+        Data[['MLD_TEMP']] = pressure_prof[MLDt_idx[1]]
+      }
+      
+    } else{
+      Data[['MLD_TEMP']] = rep(NaN, ncol(temp))
+      # Calculate density based on temperature threshold
+      for(n in 1:ncol(temp)){
+        if(all(is.na(pres[,n])) | all(is.na(temp[,n]))){
+          next
+          # skip calculation if no pres or temp values available
+        }
+        pressure_prof = pres[,n] # extract pressure profile
+        temperature_prof = temp[,n] # extract temperature profile
+        # determine pressure closest to 10
+        ref_idx = which.min(abs(pressure_prof-10))
+        # define reference temperature as closest to P = 10
+        temperature_ref = temperature_prof[ref_idx]
+        under_ref = (ref_idx+1):length(pressure_prof) # index temp. below reference
+        # truncate pressure profile to below reference
+        pressure_prof = pressure_prof[under_ref]
+        # truncate temperature profile to below reference
+        temperature_prof = temperature_prof[under_ref]
+        MLDt_idx = which(temperature_prof < temperature_ref-temp_thresh)
+        if(length(MLDt_idx)>0){
+          Data[['MLD_TEMP']][n] = pressure_prof[MLDt_idx[1]]
+        }
       }
     }
+
   }
   
   if(calc_mld_dens){
@@ -141,20 +166,16 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
     # Calculate potential density with respect to surface pressure (=0)
     pdensity = gsw_rho(SA = salt,CT = temp, p = matrix(0,ncol = ncol(temp), nrow = nrow(temp)))
     
-    # Pre-allocate mixed layer
-    Data[['MLD_DENS']] = rep(NaN,ncol(temp))
-    
-    # Identify first instance of potential density that is
-    # "dens_thres" greater than surface potential density
-    for(n in 1:ncol(temp)){
-      if(all(is.na(pres[,n])) | all(is.na(temp[,n])) | all(is.na(salt[,n]))){
+    if(is.null(dim(temp))){
+      Data[['MLD_DENS']] = NaN
+      if(all(is.na(pres)) | all(is.na(temp)) | all(is.na(salt))){
         next
         # skip calculation if no pres or temp values available
       }
-      pressure_prof = pres[,n] # extract pressure profile
+      pressure_prof = pres # extract pressure profile
       # determine pressure closest to 10 dbar; use that as reference
       ref_idx = which.min(abs(pressure_prof-10))
-      density_prof = pdensity[,n] # extract n-th density profile
+      density_prof = pdensity # extract n-th density profile
       # define reference density as closest to P = 10 dbar
       density_ref = density_prof[ref_idx]
       # is infinite density ---> à reprendre pas compris
@@ -166,10 +187,43 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
         # truncate density profile to below reference
         MLDd_idx = which(density_prof > density_ref+dens_thresh)
         if(length(MLDd_idx)>0){
-          Data[['MLD_DENS']][n] = pressure_prof[MLDd_idx[1]]
+          Data[['MLD_DENS']] = pressure_prof[MLDd_idx[1]]
+        }
+      }
+      
+    } else{
+      # Pre-allocate mixed layer
+      Data[['MLD_DENS']] = rep(NaN,ncol(temp))
+      
+      # Identify first instance of potential density that is
+      # "dens_thres" greater than surface potential density
+      for(n in 1:ncol(temp)){
+        if(all(is.na(pres[,n])) | all(is.na(temp[,n])) | all(is.na(salt[,n]))){
+          next
+          # skip calculation if no pres or temp values available
+        }
+        pressure_prof = pres[,n] # extract pressure profile
+        # determine pressure closest to 10 dbar; use that as reference
+        ref_idx = which.min(abs(pressure_prof-10))
+        density_prof = pdensity[,n] # extract n-th density profile
+        # define reference density as closest to P = 10 dbar
+        density_ref = density_prof[ref_idx]
+        # is infinite density ---> à reprendre pas compris
+        if(is.finite(density_ref)){ # make sure that a valid density was found
+          under_ref = (ref_idx+1):length(pressure_prof) # index to dens. below reference
+          pressure_prof = pressure_prof[under_ref]
+          # truncate pressure profile to below reference
+          density_prof = density_prof[under_ref]
+          # truncate density profile to below reference
+          MLDd_idx = which(density_prof > density_ref+dens_thresh)
+          if(length(MLDd_idx)>0){
+            Data[['MLD_DENS']][n] = pressure_prof[MLDd_idx[1]]
+          }
         }
       }
     }
+    
+
   }
   return(Data)
 }

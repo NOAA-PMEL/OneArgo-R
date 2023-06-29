@@ -106,7 +106,7 @@ select_profiles_per_type <- function(Profiles,
   if ( is.null(sensor) ) {
     has_sensor = rep(TRUE, length(indate)) # no sensor was selected
   } else {
-    has_sensor = grepl(sensor, Profiles$sens)
+    has_sensor = grepl(sensor, Profiles$split_sens)
   }
   if(any(has_sensor)==F){
     warning('no data found for sensor ', sensor)
