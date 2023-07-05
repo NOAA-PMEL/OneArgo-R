@@ -245,7 +245,7 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       # if(!is.null(sensor) & mode!="ADR"){
       if(mode!="ADR"){
-        if(is.null(sensor) || float_type=="phys"){
+        if(!is.null(sensor) || float_type=="phys"){
           params = ncvar_get(nc,"PARAMETER")
           # find the index of a profile that has the most sensors available
           tmp = nchar(trimws(params))
@@ -260,7 +260,7 @@ select_profiles <- function(lon_lim=c(-180,180),
           }
           if(float_type=="phys"){
             data_mode = ncvar_get(nc,"DATA_MODE")
-            param_idx = 1 #for TEMP, PSAL, PRES
+            param_idx = rep(1,3) #for TEMP, PSAL, PRES
           } else{
             param_idx = which(param_names==sensor)
             data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
@@ -270,17 +270,21 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       date = as.POSIXct(juld*3600*24,origin=as.Date("1950-01-01"), tz="UTC")
       
-      if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-        lonv1 = c(lon_lim[1], 180)
-        lonv2 = c(-180, lon_lim[2])
-        inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
-                     (lon>lonv2[1] & lon<lonv2[2])) & 
-          (lat>lat_lim[1] & lat<lat_lim[2])
-      } else {
-        inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
-                    lat>lat_lim[1] & lat<lat_lim[2])
-      }
+      # 05/07/2023 MC: previous
+      # if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
+      #   lonv1 = c(lon_lim[1], 180)
+      #   lonv2 = c(-180, lon_lim[2])
+      #   inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
+      #                (lon>lonv2[1] & lon<lonv2[2])) & 
+      #     (lat>lat_lim[1] & lat<lat_lim[2])
+      # } else {
+      #   inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
+      #               lat>lat_lim[1] & lat<lat_lim[2])
+      # }
+      # 05/07/2023 MC: now use polygon function
       
+      inpoly=point.in.polygon(lon,lat,lon_lim,lat_lim)
+      inpoly<-inpoly==T
       
       indate = date >= dn1 & date <= dn2
       
@@ -316,7 +320,7 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       if (mode=="ADR") {
         has_mode = rep(TRUE, length(inpoly))
-      } else if(type=="phys") {
+      } else if(float_type=="phys") {
         has_mode = rep(FALSE, length(inpoly))
         for(m in 1:nchar(mode)) {
           for(n in 1:length(inpoly)){

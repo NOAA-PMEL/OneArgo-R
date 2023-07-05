@@ -10,3 +10,4 @@ if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2) # convert
 if (!require("metR")) { install.packages("metR"); library(metR) }
 if (!require("gsw")) { install.packages("gsw"); library(gsw) }
 if (!require("R.utils")) { install.packages("R.utils"); library(R.utils) } # to gunzip S index file
+if (!require("sp")) { install.packages("sp"); library(sp) } # points in polygon

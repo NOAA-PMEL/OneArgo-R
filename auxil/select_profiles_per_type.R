@@ -75,16 +75,20 @@ select_profiles_per_type <- function(Profiles,
   dn2 = as.POSIXct(end_date, tz="UTC")
   
   # GET INDEX OF PROFILES WITHIN USER-SPECIFIED GEOGRAPHIC POLYGON
-  if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-    lonv1 = c(lon_lim[1], 180)
-    lonv2 = c(-180, lon_lim[2])
-    inpoly =  ( (Profiles$lon>lonv1[1] & Profiles$lon<lonv1[2]) | 
-                  (Profiles$lon>lonv2[1] & Profiles$lon<lonv2[2]) ) & 
-      (Profiles$lat>lat_lim[1] & Profiles$lat<lat_lim[2])
-  } else {
-    inpoly = (Profiles$lon>lon_lim[1] & Profiles$lon<lon_lim[2] & 
-                Profiles$lat>lat_lim[1] & Profiles$lat<lat_lim[2])
-  }
+  # 05/07/2023 MC: previous
+  # if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
+  #   lonv1 = c(lon_lim[1], 180)
+  #   lonv2 = c(-180, lon_lim[2])
+  #   inpoly =  ( (Profiles$lon>lonv1[1] & Profiles$lon<lonv1[2]) | 
+  #                 (Profiles$lon>lonv2[1] & Profiles$lon<lonv2[2]) ) & 
+  #     (Profiles$lat>lat_lim[1] & Profiles$lat<lat_lim[2])
+  # } else {
+  #   inpoly = (Profiles$lon>lon_lim[1] & Profiles$lon<lon_lim[2] & 
+  #               Profiles$lat>lat_lim[1] & Profiles$lat<lat_lim[2])
+  # }
+  # 05/07/2023 MC: now use polygon function
+  inpoly=point.in.polygon(Profiles$lon,Profiles$lat,lon_lim,lat_lim)
+  inpoly<-inpoly==T
   
   if(any(inpoly)==F | length(inpoly)==0 ){
     warning('no matching profile found', sensor)
@@ -93,6 +97,7 @@ select_profiles_per_type <- function(Profiles,
   # Find index of dates that are within the time window
   
   indate_poly = (Profiles$date[inpoly] >= dn1 & Profiles$date[inpoly] <= dn2)
+  #indate_poly = (Profiles$date[inpoly==1] >= dn1 & Profiles$date[inpoly==1] <= dn2)
   
   # Now create an indate array of TRUE/FALSE that has the same
   # size as inpoly so that it can be used in the & operations below
@@ -120,7 +125,7 @@ select_profiles_per_type <- function(Profiles,
   }
   
   # perform selection
-  profiles = which(inpoly & indate & has_sensor & is_ocean
+  profiles = which(inpoly==1 & indate==T & has_sensor==T & is_ocean==T
                    )
   float_ids = unique(Profiles$wmo[profiles])
   

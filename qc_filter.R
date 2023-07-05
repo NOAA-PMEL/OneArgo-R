@@ -53,6 +53,12 @@ qc_filter<-function(Data,
     qc_flags = c(1,2)
   }
   
+  if ( is.null   (format)  ){ # Set to export the data in the format of listif "format" are not specific
+    
+    format="list"
+    
+  }
+  
   # Add pres varaible
   if("PRES" %in% variables==F){
     if("PRES_ADJUSTED" %in% variables==F){

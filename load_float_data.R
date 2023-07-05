@@ -280,6 +280,7 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     # clear both parameter and parameter data mode from metadata
     Mdata[[FWMO]]$PARAMETER = NULL
     Mdata[[FWMO]]$PARAMETER_DATA_MODE = NULL
+    Data[[FWMO]]$PARAMETER_DATA_MODE = NULL
 
  
     # add information about deploying organization and PI to meta data
