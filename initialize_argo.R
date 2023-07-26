@@ -226,6 +226,8 @@ initialize_argo <- function() {
   ia2<-c(ia2,(length(Prof$urls) + 1))
   Float$prof_idx2 <<- ia2[2:length(ia2)] - 1
   Float$profiler <<- Prof$profiler[Float$prof_idx2]
+  # use the update date of the last profile
+  Float$update <<-Prof$date_update[Float$prof_idx2]
   type_phys = list('phys') # for old floats without salinity sensor
   Float$type <<- rep(type_phys,length(uwmo_prof))
   Float$type[which(is_uniq_bgc==T)] <<- 'bgc'
@@ -238,8 +240,6 @@ initialize_argo <- function() {
   len_sens = lapply(Sprof$sens,nchar)
   count = 0
   index_bgc = 0
-  count_bgc = 0 # used for index_full_to_bgc
-  index_full_to_bgc = rep(NA,length(Float$nfloats)) #used for finding updates dates
   is_true_bgc = rep(T,length(bgc_prof_idx1))
   for (f in c(1:Float$nfloats)) {
     if (Float$type[f]== 'phys'){
@@ -274,10 +274,7 @@ initialize_argo <- function() {
         Float$type[f] <<- 'phys'
         count = count + 1
         is_true_bgc[index_bgc] = F
-      } else {
-        count_bgc<-count_bgc+1
-        index_full_to_bgc[f]<-count_bgc
-      }
+      } 
     }
   }
   
@@ -305,15 +302,6 @@ initialize_argo <- function() {
   Float$file_path[which(Float$type=='bgc')] <<- gsub('prof', 'Sprof',Float$file_path[which(Float$type=='bgc')])
   Float$file_name[which(Float$type=='bgc')] <<- gsub('prof', 'Sprof',Float$file_name[which(Float$type=='bgc')])
   
-  # use the most recent update date across profiles for any given float
-  for (f in c(1:length(Float$prof_idx1))) {
-    if(Float$type[f]=="bgc"){
-      flt=index_full_to_bgc[f]
-      idx<-which.max(unlist(Sprof$date_update[bgc_prof_idx1[flt]:bgc_prof_idx2[flt]]))
-      Float$update[f]<<-Sprof$update[bgc_prof_idx1[flt] + idx-1]
-    } else {
-      idx<-which.max(unlist(Prof$date_update[Float$prof_idx1[f]:Float$prof_idx2[f]]))
-      Float$update[f]<<-Prof$update[Float$prof_idx1[f] + idx-1]
-    }
-  }
+  # determine profile indices per float for all "true" BGC floats
+  Float$update[which(Float$type=='bgc')] = Sprof$date_update[bgc_prof_idx2]
 }
