@@ -9,7 +9,7 @@
 #   based on provided QC flag values.
 #
 # INPUTS:
-#   Data     : struct that must contain the given variables
+#   Data     : list that must contain the given variables
 #              (_ADJUSTED fields are used if available), as returned by
 #              function load_float_data
 #   variables: name(s) of the measured field(s)
@@ -20,12 +20,20 @@
 # OPTIONAL INPUTS:
 #   qc_flags: numerical array of QC flag values (default: c(1,2))
 #
+#   raw     : "yes", "no", "no_strict". "yes" (default) raw data will be used
+#              if no adjusted data are available, "no" : adjusted data for the 
+#              given parameter. "no_strict": skip the float if one of the variable
+#              is not adjusted
+#
 #
 # OUTPUT:
-#   Data_good: struct that contains all the varaiables from the input Data
-#              struct that match the given QC flags;
+#   Data_good: - if "format" option is not be specified:
+#              list that contains all the variables from the input Data
+#              values that match the given QC flags are conserved;
 #              all other values are set to NA (the size of the arrays is
 #              unchanged)
+#              - if "format" option is set to "dataframe": list will be 
+#              converted to a data frame
 #
 # AUTHORS:
 #   Marin Cornec (NOAA-PMEL), Yibin Huang (NOAA-PMEL), 
@@ -45,7 +53,8 @@
 qc_filter<-function(Data, 
                     variables="PRES", 
                     qc_flags=NULL,
-                    format=NULL
+                    format=NULL,
+                    raw="yes"
 ){
   
   # assign default qc_flags if none provided as input
@@ -53,13 +62,11 @@ qc_filter<-function(Data,
     qc_flags = c(1,2)
   }
   
-  if ( is.null   (format)  ){ # Set to export the data in the format of listif "format" are not specific
-    
+  if ( is.null   (format)  ){ # Set to export the data in the format of list if "format" are not specific
     format="list"
-    
   }
   
-  # Add pres varaible
+  # Add pres variable
   if("PRES" %in% variables==F){
     if("PRES_ADJUSTED" %in% variables==F){
       variables<-c(variables,"PRES")
@@ -67,7 +74,7 @@ qc_filter<-function(Data,
   }
   nvar = length(variables)
   
-  # establish qc structure to reference
+  # establish qc list to reference
   qc_by_var<-list()
   for (v in c(1:nvar)){
     qc_by_var[[variables[v]]] = qc_flags
@@ -79,10 +86,9 @@ qc_filter<-function(Data,
   floats = names(Data)
   nfloats = length(floats)
   
-  
   Data_good<-list()
   for (f in (1:nfloats)){
-    # create basic structure to build off of
+    # create basic lists to build off of
     
     Data_good[[floats[f]]]$CYCLE_NUMBER<-Data[[floats[f]]]$CYCLE_NUMBER
     Data_good[[floats[f]]]$TIME<-Data[[floats[f]]]$TIME
@@ -96,7 +102,8 @@ qc_filter<-function(Data,
       }
       
       else{
-        if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T ){
+        if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T &&
+            all(is.na(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]))==F){
           Data_good[[floats[f]]][[variables[v]]]<-
             Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]
           if(is.null(dim(Data_good[[floats[f]]][[variables[v]]]))){
@@ -115,6 +122,15 @@ qc_filter<-function(Data,
               }
             }
           }
+        }else if(raw=="no_strict"){
+          warning(paste("adjusted values for float",floats[f],"for", 
+                        variables[v],"are not available, this float will not be used"))
+          Data_good[[floats[f]]]<-NULL
+          break
+        }else if(raw=="no"){
+          warning(paste("adjusted values for float",floats[f],"for", 
+                        variables[v],"are not available, this float will not be used"))
+          next
         }else{
           warning(paste("adjusted values for", variables[v],"are not available"))
           Data_good[[floats[f]]][[variables[v]]]<-
@@ -145,63 +161,45 @@ qc_filter<-function(Data,
     return(Data_good)
   }
   
-  
   if (format=="dataframe"){ # convert the data into the data frame format 
-    
     float_data_list_dtfr= vector("list",
                                  length(Data_good)
     )# Create a list to store the multiple data frame for each float data
     
-    
     for (i in 1:length(Data_good)  ){ # loop for each float data 
       
       float_data_single=Data_good[[i]] # Pull out each float
-      
       length_float_data=length(  float_data_single$CYCLE_NUMBER)
       number_variable_float_data=length(float_data_single)
-      
-      
-      # create a matrix to deposite the float data
+  
+      # create a matrix to deposit the float data
       float_data_single_dtfr= matrix (nrow=   length_float_data,
-                                      ncol=   number_variable_float_data
-                                      
-      ) 
+                                      ncol=   number_variable_float_data) 
       float_data_single_dtfr=as.data.frame(  float_data_single_dtfr)
       colnames(float_data_single_dtfr) = names(float_data_single) # names the data frame
       
-      
-      # loop to tranform the each variable 
+      # loop to transform the each variable 
       for (ii in 1:   number_variable_float_data ){  
-        
-        
         float_data_single_dtfr[,ii]=as.vector(float_data_single[[ii]])
-        
-        
       } # end loop in number_variable_float_data
       
-      
       float_data_single_dtfr$WMOID= names(Data[i])  # add the WMOID in data frame 
-      
-      
+    
       #  assign data frame into the list array 
       float_data_list_dtfr[[i]]=  float_data_single_dtfr 
       names(  float_data_list_dtfr)[i] <-  names(Data_good[i]) #  name the each element in list 
       
     }# end loop in float_data
     
-    # merge the multiple data frame into the single one
+    # merge multiple dataframes into a single one
     tryCatch( {
-      
       float_data_list_dtfr=bind_rows(float_data_list_dtfr)
     },  error = function(e){
-      
       print("data exceeds the memorylimit of dataframe so data isinput as a list containing multiple data frame for each float ")
     }
     )
     
-    
     return( float_data_list_dtfr)
-    
     
   } # end loop format=="dataframe"
   

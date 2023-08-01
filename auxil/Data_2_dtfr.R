@@ -72,17 +72,15 @@ Data_2_dtfr<-function(Data,
         if(is.null(dim(Data[[i]][[variables[ii]]])) &
            length(Data[[i]]$CYCLE_NUMBER)!=length(Data[[i]][[variables[ii]]])){
           n_depth<-length(Data[[i]]$CYCLE_NUMBER)
-          
+          var_vec<-NULL
           if(is.null(dim(Data[[i]]$CYCLE_NUMBER)[1])){
-            
-            var_vec<-NULL
             for(ij in 1:length(Data[[i]][[variables[ii]]])){
               var_vec<-c(var_vec,rep(Data[[i]][[variables[ii]]][ij],n_depth))
             }
             float_data_single_dtfr[,ii]<-var_vec
           }else{
             n_depth<-dim(Data[[i]]$CYCLE_NUMBER)[1]
-            var_vec<-NULL
+            
             for(ij in 1:length(Data[[i]][[variables[ii]]])){
               var_vec<-c(var_vec,rep(Data[[i]][[variables[ii]]][ij],n_depth))
             }
@@ -103,7 +101,7 @@ Data_2_dtfr<-function(Data,
     
     #  assign data frame into the list array 
     float_data_list_dtfr[[i]]=  float_data_single_dtfr 
-    names(  float_data_list_dtfr)[i] <-  names(Data[i]) #  name the each element in list 
+    names(  float_data_list_dtfr)[i] <-  names(Data[i]) #  name each element in list 
     
   }# end loop in float_data
   

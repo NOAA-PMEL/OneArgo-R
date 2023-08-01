@@ -310,10 +310,10 @@ initialize_argo <- function() {
     if(Float$type[f]=="bgc"){
       flt=index_full_to_bgc[f]
       idx<-which.max(unlist(Sprof$date_update[bgc_prof_idx1[flt]:bgc_prof_idx2[flt]]))
-      Float$update[f]<<-Sprof$update[bgc_prof_idx1[flt] + idx-1]
+      Float$update[f]<<-as.character(paste(Sprof$date_update[bgc_prof_idx1[flt] + idx-1]))
     } else {
       idx<-which.max(unlist(Prof$date_update[Float$prof_idx1[f]:Float$prof_idx2[f]]))
-      Float$update[f]<<-Prof$update[Float$prof_idx1[f] + idx-1]
+      Float$update[f]<<-as.character(Prof$date_update[Float$prof_idx1[f] + idx-1])
     }
   }
 }

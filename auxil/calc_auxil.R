@@ -208,7 +208,7 @@ calc_auxil <- function(Data, calc_dens=0, calc_mld_temp=0, temp_thresh=0.2, calc
         density_prof = pdensity[,n] # extract n-th density profile
         # define reference density as closest to P = 10 dbar
         density_ref = density_prof[ref_idx]
-        # is infinite density ---> à reprendre pas compris
+  
         if(is.finite(density_ref)){ # make sure that a valid density was found
           under_ref = (ref_idx+1):length(pressure_prof) # index to dens. below reference
           pressure_prof = pressure_prof[under_ref]
