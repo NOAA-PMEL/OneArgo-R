@@ -75,6 +75,7 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     
   }
   
+  
   # only some variables are always loaded, others only by request
 
   base_vars = c('CYCLE_NUMBER', 'DIRECTION', 'JULD', 'JULD_QC', 
@@ -187,22 +188,27 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
         # CONVERT QUALITY FLAGS TO NUMERIC FORMAT
         if (endsWith(names[l],'_QC') &&  # Check for QC identifier
             !startsWith(names[l],'PROF')) { # But not a profile QC
-          # Vectorize
-          Data[[FWMO]][[names[l]]] = 
-            unlist(strsplit(Data[[FWMO]][[names[l]]], split=""))
-          # Replace blanks with zeros
-          Data[[FWMO]][[names[l]]] = gsub(" ", "0", Data[[FWMO]][[names[l]]])
-          # Convert to numeric
-          Data[[FWMO]][[names[l]]] = as.numeric(Data[[FWMO]][[names[l]]])
-          # Reshape
-          Data[[FWMO]][[names[l]]] = 
-            matrix(Data[[FWMO]][[names[l]]], nrow=n_levels, ncol=n_prof)
+          
+          if(length(info$var[[names[l]]]$size) == 2 &&
+             all(info$var[[names[l]]]$size == 
+                 c(dims$n_levels, dims$n_prof))){
+            # Vectorize
+            Data[[FWMO]][[names[l]]] = 
+              unlist(strsplit(Data[[FWMO]][[names[l]]], split=""))
+            # Replace blanks with zeros
+            Data[[FWMO]][[names[l]]] = gsub(" ", "0", Data[[FWMO]][[names[l]]])
+            # Convert to numeric
+            Data[[FWMO]][[names[l]]] = as.numeric(Data[[FWMO]][[names[l]]])
+            # Reshape
+            Data[[FWMO]][[names[l]]] = 
+              matrix(Data[[FWMO]][[names[l]]], nrow=n_levels, ncol=n_prof)
+          }
         }
         
         # For measured variables
-        if (length(info$var[[names[l]]]$dimids) == 2 &&
-            all(info$var[[names[l]]]$dimids == 
-                c(dims$N_LEVELS$id, dims$N_PROF$id)) ) {
+        if (length(info$var[[names[l]]]$size) == 2 &&
+            all(info$var[[names[l]]]$size == 
+                c(dims$n_levels, dims$n_prof))) {
          
            if(names[l] !="PARAMETER_DATA_MODE"){
             # Remove metadata fields
@@ -211,8 +217,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
            }
           
         # For descriptive meta variables (1 value per profile)
-        } else if (length(info$var[[names[l]]]$dimids) == 1 && 
-                   all(info$var[[names[l]]]$dimids == c(dims$N_PROF$id)) ) {
+        } else if (length(info$var[[names[l]]]$size) == 1 && 
+                   all(info$var[[names[l]]]$size == c(dims$n_prof)) ) {
           
           if (names[l] == "DIRECTION" |  # Check for QC identifier
               startsWith(names[l],'PROF')) {       # transform qc variables into matrix for "direction_qc" and "profile_qc) 
@@ -220,8 +226,11 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
               matrix(rep(unlist(strsplit(Data[[FWMO]][[names[l]]], "")), each=n_levels),
                      nrow=n_levels, ncol=n_prof)
           } else {
-            
-            if(names[l]!="DATA_MODE"){
+            if(endsWith(names[l],'_QC')){ # numeric QC for JULD_QC, POSITION_QC
+              Data[[FWMO]][[names[l]]] = 
+                matrix(rep(as.numeric(unlist(strsplit(Data[[FWMO]][[names[l]]], ""))), each=n_levels),
+                       nrow=n_levels, ncol=n_prof)
+            } else if (names[l]!="DATA_MODE"){
               # transform one column variables into matrix 
               Data[[FWMO]][[names[l]]] = 
                 matrix(rep(Data[[FWMO]][[names[l]]],each=n_levels),
