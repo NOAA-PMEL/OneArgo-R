@@ -270,21 +270,21 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       date = as.POSIXct(juld*3600*24,origin=as.Date("1950-01-01"), tz="UTC")
       
-      # 05/07/2023 MC: previous
-      # if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-      #   lonv1 = c(lon_lim[1], 180)
-      #   lonv2 = c(-180, lon_lim[2])
-      #   inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
-      #                (lon>lonv2[1] & lon<lonv2[2])) & 
-      #     (lat>lat_lim[1] & lat<lat_lim[2])
-      # } else {
-      #   inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
-      #               lat>lat_lim[1] & lat<lat_lim[2])
-      # }
-      # 05/07/2023 MC: now use polygon function
-      
-      inpoly=point.in.polygon(lon,lat,lon_lim,lat_lim)
-      inpoly<-inpoly==T
+      if (length(lon_lim)==2 & length(lat_lim)==2){ #check if space limit is not polygon
+        if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
+          lonv1 = c(lon_lim[1], 180)
+          lonv2 = c(-180, lon_lim[2])
+          inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) |
+                       (lon>lonv2[1] & lon<lonv2[2])) &
+            (lat>lat_lim[1] & lat<lat_lim[2])
+        } else { # if space limits corresponds to a polygon
+          inpoly = (lon>lon_lim[1] & lon<lon_lim[2] &
+                      lat>lat_lim[1] & lat<lat_lim[2])
+        }
+      } else {
+        inpoly=point.in.polygon(lon,lat,lon_lim,lat_lim)
+        inpoly<-inpoly==T
+      }
       
       indate = date >= dn1 & date <= dn2
       
