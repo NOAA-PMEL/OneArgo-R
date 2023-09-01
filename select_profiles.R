@@ -354,7 +354,7 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       if (length(float_profs[[fl]])==0 | is.null(float_profs[[fl]])){
         warning('no matching profiles found for float ', good_float_ids[fl])
-        float_ids[which(float_ids == good_float_ids[fl])] = NA
+        float_ids[which(sapply(float_ids, FUN=function(X) good_float_ids[fl] %in% X))] = NA
       }
       
     }
