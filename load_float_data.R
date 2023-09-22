@@ -176,10 +176,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
       if (names[l] %in% names(info$var) ){ # check if the variables in the Netcdf file 
         
        if (names[l] == 'DATA_MODE') {
-          # emulate the set up fot bgc floats
-          
-          Mdata[[FWMO]][["PARAMETER_DATA_MODE"]]=matrix(rep(ncvar_get(info,names[l]),each=n_levels),
-                                          nrow=n_levels, ncol=n_prof)
+          # emulate the set up for core/deep floats
+          Mdata[[FWMO]][["PARAMETER_DATA_MODE"]]=unlist(strsplit(ncvar_get(info,names[l]), split=""))
         }else{
           Data[[FWMO]][[names[l]]] =ncvar_get(info,names[l])
           Mdata[[FWMO]][[mnames[l]]] = Data[[FWMO]][[names[l]]]
@@ -271,18 +269,26 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
 
     
     if("PARAMETER_DATA_MODE" %in% mnames){
-        # create data mode variable for each parameter
-        # expand that variable to match size of data matrix
-          z=1
-          for (m in 1:n_param) {
-            if (params_keep[m]) { 
-              Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
-                matrix(
-                  rep(substr(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]],m,m), each=n_levels),
-                  nrow=n_levels, ncol=n_prof)
-              z=z+1
-            }
+      # create data mode variable for each parameter
+      # expand that variable to match size of data matrix
+      z=1
+      for (m in 1:n_param) {
+        if (params_keep[m]) {
+          if(is_bgc_float==T){ #for BGC Argo floats
+            Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
+              matrix(
+                rep(substr(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]],m,m), each=n_levels),
+                nrow=n_levels, ncol=n_prof)
+            z=z+1
+          } else { # for core/deep
+            Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
+              matrix(
+                rep(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]], each=n_levels),
+                nrow=n_levels, ncol=n_prof)
+            z=z+1
           }
+        }
+      }
     }
     
     
