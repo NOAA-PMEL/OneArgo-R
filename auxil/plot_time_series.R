@@ -87,7 +87,7 @@ plot_time_series <- function(Data,
     return(1)
   }
   
-  
+
   # unless 'raw' is specified, plot adjusted data
   if ( raw == "yes" ) {
     title_add = ' [raw values]'
@@ -127,9 +127,9 @@ plot_time_series <- function(Data,
     
     Datai = depth_interp(Data=Data[[floats[f]]], 
                          qc_flags, 
-                         calc_dens=1, 
-                         calc_mld_temp=1, 
-                         calc_mld_dens=1,
+                         calc_dens=0, 
+                         calc_mld_temp=0, 
+                         calc_mld_dens=0,
                          prs_res=prs_res)
     
     df = NULL
@@ -148,10 +148,6 @@ plot_time_series <- function(Data,
     if ("PRES_ADJUSTED" %in% names(Datai)) {
       df$ymin = df$PRES_ADJUSTED - prs_res/2
       df$ymax = df$PRES_ADJUSTED + prs_res/2
-      if(all(is.na(df$PRES_ADJUSTED))){
-        df$ymin = df$PRES - prs_res/2
-        df$ymax = df$PRES + prs_res/2
-      }
     } else {
       df$ymin = df$PRES - prs_res/2
       df$ymax = df$PRES + prs_res/2
@@ -180,26 +176,38 @@ plot_time_series <- function(Data,
     df$xmin = rep(full_xmin, each=nrow(Datai$TIME))
     df$xmax = rep(full_xmax, each=nrow(Datai$TIME))
     
-    
+    if ( max(df$PRES_ADJUSTED,na.rm=T)>= plot_depth |  max(df$PRES,na.rm=T)>= plot_depth ){
+      print("warning: no measurable data in the selected depth")
+    }
     
     
     
     # extract the data at the given depth for each float 
-    if ("PRES_ADJUSTED" %in% names(Datai)) {
-      if(all(is.na(df$PRES_ADJUSTED))==F){
-        df=subset(  df,  df$PRES_ADJUSTED==plot_depth)
-      }else {
-        df=subset(  df,  df$PRES==plot_depth)
-        
-      }
+    if ("PRES_ADJUSTED" %in% names(Datai)  ) {
       
-    } else {
+      df_1=subset(  df,  df$PRES_ADJUSTED==plot_depth)
+    } 
+    
+    if (length( df_1$PRES)>1){  # use the "pressure_adjusted" only if we obtain the data  
+      df=df_1
+    } else{
       df=subset(  df,  df$PRES==plot_depth)
+    }  
+  
+    
+    if (length(df$PRES>0)){
+      
+      df$WMOID=Mdata[[float_ids[f]]]$WMO_NUMBER
+      float_data_depth_specific[[f]]=df # assign the float to the list
+    
+    } else{
+      
+      print(paste(float_ids[f],"does not have measurable data in the selected depth"))
       
     }
     
-    df$WMOID=Mdata[[float_ids[f]]]$WMO_NUMBER
-    float_data_depth_specific[[f]]=df # assign the float to the list
+    
+   
     
   }  # end loop for "for ( f in 1:nfloats )"
   
