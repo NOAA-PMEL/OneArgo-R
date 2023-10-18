@@ -59,7 +59,7 @@ download_float<-function(floatid) {
       sprof_date=ymd_hms(ncvar_get(profile,'DATE_UPDATE'))
       nc_close(profile)
       # allow a small tolerance value for numerical imprecision
-      update = difftime(sprof_date, Float$update[float_idx], units = "days")
+      update = difftime(sprof_date, ymd_hms(Float$update[float_idx]), units = "days")
       update = update+0.01
       if (update>0) {
         # existing file has all profiles, no need to download again

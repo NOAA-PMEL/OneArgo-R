@@ -56,7 +56,10 @@ select_profiles <- function(lon_lim=c(-180,180),
   #             Default is 'RAD' (all modes).
   #             If multiple sensors are specified, all of them must be in 
   #             the selected mode(s).
-  #             If 'sensor' option is not used, the 'mode' option is ignored.
+  #             If 'sensor' option is not used, the 'mode' option is ignored,
+  #             unless 'type','phys' is specified (for non-BGC floats,
+  #             pressure, temperature, and salinity are always in the same 
+  #             mode).
   #   type :    type: Valid choices are 'bgc' (select BGC floats only),
   #            'phys' (select core and deep floats only), and 'all'
   #             (select all floats that match other criteria; the default)
@@ -103,7 +106,13 @@ select_profiles <- function(lon_lim=c(-180,180),
   
   # only use mode is sensor was specified
   if (is.null(sensor)){
-    mode = "ADR"
+    if(is.null(mode)==F){
+      if(type != "phys"){
+        warning('Since neither "sensor", nor "type"="phys" was specified, the mode will be ignored.')
+        warning('All floats and profiles matching the other criteria will be selected.')
+        mode = "ADR"
+      }
+    }
   }
   
   # check if type selection is coherent with sensor selection
@@ -232,36 +241,50 @@ select_profiles <- function(lon_lim=c(-180,180),
       lat = ncvar_get(nc, 'LATITUDE')
       juld = ncvar_get(nc, 'JULD')
       
-      if(!is.null(sensor) & mode!="ADR"){
-        params = ncvar_get(nc,"PARAMETER")
-        # find the index of a profile that has the most sensors available
-        tmp = nchar(trimws(params))
-        sum_tmp<-NULL
-        for (ii in 1:n_prof){
-          sum_tmp<-c(sum_tmp,sum(tmp[,1,ii]))
+      float_type<-Float$type[which(Float$wmoid==good_float_ids[fl])]
+      
+      # if(!is.null(sensor) & mode!="ADR"){
+      if(mode!="ADR"){
+        if(!is.null(sensor) || float_type=="phys"){
+          params = ncvar_get(nc,"PARAMETER")
+          # find the index of a profile that has the most sensors available
+          tmp = nchar(trimws(params))
+          sum_tmp<-NULL
+          for (ii in 1:n_prof){
+            sum_tmp<-c(sum_tmp,sum(tmp[,1,ii]))
+          }
+          pidx = which.max(sum_tmp)[1]
+          param_names = rep(NA,n_param)
+          for(p in 1:n_param){
+            param_names[p]<-trimws(params[[p,1,pidx]])
+          }
+          if(float_type=="phys"){
+            data_mode = ncvar_get(nc,"DATA_MODE")
+            param_idx = rep(1,3) #for TEMP, PSAL, PRES
+          } else{
+            param_idx = which(param_names==sensor)
+            data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
+          }
         }
-        pidx = which.max(sum_tmp)[1]
-        param_names = rep(NA,n_param)
-        for(p in 1:n_param){
-          param_names[p]<-trimws(params[[p,1,pidx]])
-        }
-        param_idx = which(param_names==sensor)
-        data_mode = ncvar_get(nc,"PARAMETER_DATA_MODE")  
       }
       
       date = as.POSIXct(juld*3600*24,origin=as.Date("1950-01-01"), tz="UTC")
       
-      if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
-        lonv1 = c(lon_lim[1], 180)
-        lonv2 = c(-180, lon_lim[2])
-        inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) | 
-                     (lon>lonv2[1] & lon<lonv2[2])) & 
-          (lat>lat_lim[1] & lat<lat_lim[2])
+      if (length(lon_lim)==2 & length(lat_lim)==2){ #check if space limit is not polygon
+        if ( lon_lim[1] > lon_lim[2] ) { # crossing the dateline
+          lonv1 = c(lon_lim[1], 180)
+          lonv2 = c(-180, lon_lim[2])
+          inpoly =  ((lon>lonv1[1] & lon<lonv1[2]) |
+                       (lon>lonv2[1] & lon<lonv2[2])) &
+            (lat>lat_lim[1] & lat<lat_lim[2])
+        } else { # if space limits corresponds to a polygon
+          inpoly = (lon>lon_lim[1] & lon<lon_lim[2] &
+                      lat>lat_lim[1] & lat<lat_lim[2])
+        }
       } else {
-        inpoly = (lon>lon_lim[1] & lon<lon_lim[2] & 
-                    lat>lat_lim[1] & lat<lat_lim[2])
+        inpoly=point.in.polygon(lon,lat,lon_lim,lat_lim)
+        inpoly<-inpoly==T
       }
-      
       
       indate = date >= dn1 & date <= dn2
       
@@ -297,6 +320,15 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       if (mode=="ADR") {
         has_mode = rep(TRUE, length(inpoly))
+      } else if(float_type=="phys") {
+        has_mode = rep(FALSE, length(inpoly))
+        for(m in 1:nchar(mode)) {
+          for(n in 1:length(inpoly)){
+            if(substr(data_mode,n,n)==substr(mode,m,m)){
+              has_mode[n]<- TRUE
+            }
+          }
+        }
       } else {
         has_mode = rep(FALSE, length(inpoly))
         for(m in 1:nchar(mode)) {
@@ -322,7 +354,7 @@ select_profiles <- function(lon_lim=c(-180,180),
       
       if (length(float_profs[[fl]])==0 | is.null(float_profs[[fl]])){
         warning('no matching profiles found for float ', good_float_ids[fl])
-        float_ids[which(float_ids == good_float_ids[fl])] = NA
+        float_ids[which(sapply(float_ids, FUN=function(X) good_float_ids[fl] %in% X))] = NA
       }
       
     }
