@@ -284,7 +284,7 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
             Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
               matrix(
                 rep(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]], each=n_levels),
-                nrow=n_levels, ncol=n_prof)
+                nrow=n_levels)
             z=z+1
           }
         }
@@ -320,8 +320,10 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     
     if (!is.null(float_profs)) {
       for (l in 1:length(names)) {
-        # Select only specified profiles
-        Data[[FWMO]][[names[l]]] = Data[[FWMO]][[names[l]]][,float_profs[[n]]]
+        if(n_prof!=1){ #in case of the float having only one profile
+          # Select only specified profiles
+          Data[[FWMO]][[names[l]]] = Data[[FWMO]][[names[l]]][,float_profs[[n]]]
+        }
       }
     }
   
