@@ -34,7 +34,7 @@ path_code = ""
 setwd(path_code)
 func.sources = list.files(path_code,pattern="*.R")
 func.sources = func.sources[which(func.sources %in% c('Tutorial.R',
-                                                      "bgc_argo_workshop_R_license.R")==F)]
+                                                      "oneargo_r_license.R")==F)]
 
 if(length(grep("Rproj",func.sources))!=0){
   func.sources = func.sources[-grep("Rproj",func.sources)]
