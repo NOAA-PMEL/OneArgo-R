@@ -55,6 +55,9 @@ initialize_argo <- function() {
   # Index files are stored in subdirectory 'Index'
   Setting$index_dir <<- './Index/'
   
+  # Main directory for snapshots
+  Setting$snap_dir <<- './Snapshots/'
+  
   
   Setting$demo_float <<- 5904021
   
@@ -62,6 +65,31 @@ initialize_argo <- function() {
   # alternative Setting are 0 (don't update at all if files exist
   # locally already) or 1 (always update)
   Setting$update <<- 3600 # time is given in seconds
+  
+  # To ensure compatibility with the BGC-Argo-Mat toolbox
+  # (for calls to select_profiles that do not specify the
+  # type or BGC sensors), the default type can be set to
+  # 'bgc' here. 'phys' is the third available setting.
+  Setting$default_type <<- 'all'
+  
+  # Snapshots of Argo data are produced every month. These data are
+  # recommended for scientific applications that require full
+  # reproducibility. A setting of 1 here results in using the most
+  # recent snapshot as default (instead of getting data directly from
+  # the GDAC).
+  # There are full-Argo and BGC-only snapshots. The value of
+  # Setting.default_type determines which one is downloaded.
+  # IMPORTANT NOTE: Before you start downloading a snapshot, you must
+  # set Source Control (under Preferences: General->Source Control) to
+  # None instead of "Enable MathWorks source control integration",
+  # or you may encounter an Out of memory error.
+  #Setting$use_snapshots <<- TRUE # use the latest snapshot
+  
+  # Setting$use_snapshots <<- FALSE # to this setting use GDAC files instead
+  # An alternate setting allows to pick a particular snapshot.
+  # The format is YYYYMM (no quotes), e.g., 202309 for September 2023.
+  # The snapshots are hosted at https://www.seanoe.org/data/00311/42182
+  Setting$use_snapshots <<- 202402
   
   # default values for computation of mixed layer depth
   Setting$temp_thresh <<- 0.2
@@ -101,28 +129,72 @@ initialize_argo <- function() {
                            'UP_RADIANCE','UP_RADIANCE412','UP_RADIANCE443','UP_RADIANCE490',
                            'UP_RADIANCE555','DOWNWELLING_PAR','DOXY2','DOXY3')
   
-  # Write Sprof index file from GDAC to Index directory
+  # index files, either at the GDAC or in a snapshot
   sprof = 'argo_synthetic-profile_index.txt' # file used locally
-  sprof_gz = paste(sprof,'.gz',sep="") # file that is available at GDAC
-  dest_path_sprof<-paste(Setting$index_dir,sprof,sep="")
-  dest_path_sprof_gz = paste(Setting$index_dir,sprof_gz,sep="")
-  if (do_download(dest_path_sprof_gz)==1){
-    if (Setting$verbose==1) {
-      print('Sprof index file will now be downloaded.')
-      print('Depending on your internet connection, this may take a while.')
+  prof = 'ar_index_global_prof.txt' # file used locally
+  
+  if (Setting$use_snapshots) {
+    determine_snapshot()
+    if (is.null(Setting$snap_path) || Setting$snap_path == "") {
+      return()
+    }
+    # Use all files from the snapshot, not the GDAC
+    Setting$prof_dir <<- paste0(Setting$snap_dir, Setting$snap_path, 'Profiles/')
+    Setting$index_dir <<- paste0(Setting$snap_dir, Setting$snap_path, 'Index/')
+    Setting$meta_dir <<- paste0(Setting$snap_dir, Setting$snap_path, 'Meta/')
+    Setting$tech_dir <<- paste0(Setting$snap_dir, Setting$snap_path, 'Tech/')
+    Setting$traj_dir <<- paste0(Setting$snap_dir, Setting$snap_path, 'Traj/')
+    if (!file.exists(paste0(Setting$index_dir, sprof)) || !file.exists(paste0(Setting$index_dir, prof))) {
+      stack <- sys.calls()
+      funcs <- sapply(stack, function(x) x[['fun']])
+      if (!'download_snapshot' %in% funcs) {
+        cat('You must call download_snapshot with appropriate arguments\n')
+        cat('before you can continue.\n')
+      }
+      return()
+    }
+  } else {
+    # Write Sprof index file from GDAC to Index directory
+    sprof_gz = paste(sprof,'.gz',sep="") # file that is available at GDAC
+    dest_path_sprof<-paste(Setting$index_dir,sprof,sep="")
+    dest_path_sprof_gz = paste(Setting$index_dir,sprof_gz,sep="")
+    if (do_download(dest_path_sprof_gz)==1){
+      if (Setting$verbose==1) {
+        print('Sprof index file will now be downloaded.')
+        print('Depending on your internet connection, this may take a while.')
+      }
+      
+      if(try_download(sprof_gz,dest_path_sprof_gz)!=1) {
+        print('Sprof index file could not be downloaded')
+      }
+      
+      if(file.exists(dest_path_sprof)) {unlink(dest_path_sprof) }
+      gunzip(dest_path_sprof_gz,destname=dest_path_sprof, remove=F)
     }
     
-    
-    
-    if(try_download(sprof_gz,dest_path_sprof_gz)!=1) {
-      print('Sprof index file could not be downloaded')
+    # Download prof index file from GDAC to Index directory
+    prof_gz = paste(prof,'.gz',sep="") # file that is available at GDAC
+    dest_path_prof <- paste(Setting$index_dir,prof,sep="")
+    dest_path_prof_gz = paste(Setting$index_dir,prof_gz,sep="")
+    if (do_download(dest_path_prof_gz)==1){
+      if (Setting$verbose==1) {
+        print('prof index file will now be downloaded.')
+        print('Depending on your internet connection, this may take a while.')
+      }
+      
+      if(try_download(prof_gz,dest_path_prof_gz)!=1) {
+        print('prof index file could not be downloaded')
+      }
+      
+      if(file.exists(dest_path_prof)) {unlink(dest_path_prof) }
+      gunzip(dest_path_prof_gz,destname=dest_path_prof, remove=F)
     }
     
-    if(file.exists(dest_path_sprof)) {unlink(dest_path_sprof) }
-    gunzip(dest_path_sprof_gz,destname=dest_path_sprof, remove=F)
   }
   
-  
+  dest_path_sprof<-paste(Setting$index_dir,sprof,sep="")
+  dest_path_prof <- paste(Setting$index_dir,prof,sep="")
+
   
   # Extract information from Sprof index file
   # NOTE that some quantities will be kept per float (struct Float):
@@ -154,26 +226,6 @@ initialize_argo <- function() {
   ia<-c(ia,(length(Sprof$urls) + 1))
   bgc_prof_idx2 <- ia[2:length(ia)] - 1
   
-  # Download prof index file from GDAC to Index directory
-  prof = 'ar_index_global_prof.txt' # file used locally
-  prof_gz = paste(prof,'.gz',sep="") # file that is available at GDAC
-  dest_path_prof <- paste(Setting$index_dir,prof,sep="")
-  dest_path_prof_gz = paste(Setting$index_dir,prof_gz,sep="")
-  if (do_download(dest_path_prof_gz)==1){
-    if (Setting$verbose==1) {
-      print('prof index file will now be downloaded.')
-      print('Depending on your internet connection, this may take a while.')
-    }
-    
-    
-    
-    if(try_download(prof_gz,dest_path_prof_gz)!=1) {
-      print('prof index file could not be downloaded')
-    }
-    
-    if(file.exists(dest_path_prof)) {unlink(dest_path_prof) }
-    gunzip(dest_path_prof_gz,destname=dest_path_prof, remove=F)
-  }
   
   H<-read.table(dest_path_prof, skip=9, sep = ",")
   

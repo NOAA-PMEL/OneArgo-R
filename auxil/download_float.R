@@ -63,16 +63,18 @@ download_float<-function(floatid) {
       update = update+0.01
       if (update>0) {
         # existing file has all profiles, no need to download again
-        success = 1
-      } else {success = try_download(paste('dac/',Float$file_path[float_idx],sep=""),
-                                     local_path)}}
-      , error = function(e) warning('something went wrong, try downloading the file again')
-    )
-  } else {success = try_download(paste('dac/',Float$file_path[float_idx],sep=""),
-                                      local_path)}
+        success <- 1
+        return(success)
+      }
+    }, error = function(e) warning('something went wrong, try downloading the file again'))
+    
+  } else if (Setting$use_snapshots) {
+    warning(sprintf('The selected snapshot does not contain the file for float %s.\n', floatid))
+    return(success)
+  } 
   
-  
-  
+  success = try_download(paste('dac/',Float$file_path[float_idx],sep=""),
+                         local_path)
   return(success)
   
 }
