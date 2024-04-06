@@ -119,6 +119,7 @@ download_snapshot <- function(dac = NULL,
       cat(sprintf('Actual file size:   %s bytes\n', file_size))
     }
   }
+  
   if (download_snap) {
     cat(sprintf('Starting download of "%s" now\n', Setting$snap_file))
     cat(sprintf('Its file size is %.1f GB - this may take a while.\n', Setting$snap_size*1e-9))
@@ -137,7 +138,7 @@ download_snapshot <- function(dac = NULL,
       return()
     }
   }
-  
+
   tryCatch({
     start_time <- Sys.time()
     cat('Untarring the snapshot, this may take a few minutes... ')
@@ -173,6 +174,7 @@ download_snapshot <- function(dac = NULL,
   # the original tarball is still present after untarring
   # wait until here with the deletion in case wrong float IDs were used
   # accidentally
+
   if (keep < 2) {
     file.remove(Setting$snap_file) # delete it to free up disk space
   }
@@ -191,7 +193,7 @@ download_snapshot <- function(dac = NULL,
       need_dac_core <- rep(F, length(dac))
       need_dac_bgc <- rep(F, length(dac))
       for (d in seq_along(dac)) {
-        if (any(dac[d] == orig_dac)) {
+        if (dac[d] %in% orig_dac) {
           need_dac_core[d] <- T
           need_dac_bgc[d] <- T # not checked below if type is 'phys'
         } else {

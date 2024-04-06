@@ -24,9 +24,6 @@ initialize_argo <- function() {
   # DATE: JUNE 1, 2022  (Version 1.0.1)
   
   Setting<<-list() 
-  Sprof<<-list() 
-  Prof<<-list() 
-  Float<<-list()
   
   ###########################################################################
   # BEGINNING OF SECTION WITH USER SPECIFIC OPTIONS
@@ -85,11 +82,10 @@ initialize_argo <- function() {
   # or you may encounter an Out of memory error.
   #Setting$use_snapshots <<- TRUE # use the latest snapshot
   
-  # Setting$use_snapshots <<- FALSE # to this setting use GDAC files instead
+  Setting$use_snapshots <<- FALSE # to this setting use GDAC files instead
   # An alternate setting allows to pick a particular snapshot.
   # The format is YYYYMM (no quotes), e.g., 202309 for September 2023.
   # The snapshots are hosted at https://www.seanoe.org/data/00311/42182
-  Setting$use_snapshots <<- 202402
   
   # default values for computation of mixed layer depth
   Setting$temp_thresh <<- 0.2
@@ -191,6 +187,10 @@ initialize_argo <- function() {
     }
     
   }
+  
+  Sprof<<-list() 
+  Prof<<-list() 
+  Float<<-list()
   
   dest_path_sprof<-paste(Setting$index_dir,sprof,sep="")
   dest_path_prof <- paste(Setting$index_dir,prof,sep="")

@@ -6,7 +6,7 @@ select_profiles <- function(lon_lim=c(-180,180),
                             sensor=NULL,
                             ocean=NULL,
                             mode="RAD",
-                            type="all") {
+                            type=NULL) {
   
   # DESCRIPTION:
   #   This function returns the indices of profiles and floats that match
@@ -102,6 +102,11 @@ select_profiles <- function(lon_lim=c(-180,180),
       Sys.sleep(3)
       sensor = NULL
     }
+  }
+  
+  # add default type
+  if (is.null(type)){
+    type<-Setting$default_type
   }
   
   # only use mode is sensor was specified
