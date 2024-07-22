@@ -48,8 +48,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
   # LICENSE: oneargo_r_license.m
   #
   # DATE: JUNE 1, 2022  (Version 1.0.1)
-    
-
+  
+  
   
   if (exists("Setting")==F) {
     initialize_argo()
@@ -77,12 +77,12 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
   
   
   # only some variables are always loaded, others only by request
-
+  
   base_vars = c('CYCLE_NUMBER', 'DIRECTION', 'JULD', 'JULD_QC', 
                 'JULD_LOCATION','LATITUDE','LONGITUDE','POSITION_QC',
                 'PARAMETER_DATA_MODE','PARAMETER','DATA_MODE'
-                )
-
+  )
+  
   if ( any(variables=="ALL")  ) { 
     use_all_vars = 1;
     base_vars[length(base_vars )+1] = 'PROFILE_PRES_QC';
@@ -92,11 +92,11 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     use_all_vars = 0
     
     if (add_pres==1){ #if no variables are specified (e.g., to plot trajectories only),
-                     # loading pressure and associated variables is not needed
+      # loading pressure and associated variables is not needed
       variables[length(variables )+1] = 'PRES';
       base_vars[length(base_vars )+1] = 'PROFILE_PRES_QC';
     }
- 
+    
     add_vars = is.element(Setting$avail_vars , variables);
     new_vars = Setting$avail_vars [add_vars];
     all_vars = combine_variables(base_vars, new_vars)
@@ -104,14 +104,14 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     
   }
   
-
+  
   # INITIALIZE DATA FRAME FOR Data OUTPUT
   Data = NULL
   Mdata = NULL
   
   # download Sprof files if necessary
   good_float_ids = download_multi_floats(float_ids)
-
+  
   
   
   # LOOP TO IMPORT PROFILES AND EXTRACT VARIABLES
@@ -124,8 +124,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     
     # LOAD VARIABLES FROM FILE
     info = nc_open(filename)	 #  Read netcdf information
-
-
+    
+    
     if ( use_all_vars==1 ){ # Load the all variables 
       
       these_vars =  names(info$var) 
@@ -133,8 +133,8 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
       new_vars = Setting$avail_vars[add_vars]
       all_vars = combine_variables(base_vars, new_vars)
       all_vars = unique(all_vars)
-    
-    
+      
+      
     }
     
     # Find 'number of profiles', 'number of parameters', and 'number of
@@ -143,15 +143,15 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     n_prof = dims$n_prof
     n_param =dims$n_param
     n_levels = dims$n_levels
-
+    
     amt = length(all_vars)
-
+    
     names = all_vars
     mnames = all_vars
-
+    
     Data[[FWMO]] = NULL
     Mdata[[FWMO]] = NULL
-
+    
     for (l in 1:amt) {
       
       if (is_bgc_float==F) {
@@ -172,10 +172,10 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
         mnames[l] = NA
         names[l] = NA
       }
-     
+      
       if (names[l] %in% names(info$var) ){ # check if the variables in the Netcdf file 
         
-       if (names[l] == 'DATA_MODE') {
+        if (names[l] == 'DATA_MODE') {
           # emulate the set up for core/deep floats
           Mdata[[FWMO]][["PARAMETER_DATA_MODE"]]=unlist(strsplit(ncvar_get(info,names[l]), split=""))
         }else{
@@ -207,14 +207,14 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
         if (length(info$var[[names[l]]]$size) == 2 &&
             all(info$var[[names[l]]]$size == 
                 c(dims$n_levels, dims$n_prof))) {
-         
-           if(names[l] !="PARAMETER_DATA_MODE"){
+          
+          if(names[l] !="PARAMETER_DATA_MODE"){
             # Remove metadata fields
             Mdata[[FWMO]][[mnames[l]]] = NULL
             mnames[l] = NA
-           }
+          }
           
-        # For descriptive meta variables (1 value per profile)
+          # For descriptive meta variables (1 value per profile)
         } else if (length(info$var[[names[l]]]$size) == 1 && 
                    all(info$var[[names[l]]]$size == c(dims$n_prof)) ) {
           
@@ -252,52 +252,63 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
       } 
     } ## end loop amt
     
-      
-	 
+    
+    
     # Remove unused variable names
     names = names[!is.na(names)]
     mnames = mnames[!is.na(mnames)]
     
+    
     if("PARAMETER" %in% mnames){
-      temp=rep(NA,n_param)
-      for ( m in 1:n_param ) {
-        temp[m] = trim(Mdata[[FWMO]][['PARAMETER']][m,1,1])
+      temp=NULL
+      Mdata[[FWMO]][['PARAMETER_SELECT']]<-NULL
+      for(np in 1:n_prof){
+        temp[[paste0("P",np)]]<-NULL
+        for ( m in 1:n_param ) {
+          temp[[paste0("P",np)]][m] = trim(Mdata[[FWMO]][['PARAMETER']][m,1,np])
+        }
+        params_keep = is.element(temp[[paste0("P",np)]], new_vars)
+        Mdata[[FWMO]][['PARAMETER_SELECT']][[paste0("P",np)]] = temp[[paste0("P",np)]][params_keep]
       }
-      params_keep = is.element(temp, new_vars)
-      Mdata[[FWMO]][['PARAMETER']] = temp[params_keep]
     }
-
     
     if("PARAMETER_DATA_MODE" %in% mnames){
       # create data mode variable for each parameter
       # expand that variable to match size of data matrix
-      z=1
-      for (m in 1:n_param) {
-        if (params_keep[m]) {
-          if(is_bgc_float==T){ #for BGC Argo floats
-            Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
-              matrix(
-                rep(substr(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]],m,m), each=n_levels),
-                nrow=n_levels, ncol=n_prof)
-            z=z+1
-          } else { # for core/deep
-            Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER[z],'_DATA_MODE')]] = 
-              matrix(
-                rep(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]], each=n_levels),
-                nrow=n_levels)
-            z=z+1
+      # Initalize empty list
+      for(m in new_vars){
+        Data[[FWMO]][[paste0(m,'_DATA_MODE')]] =
+          matrix(
+            rep(NA, each=n_levels),
+            nrow=n_levels, ncol=n_prof)
+      }
+      
+      for(np in 1:n_prof){
+        z=1
+        params_keep = is.element(temp[[paste0("P",np)]], new_vars)
+        for (m in 1:n_param) {
+          if (params_keep[m]) {
+            if(is_bgc_float==T){ #for BGC Argo floats. Initalize empty list
+              Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER_SELECT[[np]][z],'_DATA_MODE')]][,np] = 
+                substr(Mdata[[FWMO]][["PARAMETER_DATA_MODE"]][np],m,m)
+              z=z+1
+            } else { # for core/deep. Extract the parameter data mode
+              Data[[FWMO]][[paste0(Mdata[[FWMO]]$PARAMETER_SELECT[[np]][z],'_DATA_MODE')]][,np]= 
+                Mdata[[FWMO]][["PARAMETER_DATA_MODE"]][np]
+              z=z+1
+            }
           }
         }
       }
     }
-    
-    
+  
     # clear both parameter and parameter data mode from metadata
     Mdata[[FWMO]]$PARAMETER = NULL
+    Mdata[[FWMO]]$PARAMETER_SELECT = NULL
     Mdata[[FWMO]]$PARAMETER_DATA_MODE = NULL
     Data[[FWMO]]$PARAMETER_DATA_MODE = NULL
-
- 
+    
+    
     # add information about deploying organization and PI to meta data
     Mdata[[FWMO]]$WMO_NUMBER = floatnum
     Mdata[[FWMO]]$ PROJECT_NAME  =   ncvar_get(info,"PROJECT_NAME")[1] 
@@ -308,14 +319,14 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     # CONVERT JULD VARIABLE TO SERIAL DATE (SINCE YEAR 1950)
     # AND SAVE AS 'TIME'
     ## CCC to check date format
-
+    
     Data[[FWMO]]$TIME = matrix(as.character(as.Date(Data[[FWMO]]$JULD, origin=as.Date("1950-01-01"))),
                                nrow=n_levels, ncol=n_prof)
-   # Data[[FWMO]]$TIME = 
+    # Data[[FWMO]]$TIME = 
     #  as.Date(as.POSIXct(Data[[FWMO]]$JULD*3600*24, 
-                      #        origin=as.Date("1950-01-01"), tz="UTC"))
-     # )   # (Since year 1950)
-
+    #        origin=as.Date("1950-01-01"), tz="UTC"))
+    # )   # (Since year 1950)
+    
     names<-names(Data[[FWMO]])
     
     if (!is.null(float_profs)) {
@@ -326,14 +337,14 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
         }
       }
     }
-  
+    
     nc_close(info)
     
     print(paste("Progress:",n/length(good_float_ids)*100 ,"%" ))
     
   } # end loop good floats
   
-
+  
   if (format!="dataframe"){
     return(list(Data=Data, Mdata=Mdata))
   }
@@ -393,7 +404,7 @@ load_float_data <- function (float_ids, variables=NULL, float_profs=NULL,format=
     )
     
     
-  return( float_data_list_dtfr)
+    return( float_data_list_dtfr)
     
     
   } # end loop format=="dataframe"
