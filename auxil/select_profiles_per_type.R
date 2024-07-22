@@ -91,6 +91,9 @@ select_profiles_per_type <- function(Profiles,
     inpoly<-inpoly==T
   }
   
+  # Set the NA to F
+  inpoly[which(is.na(inpoly))]<-F
+  
   if(any(inpoly)==F | length(inpoly)==0 ){
     warning('no matching profile found in the selected lon-lat range')
   }
