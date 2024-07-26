@@ -1,13 +1,15 @@
 Demo for BGC_Argo_R\_toolbox
 ================
-Yibin Huang & Marin Cornec
+Marin Cornec (NOAA-PMEL), Yibin Huang (NOAA-PMEL), 
+Quentin Jutard (OSU ECCE TERRA), Raphaelle Sauzede (IMEV) and 
+Catherine Schmechtig (OSU ECCE TERRA).
 2022-05-11
 
 ------------------------------------------------------------------------
 
 [Video tutorial](https://www.youtube.com/watch?v=w_6pEGNXQQ4)
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/tutorial.jpg" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/tutorial.jpg" width="60%" />
 
 **Link: <https://www.youtube.com/watch?v=w_6pEGNXQQ4>**
 
@@ -78,13 +80,13 @@ prof_ids = c(Float$prof_idx1[float_idx]:Float$prof_idx2[float_idx])
 # Profile IDs for float 5906439 (WMOID) in the S_file index
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_id.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_id.png" width="60%" />
 
 ``` r
 dates = Sprof$date[prof_ids] # Dates of each profile from float #5906439
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/date.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/date.png" width="60%" />
 
 ``` r
 sensors = unique(Sprof$sens[prof_ids]) # Sensors available for float #5906439
@@ -119,7 +121,7 @@ show_trajectories(float_ids=WMO,
                   )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/track_excercise_1.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/track_excercise_1.png" width="60%" />
 
 ``` r
 show_profiles( float_ids=WMO, 
@@ -130,7 +132,7 @@ show_profiles( float_ids=WMO,
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_1_excercise_1.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_1_excercise_1.png" width="60%" />
 
 **This plots the adjusted data**
 
@@ -142,7 +144,7 @@ show_profiles(float_ids=WMO,
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_2_excercise_1.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_2_excercise_1.png" width="60%" />
 
 **Show sections for nitrate.**
 
@@ -157,7 +159,7 @@ show_sections(float_ids=WMO,
               raw="yes") # Tells the function to plot raw data
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/section_1_excercise_1.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/section_1_excercise_1.png" width="60%" />
 
 ``` r
 show_sections( float_ids=WMO ,
@@ -168,7 +170,7 @@ show_sections( float_ids=WMO ,
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/section_2_excercise_1.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/section_2_excercise_1.png" width="60%" />
 
 ------------------------------------------------------------------------
 
@@ -242,7 +244,7 @@ show_trajectories(float_ids = OSP_data$float_ids,
                   color="black",fill=NA # Add a frame around the selected area
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/track_excercise_2.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/track_excercise_2.png" width="60%" />
 
 **Show profile plots for the first of these matching floats**
 
@@ -255,7 +257,7 @@ show_profiles(float_ids=OSP_data$float_ids[1],
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_1_excercise_2.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_1_excercise_2.png" width="60%" />
 
 **Case \#2: mean and standard deviation of all profiles from one float
 (1)**
@@ -268,7 +270,7 @@ show_profiles(float_ids=OSP_data$float_ids[1],
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_2_excercise_2.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_2_excercise_2.png" width="60%" />
 
 ------------------------------------------------------------------------
 
@@ -337,7 +339,7 @@ trajectory = trajectory + geom_rect(
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/track_excercise_3.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/track_excercise_3.png" width="60%" />
 
 **Show matching profiles from all floats**
 
@@ -352,7 +354,7 @@ show_profiles( float_ids=HW_data$float_ids,
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_1_excercise_3.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_1_excercise_3.png" width="60%" />
 
 **Show only matching profiles from September.**
 
@@ -383,7 +385,7 @@ show_profiles( float_ids=HW_data$float_ids,
 )
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/profile_2_excercise_3.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/profile_2_excercise_3.png" width="60%" />
 
 **Show sections for pH and oxygen for the fifth float in the list of
 Hawaii floats**.
@@ -400,7 +402,7 @@ show_sections( float_ids=HW_data$float_ids[5],
 ) 
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/section_1_excercise_3.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/section_1_excercise_3.png" width="60%" />
 
 
 **Show time series of near-surface pH and oxygen for two floats.**
@@ -416,6 +418,6 @@ show_time_series ( float_ids=HW_data$float_ids[4:5],
 ) 
 ```
 
-<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Figures%20for%20sample%20code/timeseries_1_excercise_3.png" width="60%" />
+<img src="https://raw.githubusercontent.com/NOAA-PMEL/OneArgo-R/main/Tutorial_extended/Figures/timeseries_1_excercise_3.png" width="60%" />
 
 </p>

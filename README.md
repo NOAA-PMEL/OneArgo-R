@@ -23,9 +23,10 @@ Note: This toolbox is adapted from the [OneArgo-Mat](https://github.com/NOAA-PME
 3. An Internet connection is needed to get the latest versions of index and Sprof files. 
 4. Memory requirements depend on the number of profiles and variables that are simultaneously loaded into memory. 
 
-## QUICK DEMO
+## QUICK DEMOS
 
-This <a href="demo_notebook.md">sample code</a> shows an example of selecting floats that match geographic and temporal limits and visualizing some of the data.
+The <a href="Tutorial_OneArgoR101_Github.md">sample code</a> in Tutorial_101 folder shows an example of selecting floats that match geographic and temporal limits and visualizing some of the data.
+The <a href="Tutorial_extended_nothebook_Github.md">sample code</a> in Tutorial_extended folder shows extended functionalities of the toolbox.
 
 ## INSTALLATION AND USE
 This repository can be cloned using the command line or GitHub Desktop. Or the files can be directly downloaded in zipped format.
@@ -38,15 +39,19 @@ For an overview of how to use this toolbox, step through the 'Tutorial' script (
 
 ### Main functions (to be called from script or command window):
 initialize_argo.R        : defines standard settings and paths and downloads synthetic profile index file<br/>
-load_float_data.R        : loads data of one or more specified float(s) into memory<br/>
 select_profiles.R        : returns profiles and corresponding floats based on input criteria<br/>
+load_float_data.R        : loads data of one or more specified float(s) into memory<br/>
+get_lon_lat_time.R       : extracts the longitude, latitude, and time information for the specified floats)<br/>
+qc_filter.R              : filters the data according to selected QC flags<br/>
+extract_qc_df.R          : filters the data according to selected QC flags and data mode, and convert into dataframe<br/>
 show_profiles.R          : downloads float data and calls plot_profiles to create plot<br/>
 show_sections.R          : downloads float data and calls plot_sections to create plot<br/>
 show_trajectories.R      : downloads float data and calls plot_trajectories to create plot<br/>
 show_time_series.R       : downloads float data and calls plot_time_series to create plot<br/>
-get_lon_lat_time.R       : extracts the longitude, latitude, and time information for the specified floats)<br/>
 
-Tutorial.R               : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
+
+Tutorial_101.R      	 : tutorial script for SOCCOM Workshop (7/31/24)<br/>
+Tutorial_extended.R      : tutorial script for GO-BGC Scientific Workshop (6/30/21)<br/>
 
 ### Background functions (primarily called by main functions in background):
 
