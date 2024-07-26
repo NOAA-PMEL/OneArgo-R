@@ -20,7 +20,7 @@ The exercise aims to:
 https://github.com/NOAA-PMEL/OneArgo-R/
 
 BEFORE YOU START !!
-Fill the path directory to the folder for the OneArgo toolbox at line 49
+Fill the path directory to the folder for the OneArgo toolbox at line 52
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
