@@ -17,7 +17,7 @@
 # https://github.com/NOAA-PMEL/OneArgo-R/
 
 # BEFORE YOU START !!
-# Fill the path directory to the folder for the OneArgo toolbox at line 40
+# Fill the path directory to the folder for the OneArgo toolbox at line 43
 #
 # ###
 # 1) Prepare the worsket ----
@@ -38,7 +38,7 @@ for (i in c("dplyr","ggplot2","lubridate","gridExtra","tidyverse","ggeffects")) 
 # ###
 # 2) Initialize the Toolbox ----
 # ###  
-  
+
 # Set the working directory 
 path_code = "X:/YOUR/PATH/"
 setwd(path_code)
@@ -123,12 +123,12 @@ float_data = load_float_data(float_ids=GoM_BGC$float_ids,
 # 'detailed': output will contain all the original data and additional 
 # columns with the corresponding QC.
 float_data_qc = extract_qc_df(float_data$Data,
-                          variables = c('DOXY'),
-                          qc_flags = c(1:9),
-                          raw='yes', 
-                          format='dataframe',
-                          type='detailed', 
-                          mode = T)
+                              variables = c('DOXY'),
+                              qc_flags = c(1:9),
+                              raw='yes', 
+                              format='dataframe',
+                              type='detailed', 
+                              mode = T)
 
 # Remove lines with no data (NA) in the dataframe
 float_data_qc_na<-unique(na.omit(float_data_qc)) 
