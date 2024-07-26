@@ -252,7 +252,7 @@ p_DMQC
 
     ## Warning: Removed 54 rows containing missing values (`geom_point()`).
 
-![](Tutorial_101/Figures/QC_GOM_ox.png)
+![](Figures/QC_GOM_ox.png)
 
 ------------------------------------------------------------------------
 
@@ -286,7 +286,7 @@ p1
 
     ## Warning: Removed 4 rows containing missing values (`geom_path()`).
 
-![](main/Tutorial_101/Figures/prof_GOM_ox.png)
+![](Figures/prof_GOM_ox.png)
 
 **Convert plot to a savable object**
 
