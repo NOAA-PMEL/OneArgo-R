@@ -221,7 +221,7 @@ p_map <- ggplot(data=float_data_qc_na,
 p_map
 ```
 
-![](Tutorial_101/Figuresmap_GOM_ox.png)
+![](Tutorial_101/Figures/map_GOM_ox.png)
 
 ------------------------------------------------------------------------
 
@@ -252,7 +252,7 @@ p_DMQC
 
     ## Warning: Removed 54 rows containing missing values (`geom_point()`).
 
-![](Tutorial_101/FiguresQC_GOM_ox.png)
+![](Tutorial_101/Figures/QC_GOM_ox.png)
 
 ------------------------------------------------------------------------
 
@@ -286,7 +286,7 @@ p1
 
     ## Warning: Removed 4 rows containing missing values (`geom_path()`).
 
-![](Tutorial_101/Figuresprof_GOM_ox.png)
+![](Tutorial_101/Figures/prof_GOM_ox.png)
 
 **Convert plot to a savable object**
 
