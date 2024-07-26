@@ -221,7 +221,7 @@ p_map <- ggplot(data=float_data_qc_na,
 p_map
 ```
 
-![](main/Tutorial_101/Figures/map_GOM_ox.png)
+![](Figures/map_GOM_ox.png)
 
 ------------------------------------------------------------------------
 
@@ -252,7 +252,7 @@ p_DMQC
 
     ## Warning: Removed 54 rows containing missing values (`geom_point()`).
 
-![](main/Tutorial_101/Figures/QC_GOM_ox.png)
+![](Tutorial_101/Figures/QC_GOM_ox.png)
 
 ------------------------------------------------------------------------
 
