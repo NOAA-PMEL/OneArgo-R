@@ -78,6 +78,14 @@ initialize_argo()
 # ‘RAD’: all modes (raw, delayed mode, adjusted).
 
 # This function will return the selection of floats WMO and profiles numbers.
+
+# For the variable selection, make sure to use the appropriated name of the 
+# available parameters:
+# PRES, PSAL, TEMP, DOXY, BBP, BBP470, BBP532, BBP700, TURBIDITY, CP, CP660, 
+# CHLA, CDOM, NITRATE, BISULFIDE, PH_IN_SITU_TOTAL, DOWN_IRRADIANCE, 
+# DOWN_IRRADIANCE380, DOWN_IRRADIANCE412,DOWN_IRRADIANCE443, DOWN_IRRADIANCE490, 
+# DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, UP_RADIANCE, UP_RADIANCE412, 
+# UP_RADIANCE443, UP_RADIANCE490, UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
 GoM_BGC = select_profiles(lon_lim = c(-96, -80),
                           lat_lim = c(17, 29),
                           start_date='2021-10-01',
@@ -114,14 +122,14 @@ float_data = load_float_data(float_ids=GoM_BGC$float_ids,
 # raw = ‘yes’, raw data when adjusted data are not available. 
 # raw = ‘no_strict’, skip the float if not all the variables are adjusted.
 # 
-# The "mode" option, when set to TRUE (default) will add a column displaying 
-# the data mode of the corresponding variable. 
-# (R = "Real Time", A= "Adjusted, D= "Delayed")
-# 
 # The "type" option defines how detailed will be output be: 
 # 'cleaned' : output will contain only the data with the requested QC (default) 
 # 'detailed': output will contain all the original data and additional 
 # columns with the corresponding QC.
+#
+# The "mode" option, when set to TRUE (default) will add a column displaying 
+# the data mode of the corresponding variable. 
+# (R = "Real Time", A= "Adjusted, D= "Delayed")
 float_data_qc = extract_qc_df(float_data$Data,
                               variables = c('DOXY'),
                               qc_flags = c(1:9),
