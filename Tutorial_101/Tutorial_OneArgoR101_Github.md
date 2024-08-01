@@ -99,6 +99,13 @@ For the variable selection, make sure to use the appropriated name of the availa
  DOWN_IRRADIANCE443, DOWN_IRRADIANCE490, DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, UP_RADIANCE, 
  UP_RADIANCE412, UP_RADIANCE443, UP_RADIANCE490, UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
 
+For the geographical selection, you can use <br>
+- a box (lon_lim=c(min longitude, max longitude); lat_lim=c(min latitude, max latitude)<br>
+- a polygon selection (lon_lim= vector a longitude values, lat_lim = vector of corresponding latitude values)<br>
+
+For an overview of the available floats/parameters, we also recommend using either monitoring tools:<br>
+- https://maps.biogeochemical-argo.com/bgcargo/ <br>
+- https://fleetmonitoring.euro-argo.eu/dashboard?Status=Active <br>
 
 ``` r
 GoM_BGC = select_profiles(lon_lim = c(-96, -80),
@@ -136,7 +143,8 @@ A selection of flags measurements need to be specified (qc_flags).
 6) _not attributed_
 7) _not attributed_
 8) interpolated data
-9) no data
+9) no data<br>
+QC 1,2,5,8 are the safer to use
 
 The 'raw' option defines which data mode should be used for the chosen variable:<br>
 raw = ‘yes_strict’, raw data only.<br> 

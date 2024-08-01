@@ -370,6 +370,9 @@ select_profiles <- function(lon_lim=c(-180,180),
     float_ids = list()
   }
   
+  if (length(float_ids)==0 ){
+    warning('no matching floats found matching the selection criteria')
+  }
   
   return(list(float_ids=float_ids, float_profs=float_profs))
 }

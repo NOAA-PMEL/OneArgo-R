@@ -86,12 +86,23 @@ initialize_argo()
 # DOWN_IRRADIANCE380, DOWN_IRRADIANCE412,DOWN_IRRADIANCE443, DOWN_IRRADIANCE490, 
 # DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, UP_RADIANCE, UP_RADIANCE412, 
 # UP_RADIANCE443, UP_RADIANCE490, UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
+#
+# For the geographical selection, you can use:
+#   - a box (lon_lim=c(min longitude, max longitude); 
+#     lat_lim=c(min latitude, max latitude)
+#   - a polygon selection (lon_lim= vector a longitude values, 
+#      lat_lim = vector of corresponding latitude values)
+#              
+# For an overview of the available floats/parameters, we also recommend using 
+# either monitoring tools:
+#   - https://maps.biogeochemical-argo.com/bgcargo/ 
+#   - https://fleetmonitoring.euro-argo.eu/dashboard?Status=Active 
 GoM_BGC = select_profiles(lon_lim = c(-96, -80),
                           lat_lim = c(17, 29),
                           start_date='2021-10-01',
                           end_date='2024-04-22',
                           sensor=c('DOXY'),
-                          mode = 'RAD') 
+                          mode = 'RAD')
 
 # Load the floats data
 
@@ -115,6 +126,7 @@ float_data = load_float_data(float_ids=GoM_BGC$float_ids,
 # 7 = not attributed
 # 8 = interpolated data
 # 9 = no data
+# QC 1,2,5,8 are the safer to use
 #
 # The 'raw' option defines which data mode should be used for the chosen 
 # variable: 
