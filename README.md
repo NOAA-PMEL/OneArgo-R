@@ -93,7 +93,7 @@ This toolbox has been translated from MATLAB:<br/>
 [MATLAB Toolbox](https://github.com/NOAA-PMEL/OneArgo-Mat)
 
 A similar toolbox in Python:<br/>
-[Python toolbox](https://github.com/go-bgc/workshop-python)
+[Python toolbox](https://github.com/NOAA-PMEL/OneArgoPy)
 
 [Video tutorials for the toolbox](https://www.go-bgc.org/getting-started-with-go-bgc-data)
 
