@@ -93,6 +93,20 @@ The "mode" option indicates the type of data mode to be extracted:
 
 This function will return the selection of floats WMO and profiles numbers.
 
+For the variable selection, make sure to use the appropriated name of the available parameters:
+ PRES, PSAL, TEMP, DOXY, BBP, BBP470, BBP532, BBP700, TURBIDITY, CP, CP660, CHLA, CDOM,
+ NITRATE, BISULFIDE, PH_IN_SITU_TOTAL, DOWN_IRRADIANCE, DOWN_IRRADIANCE380, DOWN_IRRADIANCE412, 
+ DOWN_IRRADIANCE443, DOWN_IRRADIANCE490, DOWN_IRRADIANCE555, DOWN_IRRADIANCE670, UP_RADIANCE, 
+ UP_RADIANCE412, UP_RADIANCE443, UP_RADIANCE490, UP_RADIANCE555, DOWNWELLING_PAR, DOXY2, DOXY3
+
+For the geographical selection, you can use <br>
+- a box (lon_lim=c(min longitude, max longitude); lat_lim=c(min latitude, max latitude)<br>
+- a polygon selection (lon_lim= vector a longitude values, lat_lim = vector of corresponding latitude values)<br>
+
+For an overview of the available floats/parameters, we also recommend using either monitoring tools:<br>
+- https://maps.biogeochemical-argo.com/bgcargo/ <br>
+- https://fleetmonitoring.euro-argo.eu/dashboard?Status=Active <br>
+
 ``` r
 GoM_BGC = select_profiles(lon_lim = c(-96, -80),
                           lat_lim = c(17, 29),
@@ -129,7 +143,8 @@ A selection of flags measurements need to be specified (qc_flags).
 6) _not attributed_
 7) _not attributed_
 8) interpolated data
-9) no data
+9) no data<br>
+QC 1,2,5,8 are the safer to use
 
 The 'raw' option defines which data mode should be used for the chosen variable:<br>
 raw = ‘yes_strict’, raw data only.<br> 
@@ -137,14 +152,14 @@ raw = ‘no’, adjusted data only.<br>
 raw = ‘yes’, raw data when adjusted data are not available.<br> 
 raw = ‘no_strict’, skip the float if not all the variables are adjusted.
 
-The "mode" option, when set to TRUE (default) will add a column displaying the
-data mode of the corresponding variable.<br>
-(R = "Real Time", A= "Adjusted, D= "Delayed")
-
 The "type" option defines how detailed will be output be:<br>
 'cleaned'  : output will contain only the data with the requested QC (default)<br>
 'detailed' : output will contain all the original data and additional columns<br> 
             with the corresponding QC.
+			
+The "mode" option, when set to TRUE (default) will add a column displaying the
+data mode of the corresponding variable.<br>
+(R = "Real Time", A= "Adjusted, D= "Delayed")
 
 ``` r
 float_data_qc = qc_filter(float_data$Data,
