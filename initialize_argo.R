@@ -301,7 +301,7 @@ initialize_argo <- function() {
         if (Float$profiler[f] == 845) {
           Float$min_sens[f] <<- list(c('PRES','TEMP'))
         }
-        else {1
+        else {
           Float$min_sens[f] <<- list(c('PRES','TEMP','PSAL'))
         }
       } else{
