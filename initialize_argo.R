@@ -304,6 +304,8 @@ initialize_argo <- function() {
         else {1
           Float$min_sens[f] <<- list(c('PRES','TEMP','PSAL'))
         }
+      } else{
+        Float$min_sens[f] <<- list(c('PRES','TEMP','PSAL'))
       }
       Float$max_sens[f] <<- Float$min_sens[f]
     } else { # BGC float
