@@ -58,12 +58,12 @@
 #
 
 extract_qc_df<-function(Data, 
-                    variables="PRES", 
-                    qc_flags=NULL,
-                    format=NULL,
-                    raw="yes",
-                    type="cleaned",
-                    mode=T
+                        variables="PRES", 
+                        qc_flags=NULL,
+                        format=NULL,
+                        raw="yes",
+                        type="cleaned",
+                        mode=T
 ){
   
   # assign default qc_flags if none provided as input
@@ -124,7 +124,7 @@ extract_qc_df<-function(Data,
             #Case of one profiles
             if(is.null(dim(Data_good[[floats[f]]][[variables[v]]])) |
                length(dim(Data_good[[floats[f]]][[variables[v]]]))==1
-               ){
+            ){
               for (uno in c(1:length(Data[[floats[f]]][[variables[v]]]))){
                 if(Data[[floats[f]]][[paste0(variables[v], '_QC')]][uno] %in% qc_by_var[[variables[v]]]==F){
                   Data_good[[floats[f]]][[variables[v]]][uno]<-NA
@@ -146,9 +146,91 @@ extract_qc_df<-function(Data,
                 }
               }
             }
-          }
-           else if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T &&
-              all(is.na(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]))==F){
+          } else if (raw=="yes"){
+            # initiate list with the size of the value
+            Data_good[[floats[f]]][[variables[v]]]<-
+              Data[[floats[f]]][[variables[v]]]
+            if(mode==T){
+              Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]]<-
+                Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]]
+            }
+            
+            if(is.null(dim(Data_good[[floats[f]]][[variables[v]]])) |
+               length(dim(Data_good[[floats[f]]][[variables[v]]]))==1){ # 1 profile
+                if(is.null(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]) |
+                   all(is.na(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]))
+                ){
+                  Data_good[[floats[f]]][[variables[v]]]<-
+                    Data[[floats[f]]][[variables[v]]]
+                  if(mode==T){
+                    Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]]<-
+                      Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]]
+                  }
+                  for (uno in c(1:length(Data[[floats[f]]][[variables[v]]]))){
+                    if(Data[[floats[f]]][[paste0(variables[v], '_QC')]][uno] %in% qc_by_var[[variables[v]]]==F){
+                      Data_good[[floats[f]]][[variables[v]]][uno]<-NA
+                      if(mode==T){
+                        Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][uno]<-NA
+                      }
+                    }
+                  }
+                } else{
+                  Data_good[[floats[f]]][[variables[v]]]<-
+                    Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]
+                  if(mode==T){
+                    Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]]<-
+                      Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]]
+                  }
+                  for (uno in c(1:length(Data[[floats[f]]][[variables[v]]]))){
+                    if(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED_QC')]][uno] %in% qc_by_var[[variables[v]]]==F){
+                      Data_good[[floats[f]]][[variables[v]]][uno]<-NA
+                      if(mode==T){
+                        Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][uno]<-NA
+                      }
+                    }
+                  }
+                }
+              
+            } else{
+              for(npro in c(1:dim(Data[[floats[f]]][[variables[v]]])[2])){
+                if(is.null(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]][,npro]) |
+                   all(is.na(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]][,npro]))
+                ){
+                  Data_good[[floats[f]]][[variables[v]]][,npro]<-
+                    Data[[floats[f]]][[variables[v]]][,npro]
+                  if(mode==T){
+                    Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][,npro]<-
+                      Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]][,npro]
+                  }
+                  for (uno in c(1:length(Data[[floats[f]]][[variables[v]]][,npro]))){
+                    if(Data[[floats[f]]][[paste0(variables[v], '_QC')]][uno,npro] %in% qc_by_var[[variables[v]]]==F){
+                      Data_good[[floats[f]]][[variables[v]]][uno,npro]<-NA
+                      if(mode==T){
+                        Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][uno,npro]<-NA
+                      }
+                    }
+                  }
+                } else{
+                  Data_good[[floats[f]]][[variables[v]]][,npro]<-
+                    Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]][,npro]
+                  if(mode==T){
+                    Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][,npro]<-
+                      Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]][,npro]
+                  }
+                  for (uno in c(1:length(Data[[floats[f]]][[variables[v]]][,npro]))){
+                    if(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED_QC')]][uno,npro] %in% qc_by_var[[variables[v]]]==F){
+                      Data_good[[floats[f]]][[variables[v]]][uno,npro]<-NA
+                      if(mode==T){
+                        Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]][uno,npro]<-NA
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+          }else if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T &&
+                    all(is.na(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]))==F){
             Data_good[[floats[f]]][[variables[v]]]<-
               Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]
             if(mode==T){
@@ -156,9 +238,9 @@ extract_qc_df<-function(Data,
                 Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]]
             }
             #in Case of only one profile
-            if(is.null(dim(Data_good[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]])) |
-               length(dim(Data_good[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]))==1
-               ){
+            if(is.null(dim(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]])) |
+               length(dim(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]))==1
+            ){
               for (uno in c(1:length(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]))){
                 if(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED_QC')]][uno] %in% qc_by_var[[variables[v]]]==F){
                   Data_good[[floats[f]]][[variables[v]]][uno]<-NA
@@ -252,9 +334,52 @@ extract_qc_df<-function(Data,
               Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]]<-
                 replace(Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]], TRUE, 'R')
             }
-          }
-          else if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T &&
-              all(is.na(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]))==F){
+          } else if (raw=="yes") {
+            # initiate list with the size of the value
+            Data_good[[floats[f]]][[variables[v]]]<-
+              Data[[floats[f]]][[variables[v]]]
+            Data_good[[floats[f]]][[paste0(variables[v],'_QC')]]<-
+              Data[[floats[f]]][[paste0(variables[v], '_QC')]]
+            
+            if(mode==T){
+              Data_good[[floats[f]]][[paste0(variables[v], '_MODE')]]<-
+                Data[[floats[f]]][[paste0(variables[v], '_DATA_MODE')]]
+            }
+            if(is.null(dim(Data_good[[floats[f]]][[variables[v]]])) |
+               length(dim(Data_good[[floats[f]]][[variables[v]]]))==1){ # 1 profile
+              if(is.null(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]) |
+                 all(is.na(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]]))
+              ){
+                Data_good[[floats[f]]][[variables[v]]]<-
+                  Data[[floats[f]]][[variables[v]]]
+                Data_good[[floats[f]]][[paste0(variables[v],'_QC')]]<-
+                  Data[[floats[f]]][[paste0(variables[v], '_QC')]]
+              } else{
+                Data_good[[floats[f]]][[variables[v]]]<-
+                  Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]
+                Data_good[[floats[f]]][[paste0(variables[v],'_QC')]]<-
+                  Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED_QC')]]
+              }
+             }else{ #multi profiles
+              for(npro in c(1:dim(Data[[floats[f]]][[variables[v]]])[2])){
+                if(is.null(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]][,npro]) |
+                   all(is.na(Data[[floats[f]]][[paste0(variables[v],"_ADJUSTED")]][,npro]))
+                ){
+                  Data_good[[floats[f]]][[variables[v]]][,npro]<-
+                    Data[[floats[f]]][[variables[v]]][,npro]
+                  Data_good[[floats[f]]][[paste0(variables[v],'_QC')]][,npro]<-
+                    Data[[floats[f]]][[paste0(variables[v], '_QC')]][,npro]
+                } else{
+                  Data_good[[floats[f]]][[variables[v]]][,npro]<-
+                    Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]][,npro]
+                  Data_good[[floats[f]]][[paste0(variables[v],'_QC')]][,npro]<-
+                    Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED_QC')]][,npro]
+                }
+              }
+            }
+
+          } else if (paste0(variables[v],"_ADJUSTED") %in% names(Data[[f]])==T &&
+                     all(is.na(Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]))==F){
             Data_good[[floats[f]]][[variables[v]]]<-
               Data[[floats[f]]][[paste0(variables[v], '_ADJUSTED')]]
             Data_good[[floats[f]]][[paste0(variables[v],'_QC')]]<-
@@ -335,8 +460,6 @@ extract_qc_df<-function(Data,
     return(float_data_list_dtfr)
     
   } # end loop format=="dataframe"
-  
-  
 }
 
 
