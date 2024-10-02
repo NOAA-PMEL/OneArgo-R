@@ -245,10 +245,14 @@ initialize_argo <- function() {
     if (Float$type[f]== 'phys'){
       # ar_index_global_prof.txt does not contain information about
       # the available sensors per profile
-      if (Float$profiler[f] == 845) {
-        Float$min_sens[f] <<- list(c('PRES','TEMP'))
-      }
-      else {1
+      if (is.na(Float$profiler[f]) == F) {
+        if (Float$profiler[f] == 845) {
+          Float$min_sens[f] <<- list(c('PRES','TEMP'))
+        }
+        else {
+          Float$min_sens[f] <<- list(c('PRES','TEMP','PSAL'))
+        }
+      } else{
         Float$min_sens[f] <<- list(c('PRES','TEMP','PSAL'))
       }
       Float$max_sens[f] <<- Float$min_sens[f]
