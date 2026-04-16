@@ -69,11 +69,10 @@ initialize_argo <- function() {
   
   # Default: try US GDAC before French GDAC
   host_ifremer = 'https://data-argo.ifremer.fr/'
-  host_godae = 'https://usgodae.org/ftp/outgoing/argo/'
+  # host_godae = 'https://usgodae.org/ftp/outgoing/argo/'
   # Additional hosts could be added here
   
-  Setting$hosts <<- c(host_godae,host_ifremer)
-  # Setting$hosts = {host_ifremer;host_godae}; #alternate order of hosts
+  Setting$hosts <<- c(host_ifremer) # as of April 2026, GODAE is offline
   
   ###########################################################################
   # END OF SECTION WITH USER SPECIFIC OPTIONS
